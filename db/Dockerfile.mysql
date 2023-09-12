@@ -1,0 +1,11 @@
+# Use the official MySQL image from Docker Hub
+FROM mysql:8
+
+# Environment variables for setting up the database
+ENV MYSQL_ROOT_PASSWORD=password
+ENV MYSQL_DATABASE=mydb
+ENV MYSQL_USER=myuser
+ENV MYSQL_PASSWORD=mypassword
+
+# Copy SQL script to initialize the database
+COPY init.sql /docker-entrypoint-initdb.d/
