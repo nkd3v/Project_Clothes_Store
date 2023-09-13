@@ -14,7 +14,7 @@ services:
     volumes:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       timeout: 20s
       retries: 10
 
@@ -32,3 +32,34 @@ services:
       DB_USER: myuser
       DB_PASSWORD: mypassword
       DB_NAME: mydb
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://node-app:3000/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  react-app:
+    build:
+      context: client
+      dockerfile: Dockerfile.react
+    ports:
+      - "3001:3000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://react-app/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  nginx:
+    build:
+      context: nginx
+      dockerfile: Dockerfile.nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      node-app:
+        condition: service_healthy
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/ssl:/etc/nginx/ssl

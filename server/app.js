@@ -1,5 +1,6 @@
 const express = require('express');
 const sequelize = require('./config/database');
+const morgan = require('morgan');
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
@@ -10,6 +11,8 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+app.use(morgan('dev'));
 
 // Swagger configuration
 const swaggerOptions = {
@@ -26,14 +29,10 @@ const swaggerOptions = {
   ],
 };
 
-app.get('/', (req, res) => {
-  res.redirect('/api-docs');
-});
-
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
 // Serve Swagger documentation
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use('/users', userRoutes);
 
