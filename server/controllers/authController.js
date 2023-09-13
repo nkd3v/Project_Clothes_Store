@@ -1,73 +1,63 @@
-// controllers/authController.js
-const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 const User = require('../models/User');
 
-async function generateToken(user) {
-  return jwt.sign({ id: user.id, username: user.username }, 'your_secret_key', {
-    expiresIn: '1h', // Token expiration time
-  });
-}
+const SECRET_KEY = process.env.SECRET_KEY;
 
 exports.register = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, password } = req.body;
 
-    // Check if the username or email is already in use
-    const existingUser = await User.findOne({
-      where: {
-        [Op.or]: [{ username }, { email }],
-      },
-    });
-
+    // Check if the user already exists
+    const existingUser = await User.findOne({ where: { username } });
     if (existingUser) {
-      return res.status(400).json({ message: 'Username or email already exists' });
+      return res.status(409).json({ error: 'Username already exists' });
     }
 
-    // Hash the password before storing it in the database
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create a new user
-    const newUser = await User.create({
-      username,
-      email,
-      password: hashedPassword,
+    const user = await User.create({ username, password: hashedPassword });
+    const token = jwt.sign({ userId: user.id }, SECRET_KEY, {
+      expiresIn: '24h', // Adjust as needed
     });
 
-    // Generate a JWT token for the new user
-    const token = await generateToken(newUser);
-
-    res.status(201).json({ user: newUser, token });
+    res.json({ token });
   } catch (error) {
-    console.error('Registration error:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    console.error('An error occurred during registration:');
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
+    res.status(500).json({ error: 'Registration failed' });
   }
 };
 
 exports.login = async (req, res) => {
   try {
     const { username, password } = req.body;
-
-    // Find the user by username
     const user = await User.findOne({ where: { username } });
 
     if (!user) {
-      return res.status(401).json({ message: 'Invalid username or password' });
+      // Delay the response to make it harder to guess whether the username exists
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    // Check if the password is correct
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const validPassword = await bcrypt.compare(password, user.password);
 
-    if (!isPasswordValid) {
-      return res.status(401).json({ message: 'Invalid username or password' });
+    if (!validPassword) {
+      // Delay the response to make it harder to guess whether the password is incorrect
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    // Generate a JWT token for the authenticated user
-    const token = await generateToken(user);
+    const token = jwt.sign({ userId: user.id }, SECRET_KEY, {
+      expiresIn: '24h', // Adjust as needed
+    });
 
-    res.json({ user, token });
+    res.json({ token });
   } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    console.error('An error occurred during login:');
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
+    res.status(500).json({ error: 'Login failed' });
   }
 };

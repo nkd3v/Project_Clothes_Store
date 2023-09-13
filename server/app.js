@@ -6,6 +6,7 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
 
 const userRoutes = require('./routes/userRoutes');
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 
@@ -16,12 +17,17 @@ app.use(morgan('dev'));
 
 // Swagger configuration
 const swaggerOptions = {
-  swaggerDefinition: {
+  definition: {
+    openapi: "3.1.0",
     info: {
-      title: 'Your API Title',
-      description: 'Your API Description',
+      title: 'Chiqko API',
       version: '1.0.0',
     },
+    servers: [
+      {
+        url: "https://chiqko.pp.ua",
+      },
+    ],
   },
   apis: [
     './routes/*.js', // Glob pattern to include route files in Swagger
@@ -31,15 +37,20 @@ const swaggerOptions = {
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
-// Serve Swagger documentation
-app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
-app.use('/users', userRoutes);
+app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/users', userRoutes);
 
 sequelize.sync().then(() => {
   app.listen(3000, () => {
     console.log('Server is running on port 3000');
   });
+});
+
+// Serve Swagger documentation
+app.use('/api/v1', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+app.get("/health", (req, res) => {
+  res.status(200).send("Healthy");
 });
 
 app.use((req, res) => {
