@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const SECRET_KEY = process.env.SECRET_KEY;
 
 module.exports = (req, res, next) => {
-  const token = req.header('x-auth-token');
+  const token = req.cookies.auth_token;
 
   if (!token) {
     return res.status(401).json({ error: 'Access denied, token missing' });

@@ -90,4 +90,24 @@ router.post('/register', authController.register);
 
 router.post('/login', authController.login);
 
+/**
+ * @swagger
+ * /api/v1/auth/logout:
+ *   post:
+ *     summary: Logout a user by clearing the auth_token cookie.
+ *     tags:
+ *       - Authentication
+ *     responses:
+ *       200:
+ *         description: Logout successful.
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: Logout successful
+ *       500:
+ *         description: Internal server error.
+ */
+
+router.post('/logout', authController.logout);
+
 module.exports = router;

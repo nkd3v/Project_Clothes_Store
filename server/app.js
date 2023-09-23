@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const sequelize = require('./config/database');
 const morgan = require('morgan');
 
@@ -6,6 +7,7 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
 
 const userRoutes = require('./routes/userRoutes');
+const productRoutes = require('./routes/productRoutes');
 const authRoutes = require('./routes/authRoutes');
 
 const app = express();
@@ -37,7 +39,9 @@ const swaggerOptions = {
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
+app.use('/api/v1/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/products', productRoutes);
 app.use('/api/v1/users', userRoutes);
 
 sequelize.sync().then(() => {

@@ -21,6 +21,9 @@ exports.register = async (req, res) => {
       expiresIn: '24h', // Adjust as needed
     });
 
+    // Set an auth_token cookie on the client side (httpOnly: false, secure: true, SameSite: Lax)
+    res.cookie('auth_token', token, { httpOnly: false, secure: true, sameSite: 'Lax', maxAge: 86400000 }); // 24 hours
+
     res.json({ token });
   } catch (error) {
     console.error('An error occurred during registration:');
@@ -53,6 +56,9 @@ exports.login = async (req, res) => {
       expiresIn: '24h', // Adjust as needed
     });
 
+    // Set an auth_token cookie on the client side (httpOnly: false, secure: true, SameSite: Lax)
+    res.cookie('auth_token', token, { httpOnly: false, secure: true, sameSite: 'Lax', maxAge: 86400000 }); // 24 hours
+
     res.json({ token });
   } catch (error) {
     console.error('An error occurred during login:');
@@ -60,4 +66,11 @@ exports.login = async (req, res) => {
     console.error('Error stack:', error.stack);
     res.status(500).json({ error: 'Login failed' });
   }
+};
+
+exports.logout = (req, res) => {
+  // Clear the auth_token cookie on the client side
+  res.clearCookie('auth_token');
+
+  res.json({ message: 'Logout successful' });
 };
