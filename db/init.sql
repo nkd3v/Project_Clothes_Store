@@ -25,7 +25,6 @@ CREATE TABLE Products (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description TEXT,
->>>>>>> 13655cc (optimize database and automatic update for frontend)
     brand VARCHAR(255),
     tag VARCHAR(255),
     createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
