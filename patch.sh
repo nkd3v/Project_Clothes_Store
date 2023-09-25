@@ -1,1 +1,1 @@
-docker-compose up --build -d
+docker-compose up -V --build -d

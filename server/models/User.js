@@ -1,18 +1,66 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+const sequelize = require('../config/database'); // Adjust the path as needed
 
-const User = sequelize.define('users', {
+const User = sequelize.define('User', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
   username: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(255),
     allowNull: false,
-    unique: true,
   },
   password: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(60),
     allowNull: false,
   },
+  email: {
+    type: DataTypes.STRING(255),
+    allowNull: false,
+  },
+  firstName: {
+    type: DataTypes.STRING(255),
+  },
+  lastName: {
+    type: DataTypes.STRING(255),
+  },
+  dateOfBirth: {
+    type: DataTypes.DATE,
+  },
+  gender: {
+    type: DataTypes.ENUM('Male', 'Female', 'Other'),
+  },
+  address1: {
+    type: DataTypes.STRING(255),
+  },
+  address2: {
+    type: DataTypes.STRING(255),
+  },
+  country: {
+    type: DataTypes.STRING(255),
+  },
+  state: {
+    type: DataTypes.STRING(255),
+  },
+  city: {
+    type: DataTypes.STRING(255),
+  },
+  postalCode: {
+    type: DataTypes.STRING(10),
+  },
+  phoneNumber: {
+    type: DataTypes.STRING(20),
+  },
+  profileImageUrl: {
+    type: DataTypes.STRING(255),
+  },
+  role: {
+    type: DataTypes.ENUM('Customer', 'Merchant', 'Admin', 'Moderator'),
+  },
 }, {
-  timestamps: true, // Enable timestamps
+  timestamps: true, // Include createdAt and updatedAt fields
+  tableName: 'Users', // Make sure this matches your table name exactly
 });
 
 module.exports = User;

@@ -9,6 +9,8 @@ const swaggerJsdoc = require('swagger-jsdoc');
 const userRoutes = require('./routes/userRoutes');
 const productRoutes = require('./routes/productRoutes');
 const authRoutes = require('./routes/authRoutes');
+const orderRoutes = require('./routes/orderRoutes');
+const cartRoutes = require('./routes/cartRoutes');
 
 const app = express();
 
@@ -43,6 +45,8 @@ app.use('/api/v1/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/products', productRoutes);
 app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/orders', orderRoutes);
+app.use('/api/v1/carts', cartRoutes);
 
 sequelize.sync().then(() => {
   app.listen(3000, () => {
