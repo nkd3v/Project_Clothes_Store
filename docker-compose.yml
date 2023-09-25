@@ -39,8 +39,10 @@ services:
       context: client
       dockerfile: Dockerfile.react
     volumes:
-      - ./client:/app
-      - /app/node_modules
+      - ./client/public:/app/public
+      - ./client/src:/app/src
+      - ./client/index.html:/app/index.html
+      - ./client/vite.config.js:/app/vite.config.js
     healthcheck:
       test: ["CMD", "curl", "-f", "http://react-app:5173/"]
       interval: 10s
