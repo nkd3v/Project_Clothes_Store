@@ -1,0 +1,33 @@
+.home {
+    height: 100vh;
+}
+
+.banner {
+    height: 100%;
+}
+
+.banner.parallax {
+    background: url("../../assets/images/banner-1.png") fixed top/cover no-repeat;
+}
+
+.banner.parallax:nth-child(2) {
+    background: url("../../assets/images/banner-2.png") fixed top/cover no-repeat;   
+}
+
+.banner .overlay {
+    height: 100%;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.25);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.banner .banner-content {
+    color: #fff;
+    width: 85%;
+}
+
+.banner .banner-content .describe {
+    margin-block: .25em 1em;
+}

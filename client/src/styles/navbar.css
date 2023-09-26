@@ -1,0 +1,58 @@
+.navbar {
+    padding: 1em;
+    position: fixed;
+    background-color: #fff;
+    top: 0;
+    width: 100%;
+}
+
+.navbar .flex {
+    display: flex;
+}
+
+.navbar .container {
+    max-width: 95%;
+    margin-inline: auto;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #000;
+    padding-inline: 1em;
+}
+
+.navbar .navbar-left .logo-image img {
+    min-width: 115px;
+    height: 60px;
+}
+
+.navbar .navbar-left > .lists {
+   margin-left: 2em;
+   align-items: center;
+   list-style: none;
+   gap: 2em;
+   
+}
+.navbar .navbar-left > .lists > li > .link{
+    color: var(--color);
+    text-decoration: none;
+    font-size: var(--nav-fs);
+    font-weight: bolder;
+}
+
+.navbar .navbar-right > .lists {
+   min-width: 130px;
+   align-items: center;
+   list-style: none;
+   gap: 2em;
+}
+.navbar .navbar-right > .lists > li > .icon-link > img {
+  height: 30px;
+}
+
+.navbar li {
+    transition: scale 0.125s ease;
+    scale: 1;
+}
+
+.navbar li:is(:focus-visible, :hover) {
+    scale: 0.9;
+}
