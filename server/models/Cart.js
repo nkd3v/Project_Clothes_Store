@@ -13,4 +13,7 @@ Cart.belongsToMany(Product, {
   as: 'items',
 });
 
+// Cart.belongsTo(User);
+// User.hasOne(Cart);
+
 module.exports = Cart;

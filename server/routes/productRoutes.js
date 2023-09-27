@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const upload = require('../middleware/uploadMiddleware');
 const productController = require('../controllers/productController');
+const authMiddleware = require('../middleware/authMiddleware');
 
 /**
  * @swagger
@@ -188,8 +189,10 @@ router.get('/:productId', productController.getProductById);
  * @swagger
  * /api/v1/products:
  *   post:
- *     summary: Create a new product with an image upload
- *     tags: [Products]
+ *     summary: Create a new product
+ *     description: Create a new product in the clothing shop's inventory.
+ *     tags:
+ *       - Products
  *     requestBody:
  *       required: true
  *       content:
@@ -199,45 +202,53 @@ router.get('/:productId', productController.getProductById);
  *             properties:
  *               name:
  *                 type: string
- *                 description: The name of the new product.
- *                 example: "New Trousers"
+ *                 description: The name of the product.
  *               description:
  *                 type: string
- *                 description: A description of the new product.
- *                 example: "A new pair of trousers for casual wear."
- *               price:
- *                 type: number
- *                 format: float
- *                 description: The price of the new product.
- *                 example: 39.99
- *               image:
- *                 type: file
- *                 description: The image of the new product.
- *               category:
- *                 type: string
- *                 description: The updated category of the product.
- *                 example: "Apparel"
+ *                 description: A brief description of the product.
  *               brand:
  *                 type: string
- *                 description: The updated brand of the product.
- *                 example: "Fashion Co."
+ *                 description: The branch where the product is available.
  *               tags:
  *                 type: array
  *                 description: An array of tags associated with the product.
  *                 items:
  *                   type: string
- *                   example: Eco-friendly
+ *               category:
+ *                 type: string
+ *                 description: The category of the product.
+ *               variants:
+ *                 type: array
+ *                 description: An array of product variants.
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     images:
+ *                       type: file
+ *                       description: An array of image files for the variant.
+ *                     size:
+ *                       type: string
+ *                       description: The size of the variant (e.g., Small, Medium, Large).
+ *                     color:
+ *                       type: string
+ *                       description: The color of the variant.
+ *                     price:
+ *                       type: number
+ *                       description: The price of the variant.
+ *                     quantity:
+ *                       type: number
+ *                       format: float
+ *                       description: The quantity available for this variant.
  *     responses:
  *       201:
- *         description: The newly created product
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Product'
+ *         description: Product created successfully.
+ *       400:
+ *         description: Bad request. Invalid input data.
  *       500:
- *         description: Internal server error
+ *         description: Internal server error.
  */
-router.post('/', upload.single('image'), productController.createProduct);
+
+router.post('/', authMiddleware, upload.any('variants[][image]'), productController.createProduct);
 
 /**
  * @swagger

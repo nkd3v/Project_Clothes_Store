@@ -12,10 +12,13 @@ const authRoutes = require('./routes/authRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const cartRoutes = require('./routes/cartRoutes');
 
+const cookieParser = require('cookie-parser');
+
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
 
 app.use(morgan('dev'));
 
@@ -48,7 +51,7 @@ app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/orders', orderRoutes);
 app.use('/api/v1/carts', cartRoutes);
 
-sequelize.sync().then(() => {
+sequelize.sync({ force: true }).then(() => {
   app.listen(3000, () => {
     console.log('Server is running on port 3000');
   });

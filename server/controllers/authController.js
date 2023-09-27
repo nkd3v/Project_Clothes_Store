@@ -17,6 +17,7 @@ exports.register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.create({ username, password: hashedPassword });
+    console.log(user);
     const token = jwt.sign({ userId: user.id }, SECRET_KEY, {
       expiresIn: '24h', // Adjust as needed
     });
@@ -37,6 +38,7 @@ exports.login = async (req, res) => {
   try {
     const { username, password } = req.body;
     const user = await User.findOne({ where: { username } });
+    console.log(user);
 
     if (!user) {
       // Delay the response to make it harder to guess whether the username exists

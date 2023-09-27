@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Create Product</title>
+</head>
+
+<body>
+    <h1>Create a New Product</h1>
+    <form id="productForm" enctype="multipart/form-data" action="https://chiqko.pp.ua/api/v1/products" method="POST">
+        <label for="brand">Brand:</label>
+        <input type="text" id="brand" name="brand" required><br><br>
+
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" required></textarea><br><br>
+
+        <label for="category">Category:</label>
+        <input type="text" id="category" name="category" required><br><br>
+
+        <label for="tags">Tags (comma-separated):</label>
+        <input type="text" id="tags" name="tags" required><br><br>
+
+        <label for="variants">Variants:</label><br>
+        <button type="button" id="addVariant">Add Variant</button>
+        <div id="variantFields">
+            <!-- Variant fields will be added here -->
+        </div><br>
+
+        <input type="submit" value="Create Product">
+    </form>
+
+    <script>
+        // JavaScript code to handle form submission
+        const form = document.getElementById('productForm');
+        const variantFields = document.getElementById('variantFields');
+        const addVariantButton = document.getElementById('addVariant');
+
+        // Function to add variant fields dynamically
+        // Function to add variant fields dynamically
+        function addVariantField() {
+            const variantField = document.createElement('div');
+            variantField.classList.add('variant');
+            variantField.innerHTML = `
+                <hr>
+                <label for="price">Price:</label>
+                <input type="number" name="variants[][price]" required><br>
+
+                <label for="size">Size:</label>
+                <input type="text" name="variants[][size]" required><br>
+
+                <label for="color">Color:</label>
+                <input type="text" name="variants[][color]" required><br>
+
+                <label for="quantity">Quantity:</label>
+                <input type="number" name="variants[][quantity]" required><br>
+
+                <label for="image">Image:</label>
+                <input type="file" name="variants[][image]" required><br>
+                
+                <button type="button" class="removeVariant">Remove Variant</button>
+            `;
+
+            // Add a click event listener to the "Remove Variant" button
+            const removeVariantButton = variantField.querySelector('.removeVariant');
+            removeVariantButton.addEventListener('click', () => {
+                variantField.remove();
+            });
+
+            variantFields.appendChild(variantField);
+        }
+
+
+        // Add variant fields when the button is clicked
+        addVariantButton.addEventListener('click', addVariantField);
+
+        // Submit form data to the API
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            try {
+                const response = await fetch('https://chiqko.pp.ua/api/v1/products', {
+                    method: 'POST',
+                    body: formData,
+                });
+                if (response.ok) {
+                    const responseData = await response.json(); // Parse JSON response
+                    if (responseData && responseData.message) {
+                        alert(responseData.message);
+                    } else {
+                        alert('Product created successfully!');
+                    }
+                } else {
+                    alert('Failed to create the product.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+    </script>
+</body>
+
+</html>

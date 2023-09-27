@@ -2,11 +2,6 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database'); // Adjust the path as needed
 
 const User = sequelize.define('User', {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
-  },
   username: {
     type: DataTypes.STRING(255),
     allowNull: false,
@@ -17,7 +12,6 @@ const User = sequelize.define('User', {
   },
   email: {
     type: DataTypes.STRING(255),
-    allowNull: false,
   },
   firstName: {
     type: DataTypes.STRING(255),
@@ -52,15 +46,9 @@ const User = sequelize.define('User', {
   phoneNumber: {
     type: DataTypes.STRING(20),
   },
-  profileImageUrl: {
-    type: DataTypes.STRING(255),
-  },
   role: {
     type: DataTypes.ENUM('Customer', 'Merchant', 'Admin', 'Moderator'),
   },
-}, {
-  timestamps: true, // Include createdAt and updatedAt fields
-  tableName: 'Users', // Make sure this matches your table name exactly
 });
 
 module.exports = User;
