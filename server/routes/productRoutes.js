@@ -221,6 +221,12 @@ router.get('/:productId', productController.getProductById);
  *                 type: string
  *                 description: The updated brand of the product.
  *                 example: "Fashion Co."
+ *               tags:
+ *                 type: array
+ *                 description: An array of tags associated with the product.
+ *                 items:
+ *                   type: string
+ *                   example: Eco-friendly
  *     responses:
  *       201:
  *         description: The newly created product
