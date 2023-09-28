@@ -55,6 +55,10 @@ sequelize.sync({ force: true }).then(() => {
   app.listen(3000, () => {
     console.log('Server is running on port 3000');
   });
+  
+
+  const createSampleData = require('./db/sampleData');
+  createSampleData();
 });
 
 // Serve Swagger documentation

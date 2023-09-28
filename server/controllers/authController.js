@@ -18,7 +18,7 @@ exports.register = async (req, res) => {
 
     const user = await User.create({ username, password: hashedPassword });
     console.log(user);
-    const token = jwt.sign({ userId: user.id }, SECRET_KEY, {
+    const token = jwt.sign({ id: user.id }, SECRET_KEY, {
       expiresIn: '24h', // Adjust as needed
     });
 
@@ -54,7 +54,7 @@ exports.login = async (req, res) => {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    const token = jwt.sign({ userId: user.id }, SECRET_KEY, {
+    const token = jwt.sign({ id: user.id }, SECRET_KEY, {
       expiresIn: '24h', // Adjust as needed
     });
 

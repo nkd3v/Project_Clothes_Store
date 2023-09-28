@@ -187,6 +187,37 @@ router.get('/:productId', productController.getProductById);
 
 /**
  * @swagger
+ * /api/v1/products/{productId}/variants:
+ *   get:
+ *     summary: Get variants for a product by product ID.
+ *     description: Retrieve all variants associated with a specific product by its ID.
+ *     tags:
+ *       - Variants
+ *     parameters:
+ *       - in: path
+ *         name: productId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the product to retrieve variants for.
+ *     responses:
+ *       '200':
+ *         description: Successful response with an array of variants.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/ProductVariant'
+ *       '404':
+ *         description: Product not found.
+ *       '500':
+ *         description: Internal server error.
+ */
+router.get('/:productId/variants', productController.listVariantsByProductId);
+
+/**
+ * @swagger
  * /api/v1/products:
  *   post:
  *     summary: Create a new product

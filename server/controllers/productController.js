@@ -2,10 +2,15 @@ const Product = require('../models/Product');
 const ProductTag = require('../models/ProductTag');
 const ProductVariant = require('../models/ProductVariant');
 
-// List all products
+// List all products with embedded product tags and variants
 exports.listProducts = async (req, res) => {
     try {
-        const products = await Product.findAll();
+        const products = await Product.findAll({
+            include: [
+                ProductTag, // Include the ProductTag association
+                ProductVariant, // Include the ProductVariant association
+            ],
+        });
         res.json(products);
     } catch (error) {
         console.error(error);
@@ -13,11 +18,16 @@ exports.listProducts = async (req, res) => {
     }
 };
 
-// Get a single product by ID
+// Get a single product by ID with embedded product tags and variants
 exports.getProductById = async (req, res) => {
     const { productId } = req.params;
     try {
-        const product = await Product.findByPk(productId);
+        const product = await Product.findByPk(productId, {
+            include: [
+                ProductTag, // Include the ProductTag association
+                ProductVariant, // Include the ProductVariant association
+            ],
+        });
         if (!product) {
             return res.status(404).json({ error: 'Product not found' });
         }
@@ -28,11 +38,35 @@ exports.getProductById = async (req, res) => {
     }
 };
 
+exports.listVariantsByProductId = async (req, res) => {
+    const { productId } = req.params;
+    try {
+        // Find the product by its ID
+        const product = await Product.findByPk(productId);
+
+        // Check if the product exists
+        if (!product) {
+            return res.status(404).json({ error: 'Product not found' });
+        }
+
+        // Find all variants associated with the product
+        const variants = await ProductVariant.findAll({
+            where: { ProductId: productId },
+        });
+
+        // Return the variants
+        res.json(variants);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
 // Add a new product
 exports.createProduct = async (req, res) => {
     const { name, description, brand, category } = req.body;
     const tags = [...new Set(req.body['tags'].split(',').map(item => item.trim()))];
-    const ownerId = req.user.userId;
+    const ownerId = req.user.id;
 
     const variants = (() => {
         if (typeof (req.body['variants[][price]']) === 'string') {
@@ -73,7 +107,7 @@ exports.createProduct = async (req, res) => {
 
         // Create the Product instance
         const product = await Product.create({
-            ownerId,
+            OwnerId: ownerId,
             name,
             description,
             brand,

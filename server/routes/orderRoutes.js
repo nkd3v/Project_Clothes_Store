@@ -11,7 +11,7 @@ const orderController = require('../controllers/orderController');
 
 /**
  * @swagger
- * /orders:
+ * /api/v1/orders:
  *   post:
  *     summary: Create a new order
  *     tags: [Orders]
@@ -44,7 +44,7 @@ router.post('/orders', orderController.createOrder);
 
 /**
  * @swagger
- * /orders:
+ * /api/v1/orders:
  *   get:
  *     summary: List orders for the authenticated user
  *     tags: [Orders]

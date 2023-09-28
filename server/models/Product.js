@@ -1,11 +1,8 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
+const User = require('./User');
 
 const Product = sequelize.define('Product', {
-    ownerId: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
     name: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -23,6 +20,15 @@ const Product = sequelize.define('Product', {
         type: DataTypes.STRING,
         allowNull: false,
     },
+});
+
+Product.belongsTo(User, {
+    foreignKey: 'OwnerId',
+    allowNull: false,
+});
+
+User.hasMany(Product, {
+    foreignKey: 'OwnerId',
 });
 
 module.exports = Product;
