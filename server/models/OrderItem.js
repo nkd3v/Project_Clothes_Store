@@ -7,8 +7,10 @@ const OrderItem = sequelize.define('OrderItem', {
     quantity: {
         type: DataTypes.INTEGER,
         allowNull: false,
-    },
+    }
 });
+
+// OrderItem.sync();
 
 OrderItem.belongsTo(ProductVariant);
 ProductVariant.hasMany(OrderItem);

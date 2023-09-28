@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const orderController = require('../controllers/orderController');
+const authMiddleware = require('../middleware/authMiddleware');
 
 /**
  * @swagger
@@ -17,19 +18,6 @@ const orderController = require('../controllers/orderController');
  *     tags: [Orders]
  *     security:
  *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               userId:
- *                 type: integer
- *                 description: The ID of the user placing the order
- *               cartId:
- *                 type: integer
- *                 description: The ID of the user's cart
  *     responses:
  *       201:
  *         description: Order created successfully
@@ -40,7 +28,7 @@ const orderController = require('../controllers/orderController');
  *       500:
  *         description: Internal server error
  */
-router.post('/orders', orderController.createOrder);
+router.post('/', authMiddleware, orderController.createOrder);
 
 /**
  * @swagger
@@ -56,6 +44,6 @@ router.post('/orders', orderController.createOrder);
  *       500:
  *         description: Internal server error
  */
-router.get('/orders', orderController.listOrders);
+router.get('/', authMiddleware, orderController.listOrders);
 
 module.exports = router;

@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const User = require('./User');
+const Category = require('./Category');
 
 const Product = sequelize.define('Product', {
     name: {
@@ -12,14 +13,18 @@ const Product = sequelize.define('Product', {
         type: DataTypes.TEXT,
         allowNull: false,
     },
-    category: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
     brand: {
         type: DataTypes.STRING,
         allowNull: false,
     },
+    OwnerId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    CategoryId: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    }
 });
 
 Product.belongsTo(User, {
@@ -30,5 +35,8 @@ Product.belongsTo(User, {
 User.hasMany(Product, {
     foreignKey: 'OwnerId',
 });
+
+Product.belongsTo(Category);
+Category.hasMany(Product);
 
 module.exports = Product;

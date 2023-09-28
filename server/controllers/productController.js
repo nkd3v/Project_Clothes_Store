@@ -105,13 +105,18 @@ exports.createProduct = async (req, res) => {
             return res.status(400).json({ error: 'A product with the same name already exists' });
         }
 
+        const categoryInstance = await Category.findOne({ where: { name: category } });
+        if (!categoryInstance) {
+            return res.status(400).json({ error: 'Invalid category name' });
+        }
+
         // Create the Product instance
         const product = await Product.create({
             OwnerId: ownerId,
             name,
             description,
             brand,
-            category,
+            CategoryId: categoryInstance.id,
         });
 
         // Create the ProductVariant instances

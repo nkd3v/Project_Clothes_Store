@@ -11,10 +11,13 @@ const productRoutes = require('./routes/productRoutes');
 const authRoutes = require('./routes/authRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const cartRoutes = require('./routes/cartRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
 
 const cookieParser = require('cookie-parser');
 
 const app = express();
+
+require('./db/initDatabase');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -50,15 +53,15 @@ app.use('/api/v1/products', productRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/orders', orderRoutes);
 app.use('/api/v1/carts', cartRoutes);
+app.use('/api/v1/categories', categoryRoutes);
 
 sequelize.sync({ force: true }).then(() => {
   app.listen(3000, () => {
     console.log('Server is running on port 3000');
-  });
-  
 
-  const createSampleData = require('./db/sampleData');
-  createSampleData();
+    const createSampleData = require('./db/sampleData');
+    createSampleData();
+  });
 });
 
 // Serve Swagger documentation

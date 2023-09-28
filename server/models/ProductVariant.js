@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
-const Product = require('./Product'); // Import the Product model
+const Product = require('./Product');
 
 const ProductVariant = sequelize.define('ProductVariant', {
     size: {
@@ -12,11 +12,11 @@ const ProductVariant = sequelize.define('ProductVariant', {
         allowNull: false,
     },
     price: {
-        type: DataTypes.DECIMAL(10, 2), // Define the price attribute
+        type: DataTypes.DECIMAL(10, 2),
         allowNull: false,
     },
     quantity: {
-        type: DataTypes.INTEGER, // Define the quantity attribute
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     imageUrl: {
@@ -25,7 +25,6 @@ const ProductVariant = sequelize.define('ProductVariant', {
     },
 });
 
-// Define the one-to-many association
 Product.hasMany(ProductVariant);
 ProductVariant.belongsTo(Product);
 
