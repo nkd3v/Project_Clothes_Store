@@ -1,6 +1,53 @@
 const Product = require('../models/Product');
 const ProductTag = require('../models/ProductTag');
 const ProductVariant = require('../models/ProductVariant');
+const sequelize = require('../config/database'); // Import your database instance
+const { Op } = require('sequelize');
+
+
+// List products that match brand and categoryId criteria
+exports.listProductsByCriteria = async (req, res) => {
+  try {
+    const { brand, categoryId, minPrice, maxPrice } = req.query;
+
+    const whereClause = {};
+    if (brand) {
+      whereClause.brand = brand;
+    }
+    if (categoryId) {
+      whereClause.CategoryId = categoryId;
+    }
+
+    // Include the ProductVariant association to calculate price range
+    const products = await Product.findAll({
+      where: whereClause,
+      include: {
+        model: ProductVariant,
+        attributes: [],
+        where: {
+          price: {
+            [Op.between]: [minPrice || 0, maxPrice || Number.MAX_SAFE_INTEGER],
+          },
+        },
+      },
+      attributes: [
+        'id',
+        'name',
+        'description',
+        'brand',
+        'CategoryId',
+        [sequelize.fn('min', sequelize.col('ProductVariants.price')), 'minPrice'],
+        [sequelize.fn('max', sequelize.col('ProductVariants.price')), 'maxPrice'],
+      ],
+      group: ['Product.id'], // Group by Product to avoid duplicate rows
+    });
+
+    res.json(products);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
 
 // List all products with embedded product tags and variants
 exports.listProducts = async (req, res) => {
@@ -68,6 +115,10 @@ exports.createProduct = async (req, res) => {
     const tags = [...new Set(req.body['tags'].split(',').map(item => item.trim()))];
     const ownerId = req.user.id;
 
+    if (!req.body['variants[][price]']) {
+        return res.status(400).json({ error: 'Product require to have at least 1 variant' });
+    }
+
     const variants = (() => {
         if (typeof (req.body['variants[][price]']) === 'string') {
             return [{
@@ -105,18 +156,13 @@ exports.createProduct = async (req, res) => {
             return res.status(400).json({ error: 'A product with the same name already exists' });
         }
 
-        const categoryInstance = await Category.findOne({ where: { name: category } });
-        if (!categoryInstance) {
-            return res.status(400).json({ error: 'Invalid category name' });
-        }
-
         // Create the Product instance
         const product = await Product.create({
             OwnerId: ownerId,
             name,
             description,
             brand,
-            CategoryId: categoryInstance.id,
+            CategoryId: category,
         });
 
         // Create the ProductVariant instances

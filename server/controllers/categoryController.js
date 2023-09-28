@@ -15,7 +15,19 @@ async function getCategoriesRecursively(category) {
   return Object.keys(categoryData).length > 0 ? categoryData : null;
 }
 
-exports.getAllCategories = async (req, res) => {
+// Function to simplify the category structure
+function simplifyCategories(categoriesObject) {
+  const simplifiedCategories = {};
+
+  for (const categoryName in categoriesObject) {
+    const category = categoriesObject[categoryName];
+    simplifiedCategories[categoryName] = simplifyCategories(category);
+  }
+
+  return Object.keys(simplifiedCategories).length > 0 ? simplifiedCategories : null;
+}
+
+exports.getAllCategoryName = async (req, res) => {
   try {
     const rootCategories = await Category.findAll({ where: { parentId: null } });
 
@@ -33,14 +45,14 @@ exports.getAllCategories = async (req, res) => {
   }
 };
 
-// Function to simplify the category structure
-function simplifyCategories(categoriesObject) {
-  const simplifiedCategories = {};
+exports.getAllCategoryAttributes = async (req, res) => {
+  try {
+    const categories = await Category.findAll({
+      attributes: ['id', 'name', 'level'],
+    });
 
-  for (const categoryName in categoriesObject) {
-    const category = categoriesObject[categoryName];
-    simplifiedCategories[categoryName] = simplifyCategories(category);
+    res.json(categories);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch categories' });
   }
-
-  return Object.keys(simplifiedCategories).length > 0 ? simplifiedCategories : null;
-}
+};

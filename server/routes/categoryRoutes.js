@@ -5,9 +5,17 @@ const categoryController = require('../controllers/categoryController');
 
 /**
  * @swagger
- * /api/v1/categories:
+ * tags:
+ *   name: Categories
+ *   description: Category management
+ */
+
+/**
+ * @swagger
+ * /api/v1/categories/name:
  *   get:
  *     summary: Get all categories with subcategories.
+ *     tags: [Categories]
  *     description: Retrieve all categories along with their subcategories.
  *     responses:
  *       '200':
@@ -24,6 +32,33 @@ const categoryController = require('../controllers/categoryController');
  *                 Skirts: null
  */
 
-router.get('/', categoryController.getAllCategories);
+router.get('/name', categoryController.getAllCategoryName);
+
+
+/**
+ * @swagger
+ * /api/v1/categories:
+ *   get:
+ *     summary: Get all category attributes
+ *     tags: [Categories]
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved category attributes
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                   name:
+ *                     type: string
+ *                   level:
+ *                     type: integer
+ */
+
+router.get('/', categoryController.getAllCategoryAttributes);
 
 module.exports = router;
