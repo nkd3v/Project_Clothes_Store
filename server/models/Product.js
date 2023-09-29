@@ -17,10 +17,6 @@ const Product = sequelize.define('Product', {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
-    CategoryId: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    }
 });
 
 Product.belongsTo(User, {
@@ -32,7 +28,7 @@ User.hasMany(Product, {
     foreignKey: 'OwnerId',
 });
 
-Product.belongsTo(Category);
-Category.hasMany(Product);
+Product.belongsToMany(Category, { through: 'Product_Category' });
+Category.belongsToMany(Product, { through: 'Product_Category' });
 
 module.exports = Product;
