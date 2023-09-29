@@ -7,58 +7,49 @@ const categoryController = require('../controllers/categoryController');
  * @swagger
  * tags:
  *   name: Categories
- *   description: Category management
+ *   description: API operations related to product categories
  */
 
 /**
  * @swagger
- * /api/v1/categories/name:
+ * /api/v1/categories/hierarchy:
  *   get:
- *     summary: Get all categories with subcategories.
- *     tags: [Categories]
- *     description: Retrieve all categories along with their subcategories.
- *     responses:
- *       '200':
- *         description: A JSON object containing categories and subcategories.
- *         content:
- *           application/json:
- *             example:
- *               Men:
- *                 Clothing: null
- *                 Footwear: null
- *                 T-Shirts: null
- *               Women:
- *                 Dresses: null
- *                 Skirts: null
- */
-
-router.get('/name', categoryController.getAllCategoryName);
-
-
-/**
- * @swagger
- * /api/v1/categories:
- *   get:
- *     summary: Get all category attributes
+ *     summary: Get a list of all product categories
  *     tags: [Categories]
  *     responses:
  *       200:
- *         description: Successfully retrieved category attributes
+ *         description: A list of product categories
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: integer
- *                   name:
- *                     type: string
- *                   level:
- *                     type: integer
+ *                 type: string
+ *       500:
+ *         description: Internal server error
  */
 
-router.get('/', categoryController.getAllCategoryAttributes);
+router.get('/hierarchy', categoryController.getAllCategoryHierarchy);
+
+/**
+ * @swagger
+ * /api/v1/categories:
+ *   get:
+ *     summary: Get a list of all product categories
+ *     tags: [Categories]
+ *     responses:
+ *       200:
+ *         description: A list of product categories
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: string
+ *       500:
+ *         description: Internal server error
+ */
+
+router.get('/', categoryController.getAllCategoriesWithIdsAndNames);
 
 module.exports = router;

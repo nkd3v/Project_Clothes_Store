@@ -1,58 +1,80 @@
-// categoryController.js
 const Category = require('../models/Category');
 
-// Recursive function to retrieve categories and subcategories
-async function getCategoriesRecursively(category) {
-  const categoryData = {};
-  const children = await Category.findAll({ where: { parentId: category.id } });
-
-  if (children.length > 0) {
-    for (const child of children) {
-      categoryData[child.name] = await getCategoriesRecursively(child);
-    }
+categories = [
+  {
+    name: 'MEN',
+    children: [
+      {
+        name: 'เสื้อ',
+        children: [
+          'เสื้อทั้งหมด',
+          'เสื้อยืด(แขนสั้น)',
+          'เสื้อยืด(แขนยาว)',
+          'เสื้อโปโล',
+          'เสื้อกันหนาว',
+          'เสื้อเชิ้ดลำลอง(แขนยาว)',
+          'เสื้อเชิ้ดลำลอง(แขนสั้น)',
+          'เสื้อเชิ้ดทางการ'
+        ]
+      },
+      {
+        name: 'กางเกง',
+        children: [
+          
+        ]
+      },
+      {
+        name: 'ชุดลำลอง',
+        children: [
+          
+        ]
+      }
+    ]
+  },
+  {
+    name: 'WOMEN',
+    children: [
+      
+    ]
+  },
+  {
+    name: 'KIDS',
+    children: [
+      
+    ]
+  },
+  {
+    name: 'BABY',
+    children: [
+      
+    ]
   }
+]
 
-  return Object.keys(categoryData).length > 0 ? categoryData : null;
-}
-
-// Function to simplify the category structure
-function simplifyCategories(categoriesObject) {
-  const simplifiedCategories = {};
-
-  for (const categoryName in categoriesObject) {
-    const category = categoriesObject[categoryName];
-    simplifiedCategories[categoryName] = simplifyCategories(category);
-  }
-
-  return Object.keys(simplifiedCategories).length > 0 ? simplifiedCategories : null;
-}
-
-exports.getAllCategoryName = async (req, res) => {
+// Controller function to get the categories hierarchy
+exports.getAllCategoryHierarchy = async (req, res) => {
   try {
-    const rootCategories = await Category.findAll({ where: { parentId: null } });
-
-    const categoriesObject = {};
-    for (const rootCategory of rootCategories) {
-      categoriesObject[rootCategory.name] = await getCategoriesRecursively(rootCategory);
-    }
-
-    // Simplify the structure by removing unnecessary fields
-    const simplifiedCategories = simplifyCategories(categoriesObject);
-
-    res.json(simplifiedCategories);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch categories' });
-  }
-};
-
-exports.getAllCategoryAttributes = async (req, res) => {
-  try {
-    const categories = await Category.findAll({
-      attributes: ['id', 'name', 'level'],
-    });
-
     res.json(categories);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch categories' });
   }
 };
+
+// Controller to get all category IDs and names as a mapping
+exports.getAllCategoriesWithIdsAndNames = async (req, res) => {
+  try {
+    // Fetch all categories from the database
+    const categories = await Category.findAll();
+
+    // Create a mapping of category IDs to names
+    const categoryMapping = {};
+    categories.forEach(category => {
+      categoryMapping[category.id] = category.name;
+    });
+
+    return res.status(200).json(categoryMapping);
+  } catch (error) {
+    console.error('Error fetching category IDs and names:', error);
+    return res.status(500).json({ error: 'Unable to fetch category IDs and names' });
+  }
+}

@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const Product = require('./Product');
+const Category = require('./Category');
 
 const ProductVariant = sequelize.define('ProductVariant', {
     size: {
@@ -25,7 +26,7 @@ const ProductVariant = sequelize.define('ProductVariant', {
     },
 });
 
-Product.hasMany(ProductVariant);
-ProductVariant.belongsTo(Product);
+Product.belongsToMany(Category, { through: 'Product_Category' });
+Category.belongsToMany(Product, { through: 'Product_Category' });
 
 module.exports = ProductVariant;

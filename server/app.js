@@ -38,6 +38,15 @@ const swaggerOptions = {
         url: "https://chiqko.pp.ua",
       },
     ],
+    components: {
+      securitySchemes: {
+        auth_token: {
+          type: 'apiKey',
+          in: 'cookie',
+          name: 'auth_token', // Specify the cookie name
+        },
+      },
+    },
   },
   apis: [
     './routes/*.js', // Glob pattern to include route files in Swagger

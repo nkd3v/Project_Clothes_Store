@@ -10,7 +10,6 @@ async function createSampleData() {
     await createSampleUsers();
     await createSampleProducts();
     await createSampleCarts('user1', 'user1');
-    
 
     console.log('Sample data created successfully!');
   } catch (error) {

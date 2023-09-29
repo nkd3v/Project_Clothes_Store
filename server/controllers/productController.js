@@ -111,9 +111,17 @@ exports.listVariantsByProductId = async (req, res) => {
 
 // Add a new product
 exports.createProduct = async (req, res) => {
-    const { name, description, brand, category } = req.body;
-    const tags = [...new Set(req.body['tags'].split(',').map(item => item.trim()))];
+    const { name, description, category } = req.body;
+    const tags = [...new Set(req.body['tags']?.split(',').map(item => item.trim()))];
     const ownerId = req.user.id;
+    const files = req.files;
+
+    console.log(category);
+
+    if (!name || !description || !req.body['variants[][price]'] || !files || !ownerId || !category) {
+        console.log([, !name, !description, !req.body['variants[][price]'], !typeof(files), !ownerId]);
+        return res.status(400).json({ error: 'Invalid product data' });
+    }
 
     if (!req.body['variants[][price]']) {
         return res.status(400).json({ error: 'Product require to have at least 1 variant' });
@@ -137,12 +145,6 @@ exports.createProduct = async (req, res) => {
         }
     })();
 
-    const files = req.files;
-
-    if (!brand || !name || !description || !variants || !files) {
-        return res.status(400).json({ error: 'Invalid product data' });
-    }
-
     for (const variant of variants) {
         const { price, size, color, quantity } = variant;
         if (!price || !size || !color || !quantity) {
@@ -161,8 +163,7 @@ exports.createProduct = async (req, res) => {
             OwnerId: ownerId,
             name,
             description,
-            brand,
-            CategoryId: category,
+            CategoryId: categoryInstance.id,
         });
 
         // Create the ProductVariant instances
