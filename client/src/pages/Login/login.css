@@ -1,0 +1,83 @@
+.login {
+    padding-top: 4rem;
+    --require-clr: #3786AC;
+}
+
+.login span {
+    color: var(--require-clr);
+}
+
+.login .container {
+    margin-inline: auto;
+    width: min(90%, 70rem);
+    border: 1px solid gainsboro;
+}
+
+.login .wrapper {
+    display: flex;
+    padding-block: 1.5rem;
+}
+
+.login form .input-field {
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.login form .input-field input {
+    margin-top: .5em;
+    padding: 1em .5em;
+    border: 0;
+    border-bottom: 1px solid grey;
+    background-color: ghostwhite;
+}
+
+.login .wrapper .login-form {
+    flex-basis: 50%;
+    padding-inline: 1.5rem;
+
+}
+
+.login .wrapper .login-form > *:not(:first-child), .login .wrapper .login-form form > * {
+    margin-top: 1em;
+}
+
+.login .wrapper .login-form .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.login .wrapper .register-form {
+    flex-basis: 50%;
+    padding-inline: 1rem;
+    border-left: 1px solid gainsboro;
+}
+
+.login .wrapper :is(.login-form h1, .register-form h1) {
+    font-size: 2rem;
+}
+
+.login .wrapper :is(.login-form p, .register-form p) {
+    font-size: 1.2rem;
+}
+
+.login .wrapper :is(.login-form .submit-btn, .register-form .btn) {
+    cursor: pointer;
+    margin-top: 2em;
+    padding: .5em 4em;
+    font-size: 1.1rem;
+    background-color: #000;
+    color: #fff;
+    border: 0;
+}
+
+.login .wrapper .login-form .forget-password {
+    margin-top: .25em;
+    text-decoration: underline;
+    font-weight: bolder;
+}
+
+.login .wrapper .register-form p {
+    margin-top: 1em;
+}

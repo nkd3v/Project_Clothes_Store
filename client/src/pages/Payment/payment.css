@@ -1,0 +1,82 @@
+.payment input[type="number"]::-webkit-inner-spin-button, 
+.payment input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: textfield;
+    margin: 0;
+}
+
+.payment .container {
+    max-width: 90%;
+    margin-inline: auto;
+}
+
+.payment .container .wrapper {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1em;
+}
+
+.payment .wrapper .left-wrapper {
+    flex-basis: 60%;
+}
+
+.payment .wrapper .left-wrapper form {
+    border: 1px solid black;
+    padding: 1rem;
+}
+
+.payment .wrapper .left-wrapper .address-form h2{
+    margin-bottom: 1em;
+}
+
+.payment .wrapper .left-wrapper .input-field {
+    margin-bottom: 1.5em;
+    display: flex;
+    align-items: center;
+}
+
+.payment .wrapper .left-wrapper .input-field label {
+    font-weight: bolder;
+    width: 8rem;
+}
+
+.payment .wrapper .left-wrapper .input-field input {
+    width: min(100%,25rem);
+    padding: .5em .25em;
+}
+
+.payment .wrapper .left-wrapper .payment-form {
+    text-align: center;
+}
+
+.payment .wrapper .left-wrapper .payment-form .qr-code-img {
+    width: 300px;
+}
+
+.payment .wrapper .left-wrapper .payment-form .price{
+    margin-top: 1em;
+    font-weight: bolder;
+}
+
+.payment .wrapper .left-wrapper .payment-form .input-field {
+    justify-content: center;
+}
+
+.payment .wrapper .right-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.payment .wrapper .right-wrapper .order-container {
+    border: 1px solid gainsboro;
+    padding: 1rem;
+}
+
+.payment .wrapper .right-wrapper .order-container .order-list {
+    margin-top: 1rem;
+}
+
+.payment .wrapper .right-wrapper .order-container .order-list img {
+    width: 100px;
+}

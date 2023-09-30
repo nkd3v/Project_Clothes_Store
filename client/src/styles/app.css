@@ -1,8 +1,5 @@
 :root {
-  --primary-fs: clamp(2rem, 1rem + 3vw, 4rem);
-  --secondary-fs: clamp(1rem, 1rem + 2vw, 2rem);
-  --thirdary-fs: clamp(.5rem, .5rem + 1vw, 1rem);
-  --nav-fs: clamp(.5rem ,.5rem + 1vw, 1.5rem);
+  --nav-fs: clamp(1rem ,1rem + 1vw, 1.75rem);
   --color: #000;
   --font-family: sans-serif;
 }
@@ -18,22 +15,11 @@ img {
   height: auto;
 }
 
-h1 {
-  font-size: var(--primary-fs);
-}
-
-p {
-  font-size: var(--secondary-fs);
-}
-
-p.small {
-  font-size: var(--thirdary-fs);
-}
-
 .app {
-  min-height: 100vh;
-  min-height: 100dvh;
+  /* min-height: 100vh;
+  min-height: 100dvh; */
   font-family: var(--font-family);
+  
 }
 
 .app > *:not(.navbar) {

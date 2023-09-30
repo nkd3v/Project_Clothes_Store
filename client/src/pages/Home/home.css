@@ -30,4 +30,9 @@
 
 .banner .banner-content .describe {
     margin-block: .25em 1em;
+    font-size: clamp(1rem, 1rem + 2vw, 2rem);
+}
+
+.banner .banner-content .title {
+    font-size: clamp(2rem, 1rem + 3vw, 4rem);
 }

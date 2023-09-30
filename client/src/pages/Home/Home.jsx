@@ -7,7 +7,7 @@ const Home = () => {
       <section className="banner parallax">
         <div className="overlay">
           <div className="banner-content">
-            <h1>Discover the perfect style for you</h1>
+            <h1 className="title">Discover the perfect style for you</h1>
             <p className="describe">
               เสื้อผ้าที่หลากหลายที่เหมาะ สำหรับคุณและคนในครอบครัว
             </p>
@@ -23,7 +23,9 @@ const Home = () => {
       <section className="banner parallax">
         <div className="overlay">
           <div className="banner-content">
-            <h1>Paint your wardrobe with a rainbow of possibilities</h1>
+            <h1 className="title">
+              Paint your wardrobe with a rainbow of possibilities
+            </h1>
             <p className="describe">
               โทนสีเสื้อผ้าที่สามารถเลือกได้หลากหลาย ตามสไตล์ของตัวคุณเอง
             </p>

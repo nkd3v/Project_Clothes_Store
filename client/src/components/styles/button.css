@@ -7,12 +7,13 @@
 }
 
 .button.primary {
-    color: #000;
-    background-color: #fff;
+    color: #fff;
+    background-color: #072F5F;
 }
 
 .button.secondary {
-    color: #fff;
+    color: #000;
     background-color: transparent;
-    border: 2px solid #fff;
+    border: 1px solid #000;
+    color: #000;
 }

@@ -1,0 +1,30 @@
+.product-card {
+    max-width: 300px;
+    cursor: pointer;
+}
+
+.product-card article > * {
+    margin-top: .5em;
+}
+
+.product-card article > .name {
+    font-size: 1.5rem;
+    font-weight: bolder;
+}
+
+.product-card article .color-list .color {
+    width: 45px;
+    aspect-ratio: 1;
+}
+
+.product-card article .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+.product-card article .price {
+    font-weight: bolder;
+    font-size: 2rem;
+}

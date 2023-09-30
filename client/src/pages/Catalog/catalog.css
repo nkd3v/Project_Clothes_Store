@@ -1,0 +1,31 @@
+.catalog {
+    padding-bottom: 10rem;
+}
+
+.catalog .container {
+    max-width: 90%;
+    margin-inline: auto;
+}
+
+
+.catalog .container .catalog-type {
+    margin-bottom: .5em;
+    font-size: 2rem;
+}
+
+.catalog .aside-bar {
+    position: fixed;
+    top: 100px;
+    left: 5%;
+    width: 20rem;
+    height: 100%;
+    overflow-x: hidden;
+    padding-bottom: 10rem;
+}
+
+.catalog .list-products {
+    margin-left: 22rem;
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
