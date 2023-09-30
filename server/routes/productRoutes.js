@@ -20,10 +20,41 @@ const authMiddleware = require('../middleware/authMiddleware');
  *     tags: [Products]
  *     parameters:
  *       - in: query
- *         name: brand
+ *         name: brands
  *         schema:
- *           type: string
- *         description: The brand of the products to filter.
+ *           type: array
+ *           items:
+ *             type: string
+ *         style: form
+ *         explode: true
+ *         description: An array of brands of the products to filter.
+ *       - in: query
+ *         name: sizes
+ *         schema:
+ *           type: array
+ *           items:
+ *             type: string
+ *         style: form
+ *         explode: true
+ *         description: An array of sizes of the products to filter.
+ *       - in: query
+ *         name: colors
+ *         schema:
+ *           type: array
+ *           items:
+ *             type: string
+ *         style: form
+ *         explode: true
+ *         description: An array of colors of the products to filter.
+ *       - in: query
+ *         name: tags
+ *         schema:
+ *           type: array
+ *           items:
+ *             type: string
+ *         style: form
+ *         explode: true
+ *         description: An array of tags of the products to filter.
  *       - in: query
  *         name: categoryId
  *         schema:

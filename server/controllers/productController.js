@@ -6,41 +6,88 @@ const User = require('../models/User');
 const sequelize = require('../config/database'); // Import your database instance
 const { Op } = require('sequelize');
 
+// Helper function to convert a value to an array if it's not already an array
+function toArray(value) {
+  if (Array.isArray(value)) {
+    return value;
+  } else if (value) {
+    return [value];
+  }
+  return [];
+}
 
-// List products that match brand and categoryId criteria
+// List products that match brand, size, color, and tag criteria
 exports.listProductsByCriteria = async (req, res) => {
   try {
-    const { brand, categoryId, minPrice, maxPrice } = req.query;
+    const { categoryId, minPrice, maxPrice } = req.query;
+    const brands = toArray(req.query.brands);
+    const sizes = toArray(req.query.sizes);
+    const colors = toArray(req.query.colors);
+    const tags = toArray(req.query.tags);
 
     const whereClause = {};
     if (categoryId) {
       whereClause.CategoryId = categoryId;
     }
 
-    const userWhereClause = {};
-    if (brand) {
-      userWhereClause.username = {
-        [Op.like]: `%${brand}%`, // Use the 'like' operator to perform a partial match
+    const productWhereClause = {};
+
+    if (brands.length > 0) {
+      productWhereClause['$User.username$'] = {
+        [Op.in]: brands,
       };
     }
 
-    // Include the ProductVariant association to calculate price range
+    const productTagWhereClause = {};
+    if (tags.length > 0) {
+      productTagWhereClause.name = {
+        [Op.in]: tags,
+      };
+    }
+
+    // Include the ProductVariant association to calculate price range and filter sizes/colors
     const products = await Product.findAll({
       where: whereClause,
       include: [
         {
           model: ProductVariant,
-          attributes: ['color', 'price'],
+          attributes: ['colorName', 'color', 'price', 'size'],
           where: {
-            price: {
-              [Op.between]: [minPrice || 0, maxPrice || Number.MAX_SAFE_INTEGER],
-            },
+            [Op.and]: [
+              {
+                price: {
+                  [Op.between]: [minPrice || 0, maxPrice || Number.MAX_SAFE_INTEGER],
+                },
+              },
+              sizes.length > 0
+                ? {
+                    size: {
+                      [Op.in]: sizes,
+                    },
+                  }
+                : {},
+              colors.length > 0
+                ? {
+                    colorName: {
+                      [Op.in]: colors,
+                    },
+                  }
+                : {},
+            ],
           },
         },
         {
           model: User,
           attributes: [],
-          where: userWhereClause
+          where: productWhereClause,
+        },
+        {
+          model: ProductTag,
+          attributes: [],
+          through: {
+            attributes: [],
+          },
+          where: productTagWhereClause,
         },
       ],
       attributes: [
@@ -52,8 +99,12 @@ exports.listProductsByCriteria = async (req, res) => {
     });
 
     for (const product of products) {
-      product.dataValues.minPrice = Math.min(...product.ProductVariants.map(variant => variant.price));
-      product.dataValues.maxPrice = Math.max(...product.ProductVariants.map(variant => variant.price));
+      product.dataValues.minPrice = Math.min(
+        ...product.ProductVariants.map((variant) => variant.price)
+      );
+      product.dataValues.maxPrice = Math.max(
+        ...product.ProductVariants.map((variant) => variant.price)
+      );
     }
 
     res.json(products);
@@ -62,6 +113,7 @@ exports.listProductsByCriteria = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
 
 // Add a new product
 exports.createProduct = async (req, res) => {
