@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const cartController = require('../controllers/cartController');
+const authMiddleware = require('../middleware/authMiddleware');
 
 /**
  * @swagger
@@ -11,7 +12,7 @@ const cartController = require('../controllers/cartController');
 
 /**
  * @swagger
- * /carts/add:
+ * /api/v1/carts/add:
  *   post:
  *     summary: Add a product to the user's cart
  *     tags: [Cart]
@@ -24,12 +25,15 @@ const cartController = require('../controllers/cartController');
  *           schema:
  *             type: object
  *             properties:
- *               productId:
+ *               productVariantId:
  *                 type: integer
- *                 description: The ID of the product to add to the cart
+ *                 description: The ID of the product variant to add to the cart
  *               quantity:
  *                 type: integer
  *                 description: The quantity of the product to add
+ *             example:
+ *               productVariantId: 1
+ *               quantity: 3
  *     responses:
  *       201:
  *         description: Product added to cart successfully
@@ -40,11 +44,11 @@ const cartController = require('../controllers/cartController');
  *       500:
  *         description: Internal server error
  */
-router.post('/carts/add', cartController.addToCart);
+router.post('/add', authMiddleware, cartController.addToCart);
 
 /**
  * @swagger
- * /carts/products:
+ * /api/v1/carts/products:
  *   get:
  *     summary: List products in the user's cart
  *     tags: [Cart]
@@ -58,6 +62,6 @@ router.post('/carts/add', cartController.addToCart);
  *       500:
  *         description: Internal server error
  */
-router.get('/carts/products', cartController.listCartProducts);
+router.get('/products', authMiddleware, cartController.listCartProducts);
 
 module.exports = router;

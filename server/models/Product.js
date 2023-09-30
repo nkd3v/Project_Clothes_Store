@@ -1,29 +1,84 @@
-const { DataTypes, Model } = require('sequelize');
+const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
+const User = require('./User');
+const Category = require('./Category');
+const CategoryTag = require('./CategoryTag');
+const { Op } = require('sequelize');
 
-class Product extends Model {}
-
-Product.init(
-    {
-        name: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        description: DataTypes.TEXT,
-        price: {
-            type: DataTypes.DECIMAL(10, 2),
-            allowNull: false,
-        },
-        imageUrl: DataTypes.STRING, // Use camel case for column name
-        category: DataTypes.STRING,
-        brand: DataTypes.STRING,
+const Product = sequelize.define('Product', {
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
     },
-    {
-        sequelize,
-        modelName: 'Product',
-        tableName: 'products',
-        timestamps: true, // Enable timestamps
+    description: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+    },
+    OwnerId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+});
+
+Product.belongsTo(User, {
+    foreignKey: 'OwnerId',
+    allowNull: false,
+});
+
+User.hasMany(Product, {
+    foreignKey: 'OwnerId',
+});
+
+Product.belongsToMany(Category, { through: 'Product_Category' });
+Category.belongsToMany(Product, { through: 'Product_Category' });
+
+Product.prototype.getCategoryTagsForProducts = async function () {
+    try {
+        const productIds = [this.id]; // Get the product's ID
+        const products = await Product.findAll({
+            where: {
+                id: {
+                    [Op.in]: productIds,
+                },
+            },
+            include: [
+                {
+                    model: Category,
+                    attributes: ['name'],
+                    through: {
+                        attributes: [],
+                    },
+                    include: [
+                        {
+                            model: CategoryTag,
+                            attributes: ['name'],
+                            through: {
+                                attributes: [],
+                            },
+                        },
+                    ],
+                },
+            ],
+        });
+
+        // Extract and deduplicate category tags from the products
+        const categoryTags = [];
+        products.forEach((product) => {
+            product.Categories.forEach((category) => {
+                category.CategoryTags.forEach((tag) => {
+                    if (!categoryTags.includes(tag.name)) {
+                        categoryTags.push(tag.name);
+                    }
+                });
+            });
+        });
+
+        return categoryTags;
+    } catch (error) {
+        console.error('Error:', error);
+        throw error;
     }
-);
+};
 
 module.exports = Product;

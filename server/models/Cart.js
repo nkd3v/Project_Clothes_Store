@@ -1,16 +1,11 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const db = require('../config/database');
-const Product = require('./Product');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
 const User = require('./User');
 
-const Cart = db.define('Carts', {});
+const Cart = sequelize.define('Cart');
 
-Cart.belongsTo(User, { foreignKey: 'userId' });
-Cart.belongsToMany(Product, {
-  through: 'CartItems',
-  foreignKey: 'cartId',
-  otherKey: 'productId',
-  as: 'items',
-});
+// Define the one-to-one association with the User model
+Cart.belongsTo(User);
+User.hasOne(Cart);
 
 module.exports = Cart;

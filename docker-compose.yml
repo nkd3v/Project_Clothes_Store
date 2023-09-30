@@ -1,38 +1,19 @@
 version: '3'
 services:
-  mysql:
-    build:
-      context: db
-      dockerfile: Dockerfile.mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: mydb
-      MYSQL_USER: myuser
-      MYSQL_PASSWORD: mypassword
-    volumes:
-      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      timeout: 1s
-      retries: 20
-
   node-app:
     build:
       context: server
       dockerfile: Dockerfile.node
-    depends_on:
-      mysql:
-        condition: service_healthy
-    environment:
-      DB_HOST: mysql
-      DB_USER: myuser
-      DB_PASSWORD: mypassword
-      DB_NAME: mydb
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://node-app:3000/health"]
-      interval: 10s
-      timeout: 1s
-      retries: 20
+    volumes:
+      - ./server/config:/app/config
+      - ./server/controllers:/app/controllers
+      - ./server/middleware:/app/middleware
+      - ./server/models:/app/models
+      - ./server/routes:/app/routes
+      - ./server/uploads:/app/uploads
+      - ./server/app.js:/app/app.js
+      - ./server/utils:/app/utils
+      - ./server/db:/app/db
 
   react-app:
     build:
@@ -43,11 +24,6 @@ services:
       - ./client/src:/app/src
       - ./client/index.html:/app/index.html
       - ./client/vite.config.js:/app/vite.config.js
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://react-app:5173/"]
-      interval: 10s
-      timeout: 1s
-      retries: 20
 
   nginx:
     build:
@@ -56,9 +32,6 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    depends_on:
-      node-app:
-        condition: service_healthy
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d
       - ./nginx/ssl:/etc/nginx/ssl

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const upload = require('../middleware/uploadMiddleware');
 const productController = require('../controllers/productController');
+const authMiddleware = require('../middleware/authMiddleware');
 
 /**
  * @swagger
@@ -12,150 +13,79 @@ const productController = require('../controllers/productController');
 
 /**
  * @swagger
- * components:
- *   schemas:
- *     Product:
- *       type: object
- *       properties:
- *         id:
- *           type: integer
- *           description: The unique identifier for the product.
- *           example: 1
- *         name:
- *           type: string
- *           description: The name of the product.
- *           example: "Cotton T-shirt"
- *         description:
- *           type: string
- *           description: A description of the product.
- *           example: "A comfortable cotton T-shirt in various colors."
- *         price:
- *           type: number
- *           format: float
- *           description: The price of the product.
- *           example: 19.99
- *         imageUrl:
- *           type: string
- *           description: The URL of the product's image.
- *           example: "https://example.com/images/tshirt.jpg"
- *         category:
- *           type: string
- *           description: The category of the product.
- *           example: "Apparel"
- *         brand:
- *           type: string
- *           description: The brand of the product.
- *           example: "Fashion Co."
- *         createdAt:
- *           type: string
- *           format: date-time
- *           description: The timestamp when the product was created.
- *           example: "2023-09-23T12:34:56Z"
- *         updatedAt:
- *           type: string
- *           format: date-time
- *           description: The timestamp when the product was last updated.
- *           example: "2023-09-23T12:34:56Z"
- *       required:
- *         - name
- *         - price
- */
-
-/**
- * @swagger
- * components:
- *   schemas:
- *     NewProduct:
- *       type: object
- *       properties:
- *         name:
- *           type: string
- *           description: The name of the new product.
- *           example: "New Trousers"
- *         description:
- *           type: string
- *           description: A description of the new product.
- *           example: "A new pair of trousers for casual wear."
- *         price:
- *           type: number
- *           format: float
- *           description: The price of the new product.
- *           example: 39.99
- *         imageUrl:
- *           type: string
- *           description: The URL of the new product's image.
- *           example: "https://example.com/images/trousers.jpg"
- *         category:
- *           type: string
- *           description: The category of the new product.
- *           example: "Apparel"
- *         brand:
- *           type: string
- *           description: The brand of the new product.
- *           example: "Fashion Co."
- *       required:
- *         - name
- *         - price
- */
-
-/**
- * @swagger
- * components:
- *   schemas:
- *     UpdateProduct:
- *       type: object
- *       properties:
- *         name:
- *           type: string
- *           description: The updated name of the product.
- *           example: "Updated Dress"
- *         description:
- *           type: string
- *           description: The updated description of the product.
- *           example: "An updated dress for special occasions."
- *         price:
- *           type: number
- *           format: float
- *           description: The updated price of the product.
- *           example: 59.99
- *         imageUrl:
- *           type: string
- *           description: The updated URL of the product's image.
- *           example: "https://example.com/images/dress.jpg"
- *         category:
- *           type: string
- *           description: The updated category of the product.
- *           example: "Apparel"
- *         brand:
- *           type: string
- *           description: The updated brand of the product.
- *           example: "Fashion Co."
- *       required:
- *         - name
- *         - price
- */
-
-
-
-/**
- * @swagger
  * /api/v1/products:
  *   get:
- *     summary: Get a list of all products
+ *     summary: List products by criteria
+ *     description: Retrieve a list of products that match the specified criteria.
  *     tags: [Products]
+ *     parameters:
+ *       - in: query
+ *         name: keywords
+ *         schema:
+ *           type: array
+ *           items:
+ *             type: string
+ *         style: form
+ *         explode: true
+ *         description: A search query.
+ *       - in: query
+ *         name: brands
+ *         schema:
+ *           type: array
+ *           items:
+ *             type: string
+ *         style: form
+ *         explode: true
+ *         description: An array of brands of the products to filter.
+ *       - in: query
+ *         name: sizes
+ *         schema:
+ *           type: array
+ *           items:
+ *             type: string
+ *         style: form
+ *         explode: true
+ *         description: An array of sizes of the products to filter.
+ *       - in: query
+ *         name: colors
+ *         schema:
+ *           type: array
+ *           items:
+ *             type: string
+ *         style: form
+ *         explode: true
+ *         description: An array of colors of the products to filter.
+ *       - in: query
+ *         name: tags
+ *         schema:
+ *           type: array
+ *           items:
+ *             type: string
+ *         style: form
+ *         explode: true
+ *         description: An array of tags of the products to filter.
+ *       - in: query
+ *         name: categoryId
+ *         schema:
+ *           type: integer
+ *         description: The category ID of the products to filter.
+ *       - in: query
+ *         name: minPrice
+ *         schema:
+ *           type: number
+ *         description: The minimum price of products to filter.
+ *       - in: query
+ *         name: maxPrice
+ *         schema:
+ *           type: number
+ *         description: The maximum price of products to filter.
  *     responses:
  *       200:
  *         description: A list of products
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Product'
  *       500:
  *         description: Internal server error
  */
-router.get('/', productController.listProducts);
+router.get('/', productController.listProductsByCriteria);
 
 /**
  * @swagger
@@ -173,10 +103,6 @@ router.get('/', productController.listProducts);
  *     responses:
  *       200:
  *         description: The product with the specified ID
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Product'
  *       404:
  *         description: Product not found
  *       500:
@@ -186,10 +112,37 @@ router.get('/:productId', productController.getProductById);
 
 /**
  * @swagger
+ * /api/v1/products/{productId}/variants:
+ *   get:
+ *     summary: Get variants for a product by product ID.
+ *     description: Retrieve all variants associated with a specific product by its ID.
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: productId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the product to retrieve variants for.
+ *     responses:
+ *       '200':
+ *         description: Successful response with an array of variants.
+ *       '404':
+ *         description: Product not found.
+ *       '500':
+ *         description: Internal server error.
+ */
+router.get('/:productId/variants', productController.listVariantsByProductId);
+
+/**
+ * @swagger
  * /api/v1/products:
  *   post:
- *     summary: Create a new product with an image upload
+ *     summary: Create a new product
+ *     description: Create a new product in the clothing shop's inventory.
  *     tags: [Products]
+ *     security:
+ *       - auth_token: []
  *     requestBody:
  *       required: true
  *       content:
@@ -199,39 +152,66 @@ router.get('/:productId', productController.getProductById);
  *             properties:
  *               name:
  *                 type: string
- *                 description: The name of the new product.
- *                 example: "New Trousers"
+ *                 description: The name of the product.
+ *                 required: true
  *               description:
  *                 type: string
- *                 description: A description of the new product.
- *                 example: "A new pair of trousers for casual wear."
- *               price:
- *                 type: number
- *                 format: float
- *                 description: The price of the new product.
- *                 example: 39.99
- *               image:
- *                 type: file
- *                 description: The image of the new product.
- *               category:
- *                 type: string
- *                 description: The updated category of the product.
- *                 example: "Apparel"
+ *                 description: A brief description of the product.
+ *                 required: true
  *               brand:
  *                 type: string
- *                 description: The updated brand of the product.
- *                 example: "Fashion Co."
+ *                 description: The branch where the product is available.
+ *                 required: true
+ *               gender:
+ *                 type: string
+ *                 enum: [MEN, WOMEN, BABY, KIDS, UNISEX]
+ *                 description: The gender category for the product (e.g., MEN, WOMEN, UNISEX).
+ *                 required: true
+ *               category:
+ *                 type: string
+ *                 description: The category of the product.
+ *                 required: true
+ *               variants:
+ *                 type: array
+ *                 description: An array of product variants.
+ *                 required: true
+ *                 items:
+ *                   type: object
+ *                   required: true
+ *                   properties:
+ *                     images:
+ *                       type: file
+ *                       description: An array of base64-encoded image strings for the variant.
+ *                       required: true
+ *                     size:
+ *                       type: string
+ *                       description: The size of the variant (e.g., Small, Medium, Large).
+ *                       required: true
+ *                     color:
+ *                       type: string
+ *                       description: The color of the variant.
+ *                       required: true
+ *                     price:
+ *                       type: number
+ *                       format: float
+ *                       description: The price of the variant.
+ *                       required: true
+ *                     quantity:
+ *                       type: number
+ *                       format: float
+ *                       description: The quantity available for this variant.
+ *                       required: true
  *     responses:
  *       201:
- *         description: The newly created product
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Product'
+ *         description: Product created successfully.
+ *       400:
+ *         description: Bad request. Invalid input data.
+ *       401:
+ *         description: Unauthorized. Authentication token is missing or invalid.
  *       500:
- *         description: Internal server error
+ *         description: Internal server error.
  */
-router.post('/', upload.single('image'), productController.createProduct);
+router.post('/', authMiddleware, upload.any('variants[][image]'), productController.createProduct);
 
 /**
  * @swagger
@@ -280,10 +260,6 @@ router.post('/', upload.single('image'), productController.createProduct);
  *     responses:
  *       200:
  *         description: The updated product
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Product'
  *       404:
  *         description: Product not found
  *       500:

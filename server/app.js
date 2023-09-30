@@ -11,11 +11,17 @@ const productRoutes = require('./routes/productRoutes');
 const authRoutes = require('./routes/authRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const cartRoutes = require('./routes/cartRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
+
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
+require('./db/initDatabase');
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
 
 app.use(morgan('dev'));
 
@@ -32,6 +38,15 @@ const swaggerOptions = {
         url: "https://chiqko.pp.ua",
       },
     ],
+    components: {
+      securitySchemes: {
+        auth_token: {
+          type: 'apiKey',
+          in: 'cookie',
+          name: 'auth_token', // Specify the cookie name
+        },
+      },
+    },
   },
   apis: [
     './routes/*.js', // Glob pattern to include route files in Swagger
@@ -47,10 +62,14 @@ app.use('/api/v1/products', productRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/orders', orderRoutes);
 app.use('/api/v1/carts', cartRoutes);
+app.use('/api/v1/categories', categoryRoutes);
 
-sequelize.sync().then(() => {
+sequelize.sync({ force: true }).then(() => {
   app.listen(3000, () => {
     console.log('Server is running on port 3000');
+
+    const createSampleData = require('./db/sampleData');
+    createSampleData();
   });
 });
 

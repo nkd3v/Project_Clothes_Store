@@ -1,0 +1,63 @@
+// const { fashionColors, findClosestColor } = require('./colorUtils');
+
+// // Example usage:
+// const hexValue = '#FF5733';
+// const closestColor = findClosestColor(hexValue, fashionColors);
+// console.log(`Closest color to ${hexValue}: ${closestColor.name}`);
+
+const fashionColors = [
+    { name: 'Black', hex: '#000000' },
+    { name: 'White', hex: '#FFFFFF' },
+    { name: 'Red', hex: '#FF0000' },
+    { name: 'Blue', hex: '#0000FF' },
+    { name: 'Green', hex: '#008000' },
+    { name: 'Yellow', hex: '#FFFF00' },
+    { name: 'Pink', hex: '#FFC0CB' },
+    { name: 'Purple', hex: '#800080' },
+    { name: 'Orange', hex: '#FFA500' },
+    { name: 'Gray', hex: '#808080' },
+    { name: 'Brown', hex: '#A52A2A' },
+    { name: 'Beige', hex: '#F5F5DC' },
+];
+
+function findClosestColor(hexValue, colorPalette) {
+    // Convert the hex value to RGB
+    const hexToRgb = (hex) => {
+        const bigint = parseInt(hex.slice(1), 16);
+        const r = (bigint >> 16) & 255;
+        const g = (bigint >> 8) & 255;
+        const b = bigint & 255;
+        return { r, g, b };
+    };
+
+    // Calculate the Euclidean distance between two colors
+    const calculateColorDistance = (color1, color2) => {
+        const dr = color1.r - color2.r;
+        const dg = color1.g - color2.g;
+        const db = color1.b - color2.b;
+        return Math.sqrt(dr * dr + dg * dg + db * db);
+    };
+
+    // Convert the input hex value to RGB
+    const inputColor = hexToRgb(hexValue);
+
+    // Find the closest color in the palette
+    let closestColor = null;
+    let closestDistance = Number.POSITIVE_INFINITY;
+
+    for (const color of colorPalette) {
+        const paletteColor = hexToRgb(color.hex);
+        const distance = calculateColorDistance(inputColor, paletteColor);
+        if (distance < closestDistance) {
+            closestDistance = distance;
+            closestColor = color;
+        }
+    }
+
+    return closestColor;
+}
+
+module.exports = {
+    fashionColors,
+    findClosestColor,
+};
