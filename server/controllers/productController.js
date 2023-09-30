@@ -2,11 +2,11 @@ const Category = require('../models/Category');
 const Product = require('../models/Product');
 const ProductTag = require('../models/ProductTag');
 const ProductVariant = require('../models/ProductVariant');
+const CategoryTag = require('../models/CategoryTag');
 const User = require('../models/User');
-const sequelize = require('../config/database'); // Import your database instance
+const sequelize = require('../config/database');
 const { Op } = require('sequelize');
 
-// Helper function to convert a value to an array if it's not already an array
 function toArray(value) {
   if (Array.isArray(value)) {
     return value;
@@ -16,7 +16,6 @@ function toArray(value) {
   return [];
 }
 
-// List products that match brand, size, color, and tag criteria
 exports.listProductsByCriteria = async (req, res) => {
   try {
     const { categoryId, minPrice, maxPrice } = req.query;
@@ -24,6 +23,8 @@ exports.listProductsByCriteria = async (req, res) => {
     const sizes = toArray(req.query.sizes);
     const colors = toArray(req.query.colors);
     const tags = toArray(req.query.tags);
+    const keywords = req.query.keywords?.split(' ');
+    console.log(keywords);
 
     const whereClause = {};
     if (categoryId) {
@@ -42,11 +43,11 @@ exports.listProductsByCriteria = async (req, res) => {
     if (tags.length > 0) {
       productTagWhereClause.name = {
         [Op.in]: tags,
+        // 
       };
     }
 
-    // Include the ProductVariant association to calculate price range and filter sizes/colors
-    const products = await Product.findAll({
+    const products = (await Product.findAll({
       where: whereClause,
       include: [
         {
@@ -61,17 +62,17 @@ exports.listProductsByCriteria = async (req, res) => {
               },
               sizes.length > 0
                 ? {
-                    size: {
-                      [Op.in]: sizes,
-                    },
-                  }
+                  size: {
+                    [Op.in]: sizes,
+                  },
+                }
                 : {},
               colors.length > 0
                 ? {
-                    colorName: {
-                      [Op.in]: colors,
-                    },
-                  }
+                  colorName: {
+                    [Op.in]: colors,
+                  },
+                }
                 : {},
             ],
           },
@@ -96,18 +97,40 @@ exports.listProductsByCriteria = async (req, res) => {
         'description',
         [sequelize.col('User.username'), 'brand'],
       ],
-    });
+    })).map((product) => product.get({ plain: true }));
 
     for (const product of products) {
-      product.dataValues.minPrice = Math.min(
+      product.minPrice = Math.min(
         ...product.ProductVariants.map((variant) => variant.price)
       );
-      product.dataValues.maxPrice = Math.max(
+      product.maxPrice = Math.max(
         ...product.ProductVariants.map((variant) => variant.price)
       );
     }
 
-    res.json(products);
+    console.log(keywords);
+    console.log(products);
+
+    const filteredProducts = !keywords
+    ? products
+    : products.filter((product) => {
+        return keywords.every((keyword) => {
+          const lowercaseKeyword = keyword.toLowerCase();
+          return (
+            product.name.toLowerCase().includes(lowercaseKeyword) ||
+            product.description.toLowerCase().includes(lowercaseKeyword) ||
+            product.brand.toLowerCase().includes(lowercaseKeyword) ||
+            product.ProductVariants.some((variant) =>
+              variant.colorName.toLowerCase().includes(lowercaseKeyword)
+            ) ||
+            product.ProductVariants.some((variant) =>
+              variant.size.toLowerCase().includes(lowercaseKeyword)
+            )
+          );
+        });
+      });
+
+    res.json(filteredProducts);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });
@@ -169,7 +192,7 @@ exports.createProduct = async (req, res) => {
         name: categoryNames, // Assuming categoryNames is an array of category names
       },
     });
-    
+
 
     // Create the Product instance
     const product = await Product.create({

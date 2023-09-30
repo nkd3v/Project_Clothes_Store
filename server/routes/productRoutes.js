@@ -20,6 +20,15 @@ const authMiddleware = require('../middleware/authMiddleware');
  *     tags: [Products]
  *     parameters:
  *       - in: query
+ *         name: keywords
+ *         schema:
+ *           type: array
+ *           items:
+ *             type: string
+ *         style: form
+ *         explode: true
+ *         description: A search query.
+ *       - in: query
  *         name: brands
  *         schema:
  *           type: array
