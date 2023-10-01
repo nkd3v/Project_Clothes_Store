@@ -10,3 +10,5 @@ const sequelize = new Sequelize({
 });
 
 module.exports = sequelize;
+
+require('../db/initDatabase');

@@ -17,8 +17,6 @@ const cookieParser = require('cookie-parser');
 
 const app = express();
 
-require('./db/initDatabase');
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());

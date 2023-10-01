@@ -6,18 +6,18 @@
 // console.log(`Closest color to ${hexValue}: ${closestColor.name}`);
 
 const fashionColors = [
-    { name: 'Black', hex: '#000000' },
-    { name: 'White', hex: '#FFFFFF' },
-    { name: 'Red', hex: '#FF0000' },
-    { name: 'Blue', hex: '#0000FF' },
-    { name: 'Green', hex: '#008000' },
-    { name: 'Yellow', hex: '#FFFF00' },
-    { name: 'Pink', hex: '#FFC0CB' },
-    { name: 'Purple', hex: '#800080' },
-    { name: 'Orange', hex: '#FFA500' },
-    { name: 'Gray', hex: '#808080' },
-    { name: 'Brown', hex: '#A52A2A' },
-    { name: 'Beige', hex: '#F5F5DC' },
+    { name: 'BLACK', hex: '#000000' },
+    { name: 'WHITE', hex: '#FFFFFF' },
+    { name: 'RED', hex: '#FF0000' },
+    { name: 'BLUE', hex: '#0000FF' },
+    { name: 'GREEN', hex: '#008000' },
+    { name: 'YELLOW', hex: '#FFFF00' },
+    { name: 'PINK', hex: '#FFC0CB' },
+    { name: 'PURPLE', hex: '#800080' },
+    { name: 'ORANGE', hex: '#FFA500' },
+    { name: 'GRAY', hex: '#808080' },
+    { name: 'BROWN', hex: '#A52A2A' },
+    { name: 'BEIGE', hex: '#F5F5DC' },
 ];
 
 function findClosestColor(hexValue, colorPalette) {

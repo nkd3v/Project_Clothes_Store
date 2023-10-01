@@ -7,33 +7,26 @@ const Category = require('../models/Category');
 // Function to create sample products with variants and tags
 async function createSampleProducts() {
     try {
-      // Create sample product tags
-      const tag1 = await ProductTag.create({ name: 'Tag 1' });
-      const tag2 = await ProductTag.create({ name: 'Tag 2' });
   
       // Create sample products with variants and tags
       const product1 = await Product.create({
         OwnerId: '1',
         name: 'Product 1',
         description: 'Description for Product 1',
+        gender: 'UNISEX',
+        className: 'เสื้อ',
+        category: 'เสื้อกันหนาว',
+        tags: 'abc, def',
       });
   
       const product2 = await Product.create({
         OwnerId: '2',
         name: 'Product 2',
         description: 'Description for Product 2',
+        gender: 'WOMEN',
+        className: 'เสื้อ',
+        category: 'เสื้อฟลีซ (Fleece)',
       });
-
-      // Find the categories with IDs 1, 2, and 3
-      const categoriesToAssociate = await Category.findAll({
-          where: {
-              id: [1, 2, 3],
-          },
-      });
-      
-      // Associate product1 and product2 with the found categories
-      await product1.setCategories(categoriesToAssociate);
-      await product2.setCategories(categoriesToAssociate);// Create sample product variants for Product 1
 
       const variant1 = await ProductVariant.create({
           size: 'S',
@@ -55,10 +48,6 @@ async function createSampleProducts() {
           ProductId: product1.id, // Associate the variant with Product 1
       });
       
-      // Add tags to Product 1
-      await product1.addProductTag(tag1);
-      await product1.addProductTag(tag2);
-      
       // Create sample product variants for Product 2
       const variant3 = await ProductVariant.create({
           size: 'L',
@@ -69,10 +58,6 @@ async function createSampleProducts() {
           imageUrl: 'https://chiqko.pp.ua/api/v1/uploads/shirt.png',
           ProductId: product2.id, // Associate the variant with Product 2
       });
-      
-  
-      // Add tags to Product 2
-      await product2.addProductTag(tag2);
   
       console.log('Sample products created successfully!');
     } catch (error) {

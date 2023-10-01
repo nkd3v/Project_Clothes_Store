@@ -27,7 +27,7 @@ async function createSampleCartForUser(username, password) {
       console.error(`Error extracting auth_token for ${username}.`);
     }
   } catch (error) {
-    console.error(`Error creating sample cart for ${username}:`, error);
+    console.error(`Error creating sample cart for ${username}:`, error.response.data);
   }
 }
 

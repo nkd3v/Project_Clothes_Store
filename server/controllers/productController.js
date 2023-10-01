@@ -3,7 +3,9 @@ const Product = require('../models/Product');
 const ProductTag = require('../models/ProductTag');
 const ProductVariant = require('../models/ProductVariant');
 const CategoryTag = require('../models/CategoryTag');
+const { extractColors, extractSizes, extractPriceRanges } = require('../utils/keywordUtils');
 const User = require('../models/User');
+const { findMinMaxSize } = require('../utils/sizeUtils');
 const sequelize = require('../config/database');
 const { Op } = require('sequelize');
 
@@ -19,12 +21,43 @@ function toArray(value) {
 exports.listProductsByCriteria = async (req, res) => {
   try {
     const { categoryId, minPrice, maxPrice } = req.query;
-    const brands = toArray(req.query.brands);
-    const sizes = toArray(req.query.sizes);
-    const colors = toArray(req.query.colors);
+    let rawKeywords = req.query.keywords || '';
+
+    let brands, sizes, colors, retVal;
+
+    brands = [];
+    console.log({ rawKeywords });
+    console.log({ what: extractColors(rawKeywords) });
+
+    retVal = extractColors(rawKeywords)
+    colors = retVal.matchedKeywords;
+    rawKeywords = retVal.extractedText.trim();
+    console.log({ colors, rawKeywords });
+
+    retVal = extractSizes(rawKeywords);
+    sizes = retVal.matchedKeywords;
+    rawKeywords = retVal.extractedText.trim();
+    console.log({ rawKeywords });
+
+    retVal = extractPriceRanges(rawKeywords)
+    const priceRanges = retVal.priceRanges;
+    rawKeywords = retVal.extractedText.trim();
+
+    const keywordsArray = rawKeywords?.split(' ');
+    brands = [...toArray(req.query.brands), ...brands];
+    sizes = [...toArray(req.query.sizes), ...sizes];
+    colors = [...toArray(req.query.colors), ...colors];
+
+    let priceRange = {};
+    if (minPrice && maxPrice) {
+      priceRange = { minPrice, maxPrice }
+    }
+    else if (priceRanges.length > 0) {
+      priceRange = priceRanges[0];
+    }
+
+    console.log({ sizes, colors, priceRange });
     const tags = toArray(req.query.tags);
-    const keywords = req.query.keywords?.split(' ');
-    console.log(keywords);
 
     const whereClause = {};
     if (categoryId) {
@@ -52,28 +85,12 @@ exports.listProductsByCriteria = async (req, res) => {
       include: [
         {
           model: ProductVariant,
-          attributes: ['colorName', 'color', 'price', 'size'],
+          attributes: ['id', 'colorName', 'color', 'price', 'size'],
           where: {
             [Op.and]: [
-              {
-                price: {
-                  [Op.between]: [minPrice || 0, maxPrice || Number.MAX_SAFE_INTEGER],
-                },
-              },
-              sizes.length > 0
-                ? {
-                  size: {
-                    [Op.in]: sizes,
-                  },
-                }
-                : {},
-              colors.length > 0
-                ? {
-                  colorName: {
-                    [Op.in]: colors,
-                  },
-                }
-                : {},
+              { price: { [Op.between]: [priceRange.minPrice || 0, priceRange.maxPrice || Number.MAX_SAFE_INTEGER], }, },
+              sizes.length > 0 ? { size: { [Op.in]: sizes, }, } : {},
+              colors.length > 0 ? { colorName: { [Op.in]: colors, }, } : {},
             ],
           },
         },
@@ -82,20 +99,17 @@ exports.listProductsByCriteria = async (req, res) => {
           attributes: [],
           where: productWhereClause,
         },
-        {
-          model: ProductTag,
-          attributes: [],
-          through: {
-            attributes: [],
-          },
-          where: productTagWhereClause,
-        },
       ],
       attributes: [
         'id',
         'name',
         'description',
         [sequelize.col('User.username'), 'brand'],
+        'gender',
+        'className',
+        'category',
+        'tags',
+        'categoryTags',
       ],
     })).map((product) => product.get({ plain: true }));
 
@@ -108,18 +122,30 @@ exports.listProductsByCriteria = async (req, res) => {
       );
     }
 
-    console.log(keywords);
-    console.log(products);
+    for (const product of products) {
+      const { minSize, maxSize } = findMinMaxSize(product);
+      product.minSize = minSize;
+      product.maxSize = maxSize;
+    }
 
-    const filteredProducts = !keywords
-    ? products
-    : products.filter((product) => {
-        return keywords.every((keyword) => {
+    console.log(products);
+    console.log(keywordsArray);
+
+    const filteredProducts = !keywordsArray
+      ? products
+      : products.filter((product) => {
+        console.log(product.categoryTags);
+        return keywordsArray.every((keyword) => {
           const lowercaseKeyword = keyword.toLowerCase();
-          return (
+          const match = (
             product.name.toLowerCase().includes(lowercaseKeyword) ||
             product.description.toLowerCase().includes(lowercaseKeyword) ||
             product.brand.toLowerCase().includes(lowercaseKeyword) ||
+            product.gender.toLowerCase().includes(lowercaseKeyword) ||
+            product.className.toLowerCase().includes(lowercaseKeyword) ||
+            product.category.toLowerCase().includes(lowercaseKeyword) ||
+            product.tags?.toLowerCase().includes(lowercaseKeyword) ||
+            product.categoryTags?.toLowerCase().includes(lowercaseKeyword) ||
             product.ProductVariants.some((variant) =>
               variant.colorName.toLowerCase().includes(lowercaseKeyword)
             ) ||
@@ -127,6 +153,9 @@ exports.listProductsByCriteria = async (req, res) => {
               variant.size.toLowerCase().includes(lowercaseKeyword)
             )
           );
+          delete product.tags;
+          delete product.categoryTags;
+          return match
         });
       });
 
@@ -136,7 +165,6 @@ exports.listProductsByCriteria = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
-
 
 // Add a new product
 exports.createProduct = async (req, res) => {

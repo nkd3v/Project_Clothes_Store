@@ -14,6 +14,7 @@ services:
       - ./server/app.js:/app/app.js
       - ./server/utils:/app/utils
       - ./server/db:/app/db
+      - ./server/data:/app/data
 
   react-app:
     build:

@@ -1,102 +1,19 @@
 const Category = require('../models/Category');
-
-categories = [
-  {
-    name: 'MEN',
-    children: [
-      {
-        name: 'เสื้อ',
-        children: [
-          'เสื้อทั้งหมด',
-          'เสื้อยืด(แขนสั้น)',
-          'เสื้อยืด(แขนยาว)',
-          'เสื้อโปโล',
-          'เสื้อกันหนาว',
-          'เสื้อเชิ้ดลำลอง(แขนยาว)',
-          'เสื้อเชิ้ดลำลอง(แขนสั้น)',
-          'เสื้อเชิ้ดทางการ'
-        ]
-      },
-      {
-        name: 'กางเกง',
-        children: [
-          'กางเกงทั้งหมด',
-          'กางเกงขายาวลำลอง',
-          'กางเกงยีนส์',
-          'กางเกงขายาวทางการ',
-          'กางเกงขาห้าส่วน',
-          'กางเกงขาสั้น'
-        ]
-      },
-      {
-        name: 'ชุดลำลอง',
-        children: [
-          'ชุดลำลองทั้งหมด',
-          'กางเกงลำลอง'
-        ]
-      }
-    ]
-  },
-  {
-    name: 'WOMEN',
-    children: [
-      {
-        name: 'เสื้อ',
-        children: [
-          'เสื้อทั้งหมด',
-          'เสื้อยืด (แขนสั้น)',
-          'เสื้อยืด (แขนยาว)',
-          'UT เสื้อยืดลายกราฟิก',
-          'เสื้อฟลีซ (Fleece)',
-          'เสื้อกันหนาว และ สินค้าสเวต (Sweat)',
-          'เสื้อผ้าถัก และ เสื้อสเวตเตอร์',
-          'เสื้อคาร์ดิแกน',
-          'เสื้อเชิ้ต และ เบลาส์ (แขนสั้น)',
-          'เสื้อเชิ้ต และ เบลาส์ (แขนยาว)',
-          'บราท็อป'
-        ]
-      },
-      {
-        name: 'กางเกง',
-        children: [
-          'กางเกงทั้งหมด',
-          'กางเกงขายาวลำลอง',
-          'กางเกงยีนส์',
-          'กางเกงขายาวทางการ',
-          'กางเกงขาห้าส่วน',
-          'กางเกงขาสั้น',
-          'กางเกงเลกกิ้ง'
-        ]
-      },
-      {
-        name: 'ชุดลำลอง',
-        children: [
-          'ชุดลำลองทั้งหมด',
-          'กางเกงลำลอง',
-          'ชุดนอน และ ชุดลำลอง',
-          'กางเกงรีเลโค'
-        ]
-      }
-    ]
-  },
-  {
-    name: 'KIDS',
-    children: [
-      
-    ]
-  },
-  {
-    name: 'BABY',
-    children: [
-      
-    ]
-  }
-]
+const { categoriesForCustomer, categoriesForMerchant } = require('../data/categories');
 
 // Controller function to get the categories hierarchy
-exports.getAllCategoryHierarchy = async (req, res) => {
+exports.getAllCategoryHierarchyForCustomer = async (req, res) => {
   try {
-    res.json(categories);
+    res.json(categoriesForCustomer);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch categories' });
+  }
+};
+
+// Controller function to get the categories hierarchy
+exports.getAllCategoryHierarchyForMerchant = async (req, res) => {
+  try {
+    res.json(categoriesForMerchant);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch categories' });
   }

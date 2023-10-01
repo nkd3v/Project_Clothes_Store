@@ -10,6 +10,8 @@ const ProductTag = sequelize.define('ProductTag', {
     },
 });
 
+console.log(ProductTag);
+
 // Define the many-to-many association
 Product.belongsToMany(ProductTag, { through: 'Product_ProductTag' });
 ProductTag.belongsToMany(Product, { through: 'Product_ProductTag' });

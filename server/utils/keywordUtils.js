@@ -1,19 +1,19 @@
 
 const colorMappings = [
-    { pattern: /\bดำ\b/gi, replacement: 'Black' },
-    { pattern: /\bblack\b/gi, replacement: 'Black' },
-    { pattern: /\bขาว\b/gi, replacement: 'White' },
-    { pattern: /\bwhite\b/gi, replacement: 'White' },
-    { pattern: /\bred\b/gi, replacement: 'Red' },
-    { pattern: /\bblue\b/gi, replacement: 'Blue' },
-    { pattern: /\bgreen\b/gi, replacement: 'Green' },
-    { pattern: /\byellow\b/gi, replacement: 'Yellow' },
-    { pattern: /\bpink\b/gi, replacement: 'Pink' },
-    { pattern: /\bpurple\b/gi, replacement: 'Purple' },
-    { pattern: /\borange\b/gi, replacement: 'Orange' },
-    { pattern: /\bgray\b/gi, replacement: 'Gray' },
-    { pattern: /\bbrown\b/gi, replacement: 'Brown' },
-    { pattern: /\bbeige\b/gi, replacement: 'Beige' },
+    { pattern: /\bดำ\b/gi, replacement: 'BLACK' },
+    { pattern: /\bblack\b/gi, replacement: 'BLACK' },
+    { pattern: /\bขาว\b/gi, replacement: 'WHITE' },
+    { pattern: /\bwhite\b/gi, replacement: 'WHITE' },
+    { pattern: /\bred\b/gi, replacement: 'RED' },
+    { pattern: /\bblue\b/gi, replacement: 'BLUE' },
+    { pattern: /\bgreen\b/gi, replacement: 'GREEN' },
+    { pattern: /\byellow\b/gi, replacement: 'YELLOW' },
+    { pattern: /\bpink\b/gi, replacement: 'PINK' },
+    { pattern: /\bpurple\b/gi, replacement: 'PURPLE' },
+    { pattern: /\borange\b/gi, replacement: 'ORANGE' },
+    { pattern: /\bgray\b/gi, replacement: 'GRAY' },
+    { pattern: /\bbrown\b/gi, replacement: 'BROWN' },
+    { pattern: /\bbeige\b/gi, replacement: 'BEIGE' },
     // Add more color mappings as needed
 ];
 
@@ -31,6 +31,39 @@ const sizeMappings = [
     // Add more size mappings as needed
 ];
 
+const genderMappings = [
+    { pattern: /\bmen\b/gi, replacement: 'MEN' },
+    { pattern: /\bชาย\b/gi, replacement: 'MEN' },
+    { pattern: /\bwomen\b/gi, replacement: 'WOMEN' },
+    { pattern: /\bหญิง\b/gi, replacement: 'WOMEN' },
+    { pattern: /\bสตรี\b/gi, replacement: 'WOMEN' },
+    { pattern: /\bbaby\b/gi, replacement: 'BABY' },
+    { pattern: /\bทารก\b/gi, replacement: 'BABY' },
+    { pattern: /\bแบเบาะ\b/gi, replacement: 'BABY' },
+    { pattern: /\bเด็กน้อย\b/gi, replacement: 'BABY' },
+    { pattern: /\bkids\b/gi, replacement: 'KIDS' },
+    { pattern: /\bเด็ก\b/gi, replacement: 'KIDS' },
+]
+
+function extractKeywords(text, keywordMappings) {
+    let matchedKeywords = new Set();
+    let extractedText = text;
+
+    keywordMappings.forEach(({ pattern, replacement }) => {
+        const matches = extractedText.match(pattern);
+        if (matches) {
+            matches.forEach((match) => {
+                matchedKeywords.add(replacement);
+                extractedText = extractedText.replace(match, '');
+            });
+        }
+    });
+
+    matchedKeywords = [...matchedKeywords];
+
+    return { matchedKeywords, extractedText };
+}
+
 function extractColors(text) {
     return extractKeywords(text, colorMappings);
 }
@@ -44,8 +77,9 @@ function extractPriceRanges(inputString) {
 
     const priceRanges = [];
     let match;
+    let extractedText = inputString;
 
-    while ((match = regex.exec(inputString)) !== null) {
+    while ((match = regex.exec(extractedText)) !== null) {
         const minPrice = parseFloat(match[1]);
         const maxPrice = parseFloat(match[5]);
 
@@ -55,12 +89,15 @@ function extractPriceRanges(inputString) {
         };
 
         priceRanges.push(priceRange);
+
+        // Remove the matched text from extractedText
+        extractedText = extractedText.replace(match[0], '');
     }
 
-    return priceRanges;
+    return { priceRanges, extractedText };
 }
 
-function extractKeywords(text, keywordMappings) {
+function extractKeywordsNoRemove(text, keywordMappings) {
     let matchedKeywords = new Set();
 
     keywordMappings.forEach(({ pattern, replacement }) => {
