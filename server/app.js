@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const sequelize = require('./config/database');
 const morgan = require('morgan');
+const cors = require('cors'); // Import the cors package
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
@@ -22,6 +23,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use(morgan('dev'));
+app.use(cors());
 
 // Swagger configuration
 const swaggerOptions = {
