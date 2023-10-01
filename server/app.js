@@ -57,7 +57,7 @@ const swaggerSpec = swaggerJsdoc(swaggerOptions);
 app.use('/api/v1/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/products', productRoutes);
-app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/orders', orderRoutes);
 app.use('/api/v1/carts', cartRoutes);
 app.use('/api/v1/categories', categoryRoutes);

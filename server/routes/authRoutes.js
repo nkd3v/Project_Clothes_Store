@@ -24,9 +24,32 @@ const router = express.Router();
  *               password:
  *                 type: string
  *                 description: The password of the user.
+ *               email:
+ *                 type: string
+ *                 description: The email address of the user.
+ *               postalCode:
+ *                 type: string
+ *                 description: The postal code of the user's address.
+ *               dateOfBirth:
+ *                 type: string
+ *                 format: date
+ *                 description: The date of birth of the user (in ISO 8601 format).
+ *               gender:
+ *                 type: string
+ *                 enum: [Male, Female, Other]
+ *                 description: The gender of the user.
+ *               role:
+ *                 type: string
+ *                 enum: [Customer, Merchant, Admin, Moderator]
+ *                 description: The role of the user.
  *             example:
- *               username: user123
- *               password: mypassword
+ *               username: user1
+ *               password: user1
+ *               email: user1@example.com
+ *               postalCode: 12345
+ *               dateOfBirth: 1990-01-01
+ *               gender: Male
+ *               role: Customer
  *     responses:
  *       200:
  *         description: Successfully registered a new user and received a token.
@@ -69,8 +92,8 @@ router.post('/register', authController.register);
  *                 type: string
  *                 description: The password of the user.
  *             example:
- *               username: user123
- *               password: mypassword
+ *               username: user1
+ *               password: user1
  *     responses:
  *       200:
  *         description: Successfully logged in and received an authentication token.

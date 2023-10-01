@@ -4,31 +4,59 @@ const CartItem = require('../models/CartItem');
 const Product = require('../models/Product');
 const OrderItem = require('../models/OrderItem');
 const ProductVariant = require('../models/ProductVariant');
+const Coupon = require('../models/Coupon');
+const User = require('../models/User');
+const QRCode = require('qrcode');
+const { Readable } = require('stream'); // To create a readable stream
 
 // Create an order from the user's cart
 exports.createOrder = async (req, res) => {
   try {
-    const userCart = await Cart.findOne({
+    const cart = await Cart.findOne({
       where: { UserId: req.user.id },
-      include: {
-        model: CartItem,
-        include: ProductVariant,
-      },
+      include: [
+        {
+          model: Coupon,
+        },
+        {
+          model: CartItem,
+          include: ProductVariant,
+        },
+      ],
     });
 
-    if (!userCart || userCart.CartItems.length === 0) {
+    if (!cart || cart.CartItems.length === 0) {
       return res.status(400).json({ error: 'Cart is empty' });
     }
 
-    const totalPrice = userCart.CartItems.reduce(
-      (total, cartItem) => total + cartItem.ProductVariant.price * cartItem.quantity,
+    const coupon = cart.Coupon;
+
+    // Calculate the total price with the applied coupon discount
+    let totalPrice = cart.CartItems.reduce(
+      (total, cartItem) =>
+        total + cartItem.ProductVariant.price * cartItem.quantity,
       0
     );
 
+    if (coupon) {
+      const couponDiscount = (coupon.discountPercentage / 100) * totalPrice;
+      totalPrice -= couponDiscount;
+    }
+
     const order = await Order.create({ UserId: req.user.id, totalPrice });
 
+    // Check if the user hasn't used this coupon before
+    const user = await User.findByPk(req.user.id);
+
+    const hasUsedCoupon = await user.hasCoupon(coupon);
+
+    if (!hasUsedCoupon) {
+      // Associate the coupon with the user
+      await user.addCoupon(coupon);
+    }
+
     // Move cart items to order items
-    const orderItemsPromises = userCart.CartItems.map(async (cartItem) => {
+    const orderItemsPromises = cart.CartItems.map(async (cartItem) => {
       // Create an order item for each cart item
       await OrderItem.create({
         OrderId: order.id,
@@ -41,9 +69,63 @@ exports.createOrder = async (req, res) => {
     await Promise.all(orderItemsPromises);
 
     // Clear the user's cart
-    await CartItem.destroy({ where: { CartId: userCart.id } });
+    await CartItem.destroy({ where: { CartId: cart.id } });
 
     return res.status(201).json({ message: 'Order created successfully' });
+  } catch (error) {
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+
+exports.generateQRCode = async (req, res) => {
+  try {
+    const url = `https://chiqko.pp.ua/api/v1/orders/pay?id=${req.body.id}`;
+
+    // Generate the QR code as a PNG image
+    const qrCodeBuffer = await QRCode.toBuffer(url);
+
+    // Create a readable stream from the buffer
+    const qrCodeStream = new Readable();
+    qrCodeStream.push(qrCodeBuffer);
+    qrCodeStream.push(null); // End of the stream
+
+    // Set the response headers for the image
+    res.setHeader('Content-Type', 'image/png');
+    res.setHeader('Content-Disposition', 'inline; filename=qr-code.png');
+
+    // Pipe the stream to the response
+    qrCodeStream.pipe(res);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+// Set order status to "Processing" if it's "Waiting for payment"
+exports.payOrder = async (req, res) => {
+  try {
+    // Get the order ID from the request body
+    const { id } = req.query;
+
+    // Find the order by ID
+    const order = await Order.findByPk(id);
+
+    if (!order) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+
+    if (order.status === 'Waiting for payment') {
+      // Update the order status to "Processing"
+      order.status = 'Processing';
+      await order.save();
+
+      return res.json({ message: 'Order status updated to Processing' });
+    } else {
+      return res.status(400).json({ error: 'Order status cannot be updated' });
+    }
   } catch (error) {
     console.error('Error message:', error.message);
     console.error('Error stack:', error.stack);
@@ -57,7 +139,7 @@ exports.listOrders = async (req, res) => {
     const orders = await Order.findAll({
       where: { UserId: req.user.id },
       include: {
-        model: CartItem,
+        model: OrderItem,
         include: ProductVariant,
       },
     });

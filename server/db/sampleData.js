@@ -3,6 +3,7 @@ const createSampleCategories = require('./sampleCategories');
 const createSampleUsers = require('./sampleUsers');
 const createSampleProducts = require('./sampleProducts');
 const createSampleCarts = require('./sampleCarts');
+const createSampleCoupons = require('./sampleCoupons');
 
 async function createSampleData() {
   try {
@@ -10,6 +11,7 @@ async function createSampleData() {
     await createSampleUsers();
     await createSampleProducts();
     await createSampleCarts('user1', 'user1');
+    await createSampleCoupons();
 
     console.log('Sample data created successfully!');
   } catch (error) {

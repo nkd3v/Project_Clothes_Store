@@ -6,7 +6,7 @@ const SECRET_KEY = process.env.SECRET_KEY;
 
 exports.register = async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { username, password, email, postalCode, dateOfBirth, gender, role } = req.body;
 
     // Check if the user already exists
     const existingUser = await User.findOne({ where: { username } });
@@ -16,7 +16,16 @@ exports.register = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = await User.create({ username, password: hashedPassword });
+    const user = await User.create({
+      username,
+      password: hashedPassword,
+      email,
+      postalCode,
+      dateOfBirth,
+      gender,
+      role,
+    });
+
     const token = jwt.sign({ id: user.id }, SECRET_KEY, {
       expiresIn: '24h', // Adjust as needed
     });
@@ -33,6 +42,7 @@ exports.register = async (req, res) => {
   }
 };
 
+
 exports.login = async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -41,7 +51,7 @@ exports.login = async (req, res) => {
     if (!user) {
       // Delay the response to make it harder to guess whether the username exists
       // await new Promise(resolve => setTimeout(resolve, 1000));
-      return res.status(401).json({ error: 'Invalid credentialsxxy' });
+      return res.status(401).json({ error: 'Invalid credentials' });
     }
 
     const validPassword = await bcrypt.compare(password, user.password);
@@ -49,7 +59,7 @@ exports.login = async (req, res) => {
     if (!validPassword) {
       // Delay the response to make it harder to guess whether the password is incorrect
       // await new Promise(resolve => setTimeout(resolve, 1000));
-      return res.status(401).json({ error: 'Invalid credentialsxxx' });
+      return res.status(401).json({ error: 'Invalid credentials' });
     }
 
     const token = jwt.sign({ id: user.id }, SECRET_KEY, {
