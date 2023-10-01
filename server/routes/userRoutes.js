@@ -16,9 +16,9 @@ const router = express.Router();
  * @swagger
  * /api/v1/user/set-address-info:
  *   post:
- *     summary: Set user address information
+ *     summary: Set user address and personal information
  *     tags: [User]
- *     description: Set the address information for the authenticated user.
+ *     description: Set the address and personal information for the authenticated user.
  *     security:
  *       - BearerAuth: []
  *     requestBody:
@@ -28,6 +28,10 @@ const router = express.Router();
  *           schema:
  *             type: object
  *             properties:
+ *               firstName:
+ *                 type: string
+ *               lastName:
+ *                 type: string
  *               address1:
  *                 type: string
  *               address2:
@@ -40,11 +44,13 @@ const router = express.Router();
  *                 type: string
  *               postalCode:
  *                 type: string
+ *               phoneNumber:
+ *                 type: string
  *     responses:
  *       '200':
- *         description: Address information updated successfully
+ *         description: User information updated successfully
  *       '500':
- *         description: Failed to update address information
+ *         description: Failed to update user information
  */
 
 router.post('/set-address-info', authMiddleware, userController.setUserAddressInfo);
