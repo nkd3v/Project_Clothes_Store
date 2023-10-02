@@ -41,7 +41,7 @@
 <body>
     <h1>Create a New Product</h1>
     <h4>login before submit new product. product brand name will use username of owner as a value</h2>
-    <form id="productForm" enctype="multipart/form-data" action="https://chiqko.pp.ua/api/v1/products" method="POST">
+    <form id="productForm" enctype="multipart/form-data" action="/api/v1/products" method="POST">
         <fieldset>
             <legend>Product Information</legend>
     
@@ -55,15 +55,15 @@
         <fieldset>
             <legend>Category</legend>
     
-            <select id="category1" name="category[]">
+            <select id="category1" name="gender">
                 <option value="">Select a gender</option>
             </select>
     
-            <select id="category2" name="category[]" disabled>
+            <select id="category2" name="className" disabled>
                 <option value="">Select a class</option>
             </select>
     
-            <select id="category3" name="category[]" disabled>
+            <select id="category3" name="category" disabled>
                 <option value="">Select a category</option>
             </select><br><br>
         </fieldset>
@@ -144,7 +144,7 @@
             e.preventDefault();
             const formData = new FormData(form);
             try {
-                const response = await fetch('https://chiqko.pp.ua/api/v1/products', {
+                const response = await fetch('/api/v1/products', {
                     method: 'POST',
                     body: formData,
                 });
@@ -158,7 +158,7 @@
 
     <script>
         // Fetch the category hierarchy from the URL
-        fetch('https://chiqko.pp.ua/api/v1/categories/hierarchy')
+        fetch('/api/v1/categories/hierarchy-for-merchant')
             .then(response => response.json())
             .then(data => {
                 const firstLevel = document.getElementById('category1');
@@ -185,9 +185,9 @@
                         // Find the selected category in the data
                         const selectedCategory = data.find(category => category.name === selectedFirstLevel);
 
-                        if (selectedCategory && selectedCategory.children) {
-                            // Populate the second level dropdown if there are children
-                            selectedCategory.children.forEach(subcategory => {
+                        if (selectedCategory && selectedCategory.items) {
+                            // Populate the second level dropdown if there are items
+                            selectedCategory.items.forEach(subcategory => {
                                 const option = document.createElement('option');
                                 option.value = subcategory.name;
                                 option.textContent = subcategory.name;
@@ -205,14 +205,14 @@
                     thirdLevel.innerHTML = '<option value="">Select a category</option>';
                     thirdLevel.disabled = true;
 
-                    // Check if the selected subcategory has children
+                    // Check if the selected subcategory has items
                     const selectedCategory = data.find(category => category.name === firstLevel.value);
-                    if (selectedCategory && selectedCategory.children) {
-                        const selectedSubcategory = selectedCategory.children.find(subcategory => subcategory.name === selectedSecondLevel);
+                    if (selectedCategory && selectedCategory.items) {
+                        const selectedSubcategory = selectedCategory.items.find(subcategory => subcategory.name === selectedSecondLevel);
 
-                        if (selectedSubcategory && selectedSubcategory.children) {
+                        if (selectedSubcategory && selectedSubcategory.items) {
                             // Populate the third level dropdown if there are sub-subcategories
-                            selectedSubcategory.children.forEach(subSubcategory => {
+                            selectedSubcategory.items.forEach(subSubcategory => {
                                 const option = document.createElement('option');
                                 option.value = subSubcategory;
                                 option.textContent = subSubcategory;

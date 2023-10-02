@@ -34,7 +34,7 @@ async function createSampleProducts() {
           color: '#FF0000', // Hex code for Red
           price: 19.99,
           quantity: 10,
-          imageUrl: 'https://chiqko.pp.ua/api/v1/uploads/shirt.png',
+          imageUrl: 'shirt.png',
           ProductId: product1.id, // Associate the variant with Product 1
       });
       
@@ -44,7 +44,7 @@ async function createSampleProducts() {
           color: '#0000FF', // Hex code for Blue
           price: 24.99,
           quantity: 15,
-          imageUrl: 'https://chiqko.pp.ua/api/v1/uploads/shirt.png',
+          imageUrl: 'shirt.png',
           ProductId: product1.id, // Associate the variant with Product 1
       });
       
@@ -55,7 +55,7 @@ async function createSampleProducts() {
           color: '#008000', // Hex code for Green
           price: 29.99,
           quantity: 8,
-          imageUrl: 'https://chiqko.pp.ua/api/v1/uploads/shirt.png',
+          imageUrl: 'shirt.png',
           ProductId: product2.id, // Associate the variant with Product 2
       });
   

@@ -82,7 +82,7 @@ exports.createOrder = async (req, res) => {
 
 exports.generateQRCode = async (req, res) => {
   try {
-    const url = `https://chiqko.pp.ua/api/v1/orders/pay?id=${req.body.id}`;
+    const url = `${req.protocol}://${req.get('host')}/api/v1/orders/pay?id=${req.body.id}`;
 
     // Generate the QR code as a PNG image
     const qrCodeBuffer = await QRCode.toBuffer(url);

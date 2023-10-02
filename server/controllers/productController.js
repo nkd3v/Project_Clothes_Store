@@ -168,12 +168,11 @@ exports.listProductsByCriteria = async (req, res) => {
 
 // Add a new product
 exports.createProduct = async (req, res) => {
-  const { name, description, category: categoryNames } = req.body;
-  const tags = [...new Set(req.body['tags']?.split(',').map(item => item.trim()))];
+  const { name, description, gender, className, category, tags } = req.body;
   const ownerId = req.user.id;
   const files = req.files;
 
-  if (!name || !description || !req.body['variants[][price]'] || !files || !ownerId || !categoryNames) {
+  if (!name || !description || !req.body['variants[][price]'] || !files || !ownerId || !gender || !className || !category) {
     console.log([, !name, !description, !req.body['variants[][price]'], !typeof (files), !ownerId]);
     return res.status(400).json({ error: 'Invalid product data' });
   }
@@ -213,23 +212,15 @@ exports.createProduct = async (req, res) => {
       return res.status(400).json({ error: 'A product with the same name already exists' });
     }
 
-    console.log(Category);
-
-    const categories = await Category.findAll({
-      where: {
-        name: categoryNames, // Assuming categoryNames is an array of category names
-      },
-    });
-
-
     // Create the Product instance
     const product = await Product.create({
       OwnerId: ownerId,
       name,
-      description
+      description,
+      gender,
+      className,
+      category,
     });
-
-    await product.setCategories(categories);
 
     // Create the ProductVariant instances
     const productVariants = await ProductVariant.bulkCreate(variants.map((variant, index) => ({
@@ -238,20 +229,9 @@ exports.createProduct = async (req, res) => {
       color: variant.color,
       price: variant.price,
       quantity: variant.quantity,
-      imageUrl: `${req.protocol}://${req.get('host')}/api/v1/uploads/` + (req.files ? req.files[index].filename : 'default.png'),
+      imageUrl: 'default.png',
+      tags,
     })));
-
-    // Find or Create ProductTag instances with unique names
-    const productTags = [];
-    for (const tag of tags) {
-      const [productTag] = await ProductTag.findOrCreate({
-        where: { name: tag },
-      });
-      productTags.push(productTag);
-    }
-
-    // Associate Product with ProductTag (many-to-many)
-    await product.addProductTags(productTags);
 
     res.status(201).json({ message: 'Product created successfully' });
   } catch (error) {

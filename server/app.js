@@ -35,7 +35,7 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: "https://chiqko.pp.ua",
+        url: "/",
       },
     ],
     components: {
@@ -54,7 +54,7 @@ const swaggerOptions = {
   ],
 };
 
-const swaggerSpec = swaggerJsdoc(swaggerOptions);
+let swaggerSpec = swaggerJsdoc(swaggerOptions);
 
 app.use('/api/v1/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/v1/auth', authRoutes);
