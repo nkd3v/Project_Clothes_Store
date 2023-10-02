@@ -23,12 +23,20 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use(morgan("dev"));
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    credentials: true, // Allow credentials to be sent
-  })
-);
+
+// Define a custom CORS configuration function
+const corsOptions = (req, callback) => {
+  const origin = req.get('origin');
+
+  if (origin) {
+    callback(null, { origin: true, credentials: true });
+  } else {
+    callback(null, {});
+  }
+};
+
+// Use the custom CORS configuration function
+app.use(cors(corsOptions));
 
 // Swagger configuration
 const swaggerOptions = {

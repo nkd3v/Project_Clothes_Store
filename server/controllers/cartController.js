@@ -3,6 +3,7 @@ const ProductVariant = require('../models/ProductVariant');
 const CartItem = require('../models/CartItem');
 const Coupon = require('../models/Coupon');
 const User = require('../models/User');
+const Product = require('../models/Product');
 
 // Add a product to the user's cart
 exports.addToCart = async (req, res) => {
@@ -110,6 +111,14 @@ exports.listCartProducts = async (req, res) => {
           include: {
             model: ProductVariant,
             attributes: ['size', 'color', 'colorName', 'price', 'imageUrl'],
+            include: {
+              model: Product,
+              attributes: ['name', 'description', 'gender', 'className', 'category'],
+              include: {
+                model: User,
+                attributes: [['username', 'brand']],
+              }
+            }
           },
           attributes: ['quantity'],
         },
