@@ -67,7 +67,7 @@ exports.login = async (req, res) => {
     });
 
     // Set an auth_token cookie on the client side (httpOnly: false, secure: true, SameSite: Lax)
-    res.cookie('auth_token', token, { httpOnly: false, secure: true, sameSite: 'Lax', maxAge: 86400000 }); // 24 hours
+    res.cookie('auth_token', token, { httpOnly: false, secure: false, sameSite: 'Lax', maxAge: 86400000 }); // 24 hours
 
     res.json({ token });
   } catch (error) {
