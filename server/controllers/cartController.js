@@ -110,7 +110,7 @@ exports.listCartProducts = async (req, res) => {
           model: CartItem,
           include: {
             model: ProductVariant,
-            attributes: ['size', 'color', 'colorName', 'price', 'imageUrl'],
+            attributes: ['id', 'size', 'color', 'colorName', 'price', 'imageUrl'],
             include: {
               model: Product,
               attributes: ['name', 'description', 'gender', 'className', 'category'],
