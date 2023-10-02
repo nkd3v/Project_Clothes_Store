@@ -68,7 +68,7 @@ const authMiddleware = require('../middleware/authMiddleware');
  *         name: category
  *         schema:
  *           type: string
- *         description: The category ID of the products to filter.
+ *         description: The category of the products to filter.
  *       - in: query
  *         name: minPrice
  *         schema:

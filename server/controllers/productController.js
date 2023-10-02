@@ -89,7 +89,7 @@ exports.listProductsByCriteria = async (req, res) => {
       include: [
         {
           model: ProductVariant,
-          attributes: ['id', 'colorName', 'color', 'price', 'size'],
+          attributes: ['id', 'colorName', 'color', 'price', 'size', 'imageUrl'],
           where: {
             [Op.and]: [
               { price: { [Op.between]: [priceRange.minPrice || 0, priceRange.maxPrice || Number.MAX_SAFE_INTEGER], }, },
