@@ -20,7 +20,7 @@ function toArray(value) {
 
 exports.listProductsByCriteria = async (req, res) => {
   try {
-    const { categoryId, minPrice, maxPrice } = req.query;
+    const { category, minPrice, maxPrice } = req.query;
     let rawKeywords = req.query.keywords || '';
 
     let brands, sizes, colors, retVal;
@@ -60,8 +60,12 @@ exports.listProductsByCriteria = async (req, res) => {
     const tags = toArray(req.query.tags);
 
     const whereClause = {};
-    if (categoryId) {
-      whereClause.CategoryId = categoryId;
+    if (category) {
+      if (category.includes('ทั้งหมด')) {
+        whereClause.className = category.replace(/ทั้งหมด/g, '')
+      } else {
+        whereClause.category = category;
+      }
     }
 
     const productWhereClause = {};

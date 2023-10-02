@@ -65,9 +65,9 @@ const authMiddleware = require('../middleware/authMiddleware');
  *         explode: true
  *         description: An array of tags of the products to filter.
  *       - in: query
- *         name: categoryId
+ *         name: category
  *         schema:
- *           type: integer
+ *           type: string
  *         description: The category ID of the products to filter.
  *       - in: query
  *         name: minPrice

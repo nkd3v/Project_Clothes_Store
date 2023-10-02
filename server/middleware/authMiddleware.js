@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User'); // Import your User model or whatever you use for user data
 
-const SECRET_KEY = process.env.SECRET_KEY;
+const SECRET_KEY = process.env.SECRET_KEY || '0';
 
 module.exports = async (req, res, next) => {
   console.log(req.cookies);
