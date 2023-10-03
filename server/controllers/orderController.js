@@ -8,6 +8,7 @@ const Coupon = require('../models/Coupon');
 const User = require('../models/User');
 const QRCode = require('qrcode');
 const { Readable } = require('stream'); // To create a readable stream
+const { Sequelize, DataTypes } = require('sequelize');
 
 // Create an order from the user's cart
 exports.createOrder = async (req, res) => {
@@ -138,11 +139,44 @@ exports.listOrders = async (req, res) => {
   try {
     const orders = await Order.findAll({
       where: { UserId: req.user.id },
+      attributes: [
+        'id',
+        'status',
+        'totalPrice',
+        'createdAt',
+        'updatedAt',
+        'UserId',
+        // Add an attribute for orderItemCount using Sequelize.literal
+      ],
       include: {
         model: OrderItem,
-        include: ProductVariant,
+        attributes: ['id', 'quantity', 'ProductVariantId', 'OrderId'],
+        include: {
+          model: ProductVariant,
+          attributes: ['id', 'size', 'color', 'price', 'colorName', 'imageUrl'],
+          include: {
+            model: Product,
+            attributes: ['name', 'description', 'gender', 'className', 'category'],
+            include: {
+              model: User,
+              attributes: [['username', 'brand']],
+            },
+          },
+        },
       },
     });
+
+    function addTotalOrderCount(orders) {
+      for (const order of orders) {
+        const orderItems = order.OrderItems || [];
+        const totalOrderCount = orderItems.length;
+    
+        // Add the totalOrderCount to the current order object
+        order.dataValues.totalOrderCount = totalOrderCount;
+      }
+    }
+
+    addTotalOrderCount(orders);
 
     res.json(orders);
   } catch (error) {
@@ -150,3 +184,4 @@ exports.listOrders = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+

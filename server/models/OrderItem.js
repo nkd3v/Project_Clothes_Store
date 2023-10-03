@@ -10,8 +10,6 @@ const OrderItem = sequelize.define('OrderItem', {
     }
 });
 
-// OrderItem.sync();
-
 OrderItem.belongsTo(ProductVariant);
 ProductVariant.hasMany(OrderItem);
 

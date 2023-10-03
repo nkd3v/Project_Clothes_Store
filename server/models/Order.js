@@ -16,8 +16,6 @@ const Order = db.define('Orders', {
   },
 });
 
-// Order.sync();
-
 Order.belongsTo(User);
 User.hasMany(Order);
 
