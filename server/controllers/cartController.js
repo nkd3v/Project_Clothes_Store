@@ -123,7 +123,7 @@ exports.listCartProducts = async (req, res) => {
           attributes: ['quantity'],
         },
       ],
-    })).toJSON();
+    }))?.toJSON();
 
     if (!cart) {
       return res.status(404).json({ error: 'Cart not found' });

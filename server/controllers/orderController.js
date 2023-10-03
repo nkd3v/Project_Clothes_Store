@@ -71,6 +71,7 @@ exports.createOrder = async (req, res) => {
 
     // Clear the user's cart
     await CartItem.destroy({ where: { CartId: cart.id } });
+    await Cart.destroy({ where: { id: cart.id }});
 
     return res.status(201).json({ message: 'Order created successfully' });
   } catch (error) {
