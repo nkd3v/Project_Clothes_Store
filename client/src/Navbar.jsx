@@ -1,10 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./styles/navbar.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logoImg from "./assets/images/logo.png";
 import cartIcon from "./assets/images/icon-cart.png";
 import profileIcon from "./assets/images/icon-profile.png";
-const Navbar = ({ isLoginState }) => {
+const Navbar = ({ isLoginState, isAuth, setIsAuth, totalOrder }) => {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/v1/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+      const { message } = await response.json();
+      console.log(message);
+      setIsAuth(null);
+      navigate("/login");
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred during logout.");
+    }
+  };
   return (
     <nav className="navbar">
       <div className="container flex">
@@ -43,14 +60,28 @@ const Navbar = ({ isLoginState }) => {
           {!isLoginState && (
             <ul className="lists flex">
               <li>
-                <Link to="/cart" className="icon-link">
-                  <img src={cartIcon} alt="cart" />
-                </Link>
+                {isAuth && (
+                  <Link to="/cart" className="icon-link">
+                    <div className="cart">
+                      <p className={`show-total ${!totalOrder && "none"}`}>
+                        {totalOrder}
+                      </p>
+                      <img src={cartIcon} alt="cart" />
+                    </div>
+                  </Link>
+                )}
               </li>
               <li>
-                <Link to="/login" className="icon-link">
-                  <img src={profileIcon} alt="profile" />
-                </Link>
+                {isAuth ? (
+                  <i
+                    className="fa-solid fa-right-from-bracket logout-icon"
+                    onClick={handleLogout}
+                  ></i>
+                ) : (
+                  <Link to="/login" className="icon-link">
+                    <img src={profileIcon} alt="profile" />
+                  </Link>
+                )}
               </li>
             </ul>
           )}

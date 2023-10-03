@@ -38,6 +38,10 @@
   width: max-content;
 }
 
+.dropdown .dropdown-items .item{
+  cursor: pointer;
+}
+
 .dropdown:has( .checkbox:checked) .dropdown-items {
   display: block;
 }

@@ -1,0 +1,191 @@
+.status-order .container {
+    max-width: 90%;
+    margin-inline: auto;
+}
+
+.status-order header {
+    padding-block: 2em;
+}
+
+.status-order .order {
+    border: 1px solid black;
+    margin-bottom: 5rem;
+}
+
+.status-order .order-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 3rem;
+    font-size: 2rem;
+}
+
+.status-order .order-header > .order-name{
+    font-weight: bolder;
+}
+
+.status-order .order-statusbar {
+    margin: auto;
+    padding: auto;
+    width: 844px;
+    height: 160px;
+}
+
+.status-order .margin-area {
+    position: relative;
+    text-align: center;
+    font-family: "Trebuchet", sans-serif;
+    font-size: 14px;
+    margin: 0 20px;
+}
+
+.status-order .dot {
+    height: 30px;
+    width: 30px;
+    position: absolute;
+    background: #000;
+    border-radius: 50%;
+    top: 10px;
+    color: #fff;
+    line-height: 30px;
+    z-index: 99;
+
+    &.one {
+        left: 65px;
+        background: #0C84D9;
+    }
+
+    &.two {
+        left: 280px;
+        /* background: #0C84D9; */
+        background: #bbb;
+    }
+
+    &.three {
+        left: 490px;
+        background: #bbb;
+        
+    }
+
+    &.four {
+        left: 700px;
+        background: #bbb;
+        
+    }
+}
+
+.status-order .progress-bar {
+    position: absolute;
+    height: 5px;
+    width: 25%;
+    top: 20px;
+    left: 10%;
+    background: #bbb;
+
+    &.first {
+        /* background: #0C84D9; */
+    }
+
+    &.second {
+        left: 37%;
+    }
+
+    &.third {
+        left: 64%;
+    }
+}
+
+.status-order .message {
+    position: absolute;
+    height: 60px;
+    width: 170px;
+    padding: 10px;
+    margin: 0;
+    left: -8px;
+    top: 0;
+    color: #000;
+
+    &.message-1 {
+        top: 40px;
+        color: #000;
+    }
+
+    &.message-2 {
+        left: 210px;
+        top: 40px;
+    }
+
+    &.message-3 {
+        left: 420px;
+        top: 40px;
+        color: #000;
+    }
+
+    &.message-4 {
+        top: 40px;
+        left: 640px;
+    }
+}
+
+
+.status-order .order-bottom {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 3rem;
+}
+
+.status-order .order-item-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.status-order .order-item {
+    display: flex;
+    gap: 1rem;
+}
+
+.status-order .order-item-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.25rem 0rem;
+}
+
+.status-order .order-item-header {
+    font-size: 2rem;
+    font-weight: bolder;
+}
+
+.status-order .order-item-id,
+.status-order .order-item-color,
+.status-order .order-item-size {
+    font-size: 1rem;
+    color: grey;
+}
+
+.status-order .order-item-price {
+    font-size: 1.5rem;
+}
+
+.status-order .order-item-amount {
+    font-size: 1.25rem;
+}
+
+.status-order .order-result {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    padding: 5rem 3rem;
+    gap: 1rem;
+}
+
+.status-order .order-result-header {
+    font-size: 2rem;
+}
+
+.status-order .order-result-detail {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}

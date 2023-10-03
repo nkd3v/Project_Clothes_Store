@@ -1,21 +1,73 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./payment.css";
 import Receipt from "../../components/Receipt";
 import Button from "../../components/Button";
 import shirtImg from "./assets/shirt.png";
 import qrCodeImg from "./assets/qr-code.png";
+import { useLocation, useNavigate } from "react-router-dom";
 
-const Payment = () => {
+const Payment = ({ getTotalOrder }) => {
   const [paymentState, setPaymentState] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const queryParams = new URLSearchParams(location.search);
+  const totalPrice = queryParams.get("totalPrice");
+  const totalOrder = queryParams.get("totalOrder");
+  const [productInCart, setProductInCart] = useState([]);
+
+  useEffect(() => {
+    const getProductsInCart = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:3000/api/v1/carts/products",
+          { credentials: "include" }
+        );
+        if (response.ok) {
+          const _res = await response.json();
+          setProductInCart(_res);
+          console.log("succesfully fetch");
+        } else {
+          alert(
+            "Get product in cart failed. Server returned an error: " +
+              response.status
+          );
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+    getProductsInCart();
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (paymentState) {
-      console.log("Complete payment");
+      const postOrder = async () => {
+        try {
+          const response = await fetch("http://localhost:3000/api/v1/orders", {
+            method: "POST",
+            credentials: "include",
+          });
+          if (response.ok) {
+            await getTotalOrder();
+            navigate("/status");
+            console.log("Complete created user orders");
+            console.log("Complete payment");
+          } else {
+            console.error(
+              "Post order failed. Server returned an error: " + response.status
+            );
+          }
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      };
+      postOrder();
       return;
     }
     setPaymentState(true);
   };
+
   return (
     <div className="payment">
       <div className="container">
@@ -69,7 +121,7 @@ const Payment = () => {
             ) : (
               <form className="payment-form" onSubmit={handleSubmit}>
                 <img className="qr-code-img" src={qrCodeImg} alt="qr-code" />
-                <p className="price">250 THB</p>
+                <p className="price">{totalPrice} THB</p>
                 <div className="input-field">
                   <label htmlFor="slip">อัพโหลด สลิป</label>
                   <input id="slip" type="file" />
@@ -95,12 +147,19 @@ const Payment = () => {
             )}
           </article>
           <section className="right-wrapper">
-            <Receipt />
+            <Receipt totalOrder={totalOrder} totalPrice={totalPrice} />
             <div className="order-container">
               <h2>รายการสินค้า</h2>
               <div className="order-list">
-                <img src={shirtImg} alt="shirt" />
-                <p>x1</p>
+                {productInCart?.cartItems?.map((item, idx) => (
+                  <React.Fragment key={idx}>
+                    <img
+                      src={`http://localhost:3000/api/v1/uploads/${item?.ProductVariant?.imageUrl}`}
+                      alt="product"
+                    />
+                    <p>x{item?.quantity}</p>
+                  </React.Fragment>
+                ))}
               </div>
             </div>
           </section>

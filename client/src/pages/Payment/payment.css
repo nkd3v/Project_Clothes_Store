@@ -5,6 +5,10 @@
     margin: 0;
 }
 
+.payment {
+    padding-bottom: 5rem;
+}
+
 .payment .container {
     max-width: 90%;
     margin-inline: auto;

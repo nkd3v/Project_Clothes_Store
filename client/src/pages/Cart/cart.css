@@ -11,11 +11,18 @@
 
 .cart .wrapper .orders {
     display: flex;
-    gap: 2rem;
+    flex-direction: column;
+    gap: 4rem;
     line-height: 1.8em;
 }
 
+.cart .wrapper .orders .empty {
+    font-size: 1.5rem;
+    
+}
+
 .cart .wrapper .orders img {
+    width: 300px;
     height: fit-content;
 }
 
@@ -25,8 +32,11 @@
 }
 
 .cart .wrapper .orders .amount-select {
-    width: 6rem;
-    padding: 1em .5em;
+    margin-top: 1em;
+    border: 1px solid gainsboro;
+    width: fit-content;
+    padding: .5em 2em;
+    
 }
 
 .cart .wrapper .summary-orders {

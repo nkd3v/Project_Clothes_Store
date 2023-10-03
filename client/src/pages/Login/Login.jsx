@@ -1,13 +1,45 @@
 import React from "react";
 import "./login.css";
+import { useNavigate } from "react-router-dom";
 
-const Login = () => {
-  const handleLogin = (e) => {
+const Login = ({ setIsAuth }) => {
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
     e.preventDefault();
-    const email = e.target.email.value;
+    const username = e.target.username.value;
     const password = e.target.password.value;
-    console.log("email", email, "\npassword", password);
+    console.log("username", username, "\npassword", password);
+
+    const loginData = {
+      username: username,
+      password: password,
+    };
+
+    try {
+      const response = await fetch("http://localhost:3000/api/v1/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(loginData),
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        const { token } = await response.json();
+        console.log("Login successful. You can do authenticated operation now");
+        setIsAuth(token);
+        navigate("/");
+      } else {
+        alert("Login failed. Server returned an error: " + response.status);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred during login.");
+    }
   };
+
   return (
     <div className="login">
       <div className="container">
@@ -19,16 +51,15 @@ const Login = () => {
                 <span>โปรดระบุ *</span>
               </p>
             </div>
-
             <p>เข้าสู่ระบบด้วยอีเมลและรหัสผ่าน</p>
             <form onSubmit={handleLogin}>
               <div className="input-field">
-                <label htmlFor="email">
+                <label htmlFor="username">
                   อีเมล <span>*</span>
                 </label>
                 <input
-                  name="email"
-                  id="email"
+                  name="username"
+                  id="username"
                   type="text"
                   placeholder="กรุณากรอกอีเมลที่ใช้งาน"
                 />

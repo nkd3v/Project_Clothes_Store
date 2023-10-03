@@ -9,10 +9,15 @@ import Catalog from "./pages/Catalog/Catalog";
 import Preview from "./pages/Preview/Preview";
 import Cart from "./pages/Cart/Cart";
 import Payment from "./pages/Payment/Payment";
+import Cookies from "js-cookie";
+import StatusOrder from "./pages/StatusOrder/StatusOrder";
 
 function App() {
   const { pathname } = useLocation();
   const [isLoginState, setIsLoginState] = useState(false);
+  const [totalOrder, setTotalOrder] = useState(0);
+  const [isAuth, setIsAuth] = useState(Cookies.get("auth_token"));
+  console.log(isAuth);
   let isMount = true;
   useEffect(() => {
     if (!isMount) return;
@@ -23,16 +28,65 @@ function App() {
     };
   }, [pathname]);
 
+  const getTotalOrder = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:3000/api/v1/carts/products",
+        { credentials: "include" }
+      );
+      if (response.ok) {
+        const productInCart = await response.json();
+        const total = productInCart?.cartItems?.reduce(
+          (total, { quantity }) => total + quantity,
+          0
+        );
+        setTotalOrder(total);
+      } else {
+        console.error(
+          "Get total order in cart failed. Server returned an error: " +
+            response.status
+        );
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (!isAuth) {
+      setTotalOrder(0);
+      return;
+    }
+    getTotalOrder();
+  }, [isAuth]);
+
   return (
     <div className="app">
-      <Navbar isLoginState={isLoginState} />
+      <Navbar
+        isLoginState={isLoginState}
+        isAuth={isAuth}
+        setIsAuth={setIsAuth}
+        totalOrder={totalOrder}
+      />
       <Routes>
         <Route path="/" element={<Home />}></Route>
-        <Route path="/login" element={<Login />}></Route>
+        <Route path="/login" element={<Login setIsAuth={setIsAuth} />}></Route>
         <Route path="/catalog/:typeCatalog" element={<Catalog />}></Route>
-        <Route path="/product/preview/:id" element={<Preview />}></Route>
-        <Route path="/cart" element={<Cart />}></Route>
-        <Route path="/payment" element={<Payment />}></Route>
+        <Route
+          path="/product/preview/:id"
+          element={<Preview getTotalOrder={getTotalOrder} />}
+        ></Route>
+        <Route
+          path="/cart"
+          element={
+            <Cart totalOrder={totalOrder} setTotalOrder={setTotalOrder} />
+          }
+        ></Route>
+        <Route
+          path="/payment"
+          element={<Payment getTotalOrder={getTotalOrder} />}
+        ></Route>
+        <Route path="/status" element={<StatusOrder />}></Route>
         <Route path="/*" element={<Error />}></Route>
       </Routes>
     </div>

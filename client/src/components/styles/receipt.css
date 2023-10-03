@@ -16,3 +16,9 @@
     margin-top: 1.2em;
     font-weight: bolder;
 }
+
+.receipt .discount {
+    color: red;
+    font-weight: bolder;
+    margin-left: 1ch;
+}

@@ -12,6 +12,11 @@
     font-weight: bolder;
 }
 
+.product-card article .color-list {
+    display: flex;
+    gap: 1rem;
+}
+
 .product-card article .color-list .color {
     width: 45px;
     aspect-ratio: 1;

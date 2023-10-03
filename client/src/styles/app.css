@@ -1,6 +1,7 @@
 :root {
   --nav-fs: clamp(1rem ,1rem + 1vw, 1.75rem);
   --color: #000;
+  --primary-clr: #072F5F;
   --font-family: sans-serif;
 }
 

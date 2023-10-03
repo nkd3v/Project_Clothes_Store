@@ -37,6 +37,10 @@
     cursor: pointer;
 }
 
+.preview .wrapper .left-wrapper .main-img img {
+    width: 300px;
+}
+
 .preview .wrapper .left-wrapper .detail {
     margin-top: 2rem;
     display: flex;
