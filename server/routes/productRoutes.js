@@ -65,6 +65,11 @@ const authMiddleware = require('../middleware/authMiddleware');
  *         explode: true
  *         description: An array of tags of the products to filter.
  *       - in: query
+ *         name: gender
+ *         schema:
+ *           type: string
+ *         description: The gender of the products to filter.
+ *       - in: query
  *         name: category
  *         schema:
  *           type: string

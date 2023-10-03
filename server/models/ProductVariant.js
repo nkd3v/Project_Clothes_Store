@@ -3,21 +3,6 @@ const sequelize = require('../config/database');
 const Product = require('./Product');
 const { findClosestColor, fashionColors } = require('../utils/colorUtils');
 
-// Define a function to set the colorName before creating a new product variant
-const setColorNameBeforeCreate = async (productVariant) => {
-    const isValidHexColor = /^#([0-9A-F]{3}){1,2}$/i.test(productVariant.color);
-
-    if (isValidHexColor) {
-        const closestColor = findClosestColor(productVariant.color, fashionColors);
-        console.log(closestColor.name);
-        if (closestColor) {
-            productVariant.colorName = closestColor.name;
-        }
-    } else {
-        console.log(`Invalid color format: ${productVariant.color}`);
-    }
-};
-
 const ProductVariant = sequelize.define('ProductVariant', {
     size: {
         type: DataTypes.STRING,
@@ -44,6 +29,21 @@ const ProductVariant = sequelize.define('ProductVariant', {
         allowNull: false,
     },
 });
+
+// Define a function to set the colorName before creating a new product variant
+const setColorNameBeforeCreate = async (productVariant) => {
+    const isValidHexColor = /^#([0-9A-F]{3}){1,2}$/i.test(productVariant.color);
+
+    if (isValidHexColor) {
+        const closestColor = findClosestColor(productVariant.color, fashionColors);
+        console.log(closestColor.name);
+        if (closestColor) {
+            productVariant.colorName = closestColor.name;
+        }
+    } else {
+        console.log(`Invalid color format: ${productVariant.color}`);
+    }
+};
 
 // Define a beforeCreate hook to set the colorName before creating a new product variant
 ProductVariant.beforeCreate(async (productVariant, options) => {

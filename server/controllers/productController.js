@@ -20,7 +20,7 @@ function toArray(value) {
 
 exports.listProductsByCriteria = async (req, res) => {
   try {
-    const { category, minPrice, maxPrice } = req.query;
+    const { category, gender, minPrice, maxPrice } = req.query;
     let rawKeywords = req.query.keywords || '';
 
     let brands, sizes, colors, retVal;
@@ -60,6 +60,15 @@ exports.listProductsByCriteria = async (req, res) => {
     const tags = toArray(req.query.tags);
 
     const whereClause = {};
+
+    if (gender) {
+      if (gender == 'MEN' || gender == 'WOMEN') {
+        whereClause.gender = { [Op.in]: [gender, 'UNISEX'] };
+      } else {
+        whereClause.gender = gender;
+      }
+    }
+
     if (category) {
       if (category.includes('ทั้งหมด')) {
         whereClause.className = category.replace(/ทั้งหมด/g, '')

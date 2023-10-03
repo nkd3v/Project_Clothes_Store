@@ -9,6 +9,45 @@ const User = require('../models/User');
 const QRCode = require('qrcode');
 const { Readable } = require('stream'); // To create a readable stream
 const { Sequelize, DataTypes } = require('sequelize');
+const { v4: uuidv4 } = require('uuid');
+const Payment = require('../models/Payment');
+
+exports.getAllOrderStatuses = async (req, res) => {
+  try {
+    const orderStatuses = await Order.rawAttributes.status.values; // Get the possible order statuses
+    res.status(200).json(orderStatuses);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+exports.setOrderStatusById = async (req, res) => {
+  try {
+    const orderId = req.params.id;
+    const { orderStatusId } = req.body;
+
+    const order = await Order.findByPk(orderId);
+
+    if (!order) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+
+    // Check if the provided orderStatusId is valid
+    const validOrderStatuses = await Order.rawAttributes.status.values;
+    if (!validOrderStatuses.includes(orderStatusId)) {
+      return res.status(400).json({ error: 'Invalid orderStatusId' });
+    }
+
+    order.status = orderStatusId;
+    await order.save();
+
+    res.status(200).json({ message: 'Order status updated successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
 
 // Create an order from the user's cart
 exports.createOrder = async (req, res) => {
@@ -38,13 +77,13 @@ exports.createOrder = async (req, res) => {
         total + cartItem.ProductVariant.price * cartItem.quantity,
       0
     );
+    let totalPriceBeforeDiscount = totalPrice;
+    let couponDiscount = 0;
 
     if (coupon) {
-      const couponDiscount = (coupon.discountPercentage / 100) * totalPrice;
+      couponDiscount = (coupon.discountPercentage / 100) * totalPrice;
       totalPrice -= couponDiscount;
     }
-
-    const order = await Order.create({ UserId: req.user.id, totalPrice });
 
     // Check if the user hasn't used this coupon before
     const user = await User.findByPk(req.user.id);
@@ -54,10 +93,15 @@ exports.createOrder = async (req, res) => {
     if (!hasUsedCoupon) {
       // Associate the coupon with the user
       await user.addCoupon(coupon);
+    } else {
+      return res.json({ message: 'You have already used this coupon.' });
     }
+
+    const payment = await Payment.create({ totalPrice, totalPriceBeforeDiscount, couponDiscount });
 
     // Move cart items to order items
     const orderItemsPromises = cart.CartItems.map(async (cartItem) => {
+      const order = await Order.create({ UserId: req.user.id, CouponId: coupon?.id, PaymentId: payment.id });
       // Create an order item for each cart item
       await OrderItem.create({
         OrderId: order.id,
@@ -65,13 +109,14 @@ exports.createOrder = async (req, res) => {
         quantity: cartItem.quantity,
       });
     });
+    
 
     // Wait for all order items to be created
     await Promise.all(orderItemsPromises);
 
     // Clear the user's cart
     await CartItem.destroy({ where: { CartId: cart.id } });
-    await Cart.destroy({ where: { id: cart.id }});
+    await Cart.destroy({ where: { id: cart.id } });
 
     return res.status(201).json({ message: 'Order created successfully' });
   } catch (error) {
@@ -124,6 +169,14 @@ exports.payOrder = async (req, res) => {
       order.status = 'Processing';
       await order.save();
 
+      // Find and update other orders with the same PaymentId
+      await Order.update(
+        { status: 'Processing' },
+        {
+          where: { PaymentId: order.PaymentId, status: 'Waiting for payment' },
+        }
+      );
+
       return res.json({ message: 'Order status updated to Processing' });
     } else {
       return res.status(400).json({ error: 'Order status cannot be updated' });
@@ -132,6 +185,49 @@ exports.payOrder = async (req, res) => {
     console.error('Error message:', error.message);
     console.error('Error stack:', error.stack);
     return res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+exports.listOrdersByMerchant = async (req, res) => {
+  try {
+    const orders = await Order.findAll({
+      attributes: [
+        'id',
+        'status',
+        'totalPrice',
+        'totalPriceBeforeDiscount',
+        'couponDiscount',
+        'createdAt',
+        'updatedAt',
+        'UserId',
+        'paymentId',
+        // Add an attribute for orderItemCount using Sequelize.literal
+      ],
+      include: [{
+        model: OrderItem,
+        attributes: ['id', 'quantity', 'ProductVariantId', 'OrderId', 'totalPrice', 'totalPriceBeforeDiscount', 'couponDiscount'],
+        required: true,
+        include: {
+          model: ProductVariant,
+          attributes: ['id', 'size', 'color', 'price', 'colorName', 'imageUrl'],
+          required: true,
+          include: {
+            model: Product,
+            attributes: ['name', 'description', 'gender', 'className', 'category'],
+            required: true,
+            include: {
+              model: User,
+              where: { id: req.user.id },
+            },
+          },
+        },
+      },],
+    });
+
+    res.json(orders);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
 
@@ -144,14 +240,17 @@ exports.listOrders = async (req, res) => {
         'id',
         'status',
         'totalPrice',
+        'totalPriceBeforeDiscount',
+        'couponDiscount',
         'createdAt',
         'updatedAt',
         'UserId',
+        'paymentId',
         // Add an attribute for orderItemCount using Sequelize.literal
       ],
-      include: {
+      include: [{
         model: OrderItem,
-        attributes: ['id', 'quantity', 'ProductVariantId', 'OrderId'],
+        attributes: ['id', 'quantity', 'ProductVariantId', 'OrderId', 'totalPrice', 'totalPriceBeforeDiscount', 'couponDiscount'],
         include: {
           model: ProductVariant,
           attributes: ['id', 'size', 'color', 'price', 'colorName', 'imageUrl'],
@@ -165,13 +264,16 @@ exports.listOrders = async (req, res) => {
           },
         },
       },
+      {
+        model: Payment,
+      }],
     });
 
     function addTotalOrderCount(orders) {
       for (const order of orders) {
         const orderItems = order.OrderItems || [];
         const totalOrderCount = orderItems.length;
-    
+
         // Add the totalOrderCount to the current order object
         order.dataValues.totalOrderCount = totalOrderCount;
       }

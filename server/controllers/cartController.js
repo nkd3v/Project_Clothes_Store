@@ -53,35 +53,39 @@ exports.addToCart = async (req, res) => {
 
 exports.setProductQuantity = async (req, res) => {
   try {
-    // Extract productId and quantity from the request body
     const { productVariantId, quantity } = req.body;
 
-    // Check if the product exists
+    if (!Number.isInteger(productVariantId) || productVariantId <= 0) {
+      return res.status(400).json({ error: 'Invalid productVariantId' });
+    }
+
+    if (!Number.isInteger(quantity) || quantity < 0) {
+      return res.status(400).json({ error: 'Invalid quantity' });
+    }
+
     const productVariant = await ProductVariant.findByPk(productVariantId);
     if (!productVariant) {
       return res.status(404).json({ error: 'Product not found' });
     }
 
-    // Check if the user has a cart, or create one if not
     let cart = await Cart.findOne({
-      where: { UserId: req.user.id }, // Assuming you have the user's ID in req.user.id
+      where: { UserId: req.user.id },
     });
 
     if (!cart) {
       cart = await Cart.create({ UserId: req.user.id });
     }
 
-    // Check if the product is already in the cart
     const existingCartItem = await CartItem.findOne({
       where: { CartId: cart.id, ProductVariantId: productVariantId },
     });
 
-    if (existingCartItem) {
-      // If the product is already in the cart, set the quantity to the new value
-      existingCartItem.quantity = quantity; // Replace the old quantity
+    if (quantity === 0 && existingCartItem) {
+      await existingCartItem.destroy();
+    } else if (existingCartItem) {
+      existingCartItem.quantity = quantity;
       await existingCartItem.save();
-    } else {
-      // If the product is not in the cart, create a new cart item
+    } else if (quantity > 0) {
       await CartItem.create({
         CartId: cart.id,
         ProductVariantId: productVariantId,
@@ -95,6 +99,7 @@ exports.setProductQuantity = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
 
 // List products in the user's cart
 exports.listCartProducts = async (req, res) => {
@@ -139,15 +144,17 @@ exports.listCartProducts = async (req, res) => {
         total + cartItem.ProductVariant.price * cartItem.quantity,
       0
     );
+    const totalPriceBeforeDiscount = totalPrice;
+    let couponDiscount = 0;
 
     if (coupon) {
-      const couponDiscount = (coupon.discountPercentage / 100) * totalPrice;
+      couponDiscount = (coupon.discountPercentage / 100) * totalPrice;
       totalPrice -= couponDiscount;
     }
 
     console.log({coupon});
 
-    res.json({ cartItems: cart.CartItems, totalPrice, coupon });
+    res.json({ cartItems: cart.CartItems, totalPrice, totalPriceBeforeDiscount, couponDiscount, coupon });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });

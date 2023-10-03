@@ -5,6 +5,51 @@ const authMiddleware = require('../middleware/authMiddleware');
 
 /**
  * @swagger
+ * /api/v1/orders/available-statuses:
+ *   get:
+ *     summary: Get a list of all possible order statuses
+ *     tags: [Orders]
+ *     responses:
+ *       200:
+ *         description: List of order statuses
+ *       500:
+ *         description: Internal server error
+ */
+router.get('/available-statuses', orderController.getAllOrderStatuses);
+
+/**
+ * @swagger
+ * /api/v1/orders/:id:
+ *   post:
+ *     summary: Set the order status by ID
+ *     tags: [Orders]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: Order ID
+ *         schema:
+ *           type: integer
+ *       - in: body
+ *         name: orderStatusId
+ *         required: true
+ *         description: New order status ID to set
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Order status updated successfully
+ *       400:
+ *         description: Invalid request body or orderStatusId
+ *       404:
+ *         description: Order not found
+ *       500:
+ *         description: Internal server error
+ */
+router.put('/:id', authMiddleware, orderController.setOrderStatusById);
+
+/**
+ * @swagger
  * tags:
  *   name: Orders
  *   description: Order management
@@ -45,6 +90,22 @@ router.post('/', authMiddleware, orderController.createOrder);
  *         description: Internal server error
  */
 router.get('/', authMiddleware, orderController.listOrders);
+
+/**
+ * @swagger
+ * /api/v1/orders/merchant:
+ *   get:
+ *     summary: List customer's orders that have merchant product
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of orders
+ *       500:
+ *         description: Internal server error
+ */
+router.get('/merchant', authMiddleware, orderController.listOrdersByMerchant);
 
 /**
  * @swagger
