@@ -11,6 +11,7 @@ import Cart from "./pages/Cart/Cart";
 import Payment from "./pages/Payment/Payment";
 import Cookies from "js-cookie";
 import StatusOrder from "./pages/StatusOrder/StatusOrder";
+import Register from "./pages/Register/Register";
 
 function App() {
   const { pathname } = useLocation();
@@ -44,7 +45,7 @@ function App() {
       } else {
         console.error(
           "Get total order in cart failed. Server returned an error: " +
-            response.status
+          response.status
         );
       }
     } catch (error) {
@@ -71,6 +72,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />}></Route>
         <Route path="/login" element={<Login setIsAuth={setIsAuth} />}></Route>
+        <Route path="/Register" element={<Register />}></Route>
         <Route path="/catalog/:typeCatalog" element={<Catalog />}></Route>
         <Route
           path="/product/preview/:id"
