@@ -3,26 +3,26 @@
     margin-inline: auto;
 }
 
-.InfoBox {
+.RegisterPage .InfoBox {
     border: 1px solid black;
     padding: 2rem;
     margin-top: 1rem;
 }
 
-.Info {
+.RegisterPage .Info {
     display: flex;
     padding: 1rem;
     font-size: 20px;
 }
 
-.Info_text {
+.RegisterPage .Info_text {
     max-width: 270px;
     width: 100%;
     display: flex;
     align-items: center;
 }
 
-.Input_Box {
+.RegisterPage .Input_Box {
     max-width: 550px;
     width: 100%;
     max-height: 400px;
@@ -32,26 +32,26 @@
     font-size: 17px;
 }
 
-.check_box {
+.RegisterPage .check_box {
     width: 20px;
     height: 20px;
 }
 
-input[type='checkbox'] {
+.RegisterPage input[type='checkbox'] {
     accent-color: rgb(80, 80, 255);
 }
 
-.checkbox_ {
+.RegisterPage .checkbox_ {
     display: flex;
     align-items: center;
 
 }
 
-.ShowPassword {
+.RegisterPage .ShowPassword {
     gap: 1rem;
 }
 
-.Date_Box {
+.RegisterPage .Date_Box {
     max-width: 150px;
     width: 100%;
     max-height: 400px;
@@ -61,24 +61,24 @@ input[type='checkbox'] {
     font-size: 17px;
 }
 
-.radio_btn_group {
+.RegisterPage .radio_btn_group {
     margin: 0.4rem;
     display: flex;
     gap: 1.5rem;
 }
 
-input[type='radio'] {
+.RegisterPage input[type='radio'] {
     width: 20px;
     height: 20px;
     margin-right: 0.3rem;
 }
 
-.radio_btn {
+.RegisterPage .radio_btn {
     display: flex;
     align-items: center;
 }
 
-.Register_btn {
+.RegisterPage .Register_btn {
     font-size: 17px;
     padding: 0.5rem;
     padding-inline: 6rem;
@@ -89,13 +89,13 @@ input[type='radio'] {
     box-shadow: 0 5px #999;
 }
 
-.Register_btn:hover {
+.RegisterPage .Register_btn:hover {
     background-color: rgb(65, 65, 65);
     
 
 }
 
-.Register_btn:active {
+.RegisterPage .Register_btn:active {
     background-color: rgb(65, 65, 65);
    
     box-shadow: 0 2px #666;

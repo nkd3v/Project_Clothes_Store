@@ -23,8 +23,12 @@
     padding-bottom: 10rem;
 }
 
-.catalog .list-products {
+.catalog .wrapper {
     margin-left: 22rem;
+}
+
+.catalog .list-products {
+    margin-top: 1rem;
     display: flex;
     gap: 2rem;
     flex-wrap: wrap;

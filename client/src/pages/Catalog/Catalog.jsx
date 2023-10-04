@@ -3,12 +3,14 @@ import { useParams } from "react-router-dom";
 import Dropdown from "./components/Dropdown";
 import "./catalog.css";
 import ProductCard from "./components/ProductCard";
+import SearchBar from "./components/SearchBar";
 
 const Catalog = () => {
   const [hierarchyCustomer, setHierarchyCustomer] = useState([]);
   const [products, setProducts] = useState([]);
   const { typeCatalog } = useParams();
   const [category, setCategory] = useState("");
+  const [searchWord, setSearchWord] = useState("");
   console.log(typeCatalog);
 
   const mapTypeCatalogToIndex = {
@@ -48,7 +50,7 @@ const Catalog = () => {
     const getProducts = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3000/api/v1/products?keywords=${typeCatalog}&category=${category}`
+          `http://localhost:3000/api/v1/products?keywords=${typeCatalog} ${searchWord}&category=${category}`
         );
 
         if (response.ok) {
@@ -66,7 +68,7 @@ const Catalog = () => {
       }
     };
     getProducts();
-  }, [category, typeCatalog]);
+  }, [category, typeCatalog, searchWord]);
 
   // const listProduct = [
   //   {
@@ -126,11 +128,15 @@ const Catalog = () => {
             />
           ))}
         </aside>
-        <section className="list-products">
-          {products?.map((product) => (
-            <ProductCard key={product.id} productObj={product} />
-          ))}
-        </section>
+        <div className="wrapper">
+          <SearchBar setSearchWord={setSearchWord} />
+
+          <section className="list-products">
+            {products?.map((product) => (
+              <ProductCard key={product.id} productObj={product} />
+            ))}
+          </section>
+        </div>
       </div>
     </div>
   );
