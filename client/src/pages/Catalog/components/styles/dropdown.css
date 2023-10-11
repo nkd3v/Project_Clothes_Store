@@ -50,3 +50,25 @@
   font-weight: bolder;
 }
 
+.dropdown:has( .checkbox:checked) .dropdown-items.optional {
+  display: grid;
+  grid-template-columns: repeat(6, 45px);
+  grid-template-rows: 45px 45px;
+  padding-block: .5rem;
+}
+
+.dropdown .dropdown-items.optional .item {
+  border: 1px solid gainsboro;
+  text-align: center;
+}
+
+.dropdown .dropdown-items.optional .item.color {
+  font-size: 0;
+}
+
+.dropdown .dropdown-items.optional .item.checked {
+  border: 3px solid var(--primary-clr);
+}
+
+
+

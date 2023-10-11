@@ -1,7 +1,19 @@
 import React from "react";
 import "./styles/dropdown.css";
 
-const Dropdown = ({ name, items, id, setCategory }) => {
+const Dropdown = ({ name, items, id, callBack, type, itemStyle }) => {
+  const handleClick = (e, item) => {
+    const element = e.target;
+    if (element.classList.contains("checked")) {
+      const findValue = element.innerHTML;
+
+      callBack((prev) => prev.filter((p) => p !== findValue));
+      element.classList.remove("checked");
+    } else {
+      callBack((prev) => [...prev, item]);
+      element.classList.add("checked");
+    }
+  };
   return (
     <div className="dropdown">
       <div className="field">
@@ -10,9 +22,14 @@ const Dropdown = ({ name, items, id, setCategory }) => {
         </label>
         <input id={id} className="checkbox" type="checkbox" />
       </div>
-      <div className="dropdown-items">
+      <div className={`dropdown-items ${type}`}>
         {items?.map((item, idx) => (
-          <p key={idx} className="item" onClick={() => setCategory(item)}>
+          <p
+            key={idx}
+            className={`item ${itemStyle}`}
+            style={itemStyle == "color" ? { backgroundColor: item } : {}}
+            onClick={(e) => handleClick(e, item)}
+          >
             {item}
           </p>
         ))}

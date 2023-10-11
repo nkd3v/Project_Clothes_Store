@@ -23,6 +23,10 @@
     padding-bottom: 10rem;
 }
 
+.catalog .aside-bar .separate-line {
+    margin-block: 1rem;
+}
+
 .catalog .wrapper {
     margin-left: 22rem;
 }
@@ -33,3 +37,4 @@
     gap: 2rem;
     flex-wrap: wrap;
 }
+

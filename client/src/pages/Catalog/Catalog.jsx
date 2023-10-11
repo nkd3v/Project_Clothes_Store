@@ -10,8 +10,12 @@ const Catalog = () => {
   const [products, setProducts] = useState([]);
   const { typeCatalog } = useParams();
   const [category, setCategory] = useState("");
+  const [colors, setColors] = useState([]);
+  const [sizes, setSizes] = useState([]);
   const [searchWord, setSearchWord] = useState("");
   console.log(typeCatalog);
+  console.log("color", colors);
+  console.log("size", sizes);
 
   const mapTypeCatalogToIndex = {
     men: 0,
@@ -48,9 +52,17 @@ const Catalog = () => {
 
   useEffect(() => {
     const getProducts = async () => {
+      const paramCategory = category ? `&category=${category}` : "";
+      const paramColors = colors
+        ? colors.map((color) => `&colors=${color.toUpperCase()}`).join("")
+        : "";
+      const paramSize = sizes
+        ? sizes.map((size) => `&sizes=${size}`).join("")
+        : "";
+
       try {
         const response = await fetch(
-          `http://localhost:3000/api/v1/products?keywords=${typeCatalog} ${searchWord}&category=${category}`
+          `http://localhost:3000/api/v1/products?keywords=${typeCatalog} ${searchWord}${paramCategory}${paramColors}${paramSize}`
         );
 
         if (response.ok) {
@@ -68,50 +80,7 @@ const Catalog = () => {
       }
     };
     getProducts();
-  }, [category, typeCatalog, searchWord]);
-
-  // const listProduct = [
-  //   {
-  //     id: 0,
-  //     image: shirtImg,
-  //     colorList: ["pink"],
-  //     name: "เสื้อยืดคอกลม Mickey Mouse",
-  //     gender: "ผู้ชาย",
-  //     size: "XS-2XL",
-  //     storeName: "ร้าน xbit",
-  //     price: "999.00",
-  //   },
-  //   {
-  //     id: 1,
-  //     image: shirtImg,
-  //     colorList: ["pink"],
-  //     name: "เสื้อยืดคอกลม Mickey Mouse",
-  //     gender: "ผู้ชาย",
-  //     size: "XS-2XL",
-  //     storeName: "ร้าน picpic",
-  //     price: "999.00",
-  //   },
-  //   {
-  //     id: 2,
-  //     image: shirtImg,
-  //     colorList: ["pink"],
-  //     name: "เสื้อยืดคอกลม Mickey Mouse",
-  //     gender: "ผู้ชาย",
-  //     size: "XS-2XL",
-  //     storeName: "ร้าน picpic",
-  //     price: "999.00",
-  //   },
-  //   {
-  //     id: 3,
-  //     image: shirtImg,
-  //     colorList: ["pink"],
-  //     name: "เสื้อยืดคอกลม Mickey Mouse",
-  //     gender: "ผู้ชาย",
-  //     size: "XS-2XL",
-  //     storeName: "ร้าน picpic",
-  //     price: "999.00",
-  //   },
-  // ];
+  }, [category, colors, sizes, typeCatalog, searchWord]);
 
   return (
     <div className="catalog">
@@ -124,9 +93,39 @@ const Catalog = () => {
               name={dropdown.name}
               items={dropdown.items}
               id={idx}
-              setCategory={setCategory}
+              callBack={setCategory}
             />
           ))}
+          <hr className="separate-line" />
+          <Dropdown
+            type="optional"
+            name="ขนาด"
+            items={["XS", "S", "M", "L", "XL", "XXL", "3XL"]}
+            itemStyle="size"
+            id="size"
+            callBack={setSizes}
+          />
+          <Dropdown
+            type="optional"
+            name="สี"
+            items={[
+              "white",
+              "gray",
+              "black",
+              "red",
+              "blue",
+              "green",
+              "yellow",
+              "pink",
+              "purple",
+              "orange",
+              "brown",
+              "beige",
+            ]}
+            itemStyle="color"
+            id="color"
+            callBack={setColors}
+          />
         </aside>
         <div className="wrapper">
           <SearchBar setSearchWord={setSearchWord} />
