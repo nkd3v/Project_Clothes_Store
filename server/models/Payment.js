@@ -7,7 +7,7 @@ const Order = require('./Order');
 const Payment = db.define('Payment', {
   id: {
     type: DataTypes.UUID,         // Use UUID data type
-    defaultValue: uuidv4(),       // Generate a UUIDv4 as the default value
+    defaultValue: DataTypes.UUIDV4,
     primaryKey: true,             // Set it as the primary key
   },
   totalPrice: {
