@@ -1,7 +1,7 @@
 import React from "react";
 import "./styles/receipt.css";
 
-const Receipt = ({ hasDiscount, totalPrice, totalOrder, coupon }) => {
+const Receipt = ({ totalPrice, totalOrder, coupon }) => {
   return (
     <div className="receipt">
       <p>

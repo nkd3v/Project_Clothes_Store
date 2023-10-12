@@ -23,6 +23,7 @@ const StatusOrder = () => {
         console.error("Error:", error);
       }
     };
+
     getAllOrders();
   }, []);
   return (

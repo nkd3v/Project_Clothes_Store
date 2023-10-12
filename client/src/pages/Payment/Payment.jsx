@@ -13,7 +13,7 @@ const Payment = ({ getTotalOrder }) => {
   const queryParams = new URLSearchParams(location.search);
   const totalPrice = queryParams.get("totalPrice");
   const totalOrder = queryParams.get("totalOrder");
-  const [productInCart, setProductInCart] = useState([]);
+  const [productInCart, setProductInCart] = useState({});
 
   useEffect(() => {
     const getProductsInCart = async () => {

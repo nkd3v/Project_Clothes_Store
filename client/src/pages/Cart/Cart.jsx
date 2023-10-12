@@ -4,9 +4,10 @@ import { useNavigate } from "react-router-dom";
 import Receipt from "../../components/Receipt";
 import { useEffect, useRef, useState } from "react";
 import Order from "./components/Order";
-function Cart({ totalOrder }) {
+function Cart({ totalOrder, getTotalOrder }) {
   const navigate = useNavigate();
-  const [productInCart, setProductInCart] = useState([]);
+  const [productInCart, setProductInCart] = useState({});
+  const [totalPrice, setTotalPrice] = useState();
   const [coupon, setCoupon] = useState("");
 
   console.log(productInCart);
@@ -21,13 +22,14 @@ function Cart({ totalOrder }) {
         if (response.ok) {
           const _res = await response.json();
           setProductInCart(_res);
-
+          setTotalPrice(_res?.totalPrice?.toFixed(2));
           console.log("succesfully fetch");
         } else {
           console.error(
             "Get product in cart failed. Server returned an error: " +
               response.status
           );
+          setProductInCart([]);
         }
       } catch (error) {
         console.error("Error:", error);
@@ -35,20 +37,10 @@ function Cart({ totalOrder }) {
     };
 
     getProductsInCart();
-  }, [coupon]);
-
-  // useEffect(() => {
-  //   const total = productInCart?.cartItems?.reduce(
-  //     (total, { quantity }) => total + quantity,
-  //     0
-  //   );
-  //   setTotalOrder(total);
-  // }, [productInCart]);
+  }, [coupon, totalPrice]);
 
   const handlePayment = () => {
-    navigate(
-      `/payment?totalPrice=${productInCart?.totalPrice}&totalOrder=${totalOrder}`
-    );
+    navigate(`/payment?totalPrice=${totalPrice}&totalOrder=${totalOrder}`);
   };
 
   const handleCoupon = () => {
@@ -71,7 +63,6 @@ function Cart({ totalOrder }) {
         if (response.ok) {
           const _res = await response.json();
 
-          // setCoupon({ code: coupon.input, input: "" });
           setCoupon("");
           console.log(_res.message);
         } else {
@@ -99,12 +90,17 @@ function Cart({ totalOrder }) {
               <p className="empty">ตะกร้าของคุณว่างอยู่</p>
             )}
             {productInCart?.cartItems?.map((item, idx) => (
-              <Order key={idx} item={item} />
+              <Order
+                key={idx}
+                item={item}
+                getTotalOrder={getTotalOrder}
+                setTotalPrice={setTotalPrice}
+              />
             ))}
           </section>
           <section className="summary-orders">
             <Receipt
-              totalPrice={productInCart?.totalPrice}
+              totalPrice={totalPrice}
               totalOrder={totalOrder}
               coupon={productInCart?.coupon?.code}
             />
@@ -118,10 +114,6 @@ function Cart({ totalOrder }) {
                     className="coupon-input"
                     value={coupon}
                     onChange={(e) => {
-                      // setCoupon({
-                      //   ...coupon,
-                      //   input: e.target.value,
-                      // });
                       setCoupon(e.target.value);
                     }}
                   />

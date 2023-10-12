@@ -1,19 +1,11 @@
 import React, { useEffect, useState } from "react";
 import "./preview.css";
 import { useNavigate, useParams } from "react-router-dom";
-import shirt1Img from "./assets/shirt1.png";
-import shirt2Img from "./assets/shirt2.png";
-import shirt3Img from "./assets/shirt3.png";
-import shirt4Img from "./assets/shirt4.png";
-import shirt5Img from "./assets/shirt5.png";
 import Button from "../../components/Button";
 import { convertRGB } from "./utils/convertRGB";
 const Preview = ({ getTotalOrder }) => {
   const { id } = useParams();
   const navigate = useNavigate();
-  // const imgList = [shirt1Img, shirt2Img, shirt3Img, shirt4Img, shirt5Img];
-  // const colorList = ["pink", "brown", "purple", "green"];
-  // const sizeList = ["XS", "S", "M", "L", "XL", "XXL"];
   const [mainImage, setMainImage] = useState("");
   const [color, setColor] = useState("");
   const [size, setSize] = useState("");
@@ -21,7 +13,7 @@ const Preview = ({ getTotalOrder }) => {
   const [price, setPrice] = useState();
   const [product, setProduct] = useState([]);
   const [listColor, setListColor] = useState([]);
-
+  console.log("myProduct", product);
   useEffect(() => {
     const colorSet = new Set(
       product?.ProductVariants?.map((variant) => variant.color)
@@ -61,7 +53,9 @@ const Preview = ({ getTotalOrder }) => {
           "Add product customer failed. Server returned an error: " +
             response.status
         );
-        navigate("/login");
+        if (response.status === 401) alert("Need to login first");
+        if (response.status === 404) alert("Please select size");
+        // navigate("/login");
       }
     } catch (err) {
       console.error("error: ", err);

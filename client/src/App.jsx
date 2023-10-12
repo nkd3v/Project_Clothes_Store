@@ -20,14 +20,7 @@ function App() {
   const [isAuth, setIsAuth] = useState(Cookies.get("auth_token"));
   console.log(isAuth);
   let isMount = true;
-  useEffect(() => {
-    if (!isMount) return;
-    pathname === "/login" ? setIsLoginState(true) : setIsLoginState(false);
-    window.scrollTo(0, 0);
-    return () => {
-      isMount = false;
-    };
-  }, [pathname]);
+  console.log("totalOrder", totalOrder);
 
   const getTotalOrder = async () => {
     try {
@@ -45,13 +38,23 @@ function App() {
       } else {
         console.error(
           "Get total order in cart failed. Server returned an error: " +
-          response.status
+            response.status
         );
+        setTotalOrder(0);
       }
     } catch (error) {
       console.error("Error:", error);
     }
   };
+
+  useEffect(() => {
+    if (!isMount) return;
+    pathname === "/login" ? setIsLoginState(true) : setIsLoginState(false);
+    window.scrollTo(0, 0);
+    return () => {
+      isMount = false;
+    };
+  }, [pathname]);
 
   useEffect(() => {
     if (!isAuth) {
@@ -81,7 +84,11 @@ function App() {
         <Route
           path="/cart"
           element={
-            <Cart totalOrder={totalOrder} setTotalOrder={setTotalOrder} />
+            <Cart
+              totalOrder={totalOrder}
+              setTotalOrder={setTotalOrder}
+              getTotalOrder={getTotalOrder}
+            />
           }
         ></Route>
         <Route

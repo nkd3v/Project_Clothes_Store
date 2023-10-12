@@ -1,0 +1,13 @@
+.order {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.order .cancel-btn {
+    background-color: transparent;
+    border: none;
+    align-self: flex-start;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
