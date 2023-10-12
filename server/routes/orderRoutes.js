@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const upload = require('../middleware/uploadMiddleware');
 const orderController = require('../controllers/orderController');
 const authMiddleware = require('../middleware/authMiddleware');
 
@@ -16,6 +17,54 @@ const authMiddleware = require('../middleware/authMiddleware');
  *         description: Internal server error
  */
 router.get('/available-statuses', orderController.getAllOrderStatuses);
+
+/**
+ * @swagger
+ * /api/v1/orders/upload-slip:
+ *   post:
+ *     summary: Upload a slip with name, date, time, slip image, and paymentId
+ *     tags: [Orders]
+ *     consumes:
+ *       - multipart/form-data
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               slipImage:
+ *                 type: file
+ *                 required: true
+ *                 description: The slip image to upload
+ *               name:
+ *                 type: string
+ *                 required: true
+ *                 description: Name associated with the slip
+ *                 example: "John Doe"
+ *               date:
+ *                 type: date
+ *                 required: true
+ *                 format: date
+ *                 description: Date of the slip (YYYY-MM-DD format)
+ *                 example: "2023-10-12"
+ *               time:
+ *                 type: string
+ *                 required: true
+ *                 description: Time of the slip (HH:MM format)
+ *                 example: "14:30"
+ *               paymentId:
+ *                 type: string
+ *                 required: true
+ *                 description: Payment ID associated with the slip
+ *                 example: "9814996c-c7d5-4454-a7de-e67239e64591"
+ *     responses:
+ *       201:
+ *         description: Slip uploaded successfully
+ *       500:
+ *         description: Internal server error
+ */
+router.post('/upload-slip', upload.single('slipImage'), orderController.uploadSlip);
 
 /**
  * @swagger
@@ -122,11 +171,11 @@ router.get('/merchant', authMiddleware, orderController.listOrdersByMerchant);
  *           schema:
  *             type: object
  *             properties:
- *               id:
+ *               paymentId:
  *                 type: string
  *                 description: The ID of the order to generate the QR code for.
  *             example:
- *               id: 1
+ *               paymentId: 5469aaae-0830-4b74-b21f-b3c7e26b62d0
  *     responses:
  *       200:
  *         description: QR code generated successfully
@@ -150,7 +199,7 @@ router.post('/qr-code', authMiddleware, orderController.generateQRCode);
  *       - bearerAuth: []
  *     parameters:
  *       - in: query
- *         name: id
+ *         name: paymentId
  *         required: true
  *         schema:
  *           type: string

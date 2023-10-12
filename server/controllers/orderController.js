@@ -22,6 +22,22 @@ exports.getAllOrderStatuses = async (req, res) => {
   }
 };
 
+exports.uploadSlip = async (req, res) => {
+  try {
+    const { name, date, time, paymentId } = req.body;
+    const slipImage = req.file;
+
+    if (!name || !date || !time || !paymentId || !slipImage) {
+      return res.status(400).json({ error: 'Missing values' });
+    }
+
+    res.status(201).json({ message: 'Slip uploaded successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
 exports.setOrderStatusById = async (req, res) => {
   try {
     const orderId = req.params.id;
@@ -108,17 +124,20 @@ exports.createOrder = async (req, res) => {
         ProductVariantId: cartItem.ProductVariantId,
         quantity: cartItem.quantity,
       });
+
+      return order.toJSON();
     });
     
 
     // Wait for all order items to be created
-    await Promise.all(orderItemsPromises);
+    const orders = await Promise.all(orderItemsPromises);
+    console.log(orders);
 
     // Clear the user's cart
     await CartItem.destroy({ where: { CartId: cart.id } });
     await Cart.destroy({ where: { id: cart.id } });
 
-    return res.status(201).json({ message: 'Order created successfully' });
+    return res.status(201).json({ message: 'Order created successfully', paymentId: orders[0].PaymentId });
   } catch (error) {
     console.error('Error message:', error.message);
     console.error('Error stack:', error.stack);
@@ -129,7 +148,7 @@ exports.createOrder = async (req, res) => {
 
 exports.generateQRCode = async (req, res) => {
   try {
-    const url = `${req.protocol}://${req.get('host')}/api/v1/orders/pay?id=${req.body.id}`;
+    const url = `${req.protocol}://${req.get('host')}/api/v1/orders/pay?paymentId=${req.body.id}`;
 
     // Generate the QR code as a PNG image
     const qrCodeBuffer = await QRCode.toBuffer(url);
@@ -155,32 +174,17 @@ exports.generateQRCode = async (req, res) => {
 exports.payOrder = async (req, res) => {
   try {
     // Get the order ID from the request body
-    const { id } = req.query;
+    const { paymentId } = req.query;
 
-    // Find the order by ID
-    const order = await Order.findByPk(id);
+    // Find and update other orders with the same PaymentId
+    await Order.update(
+      { status: 'Processing' },
+      {
+        where: { PaymentId: paymentId, status: 'Waiting for payment' },
+      }
+    );
 
-    if (!order) {
-      return res.status(404).json({ error: 'Order not found' });
-    }
-
-    if (order.status === 'Waiting for payment') {
-      // Update the order status to "Processing"
-      order.status = 'Processing';
-      await order.save();
-
-      // Find and update other orders with the same PaymentId
-      await Order.update(
-        { status: 'Processing' },
-        {
-          where: { PaymentId: order.PaymentId, status: 'Waiting for payment' },
-        }
-      );
-
-      return res.json({ message: 'Order status updated to Processing' });
-    } else {
-      return res.status(400).json({ error: 'Order status cannot be updated' });
-    }
+    return res.json({ message: 'Order status updated to Processing' });
   } catch (error) {
     console.error('Error message:', error.message);
     console.error('Error stack:', error.stack);
