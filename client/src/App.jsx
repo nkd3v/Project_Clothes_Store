@@ -12,14 +12,18 @@ import Payment from "./pages/Payment/Payment";
 import Cookies from "js-cookie";
 import StatusOrder from "./pages/StatusOrder/StatusOrder";
 import Register from "./pages/Register/Register";
-import Saler from "./pages/Saler/Saler"
+import MyOrder from "./pages/MyOrder/MyOrder";
+import MyStore from "./pages/MyStore/MyStore";
+// import Saler from "./pages/Saler/Saler"
 
 function App() {
   const { pathname } = useLocation();
   const [isLoginState, setIsLoginState] = useState(false);
   const [totalOrder, setTotalOrder] = useState(0);
+  const [role, setRole] = useState();
   const [isAuth, setIsAuth] = useState(Cookies.get("auth_token"));
   console.log(isAuth);
+  console.log("role", role);
   let isMount = true;
   console.log("totalOrder", totalOrder);
 
@@ -72,11 +76,18 @@ function App() {
         isAuth={isAuth}
         setIsAuth={setIsAuth}
         totalOrder={totalOrder}
+        role={role}
       />
       <Routes>
         <Route path="/" element={<Home />}></Route>
-        <Route path="/login" element={<Login setIsAuth={setIsAuth} />}></Route>
-        <Route path="/Register" element={<Register />}></Route>
+        <Route
+          path="/login"
+          element={<Login setIsAuth={setIsAuth} setRole={setRole} />}
+        ></Route>
+        <Route
+          path="/register"
+          element={<Register setIsAuth={setIsAuth} setRole={setRole} />}
+        ></Route>
         <Route path="/catalog/:typeCatalog" element={<Catalog />}></Route>
         <Route
           path="/product/preview/:id"
@@ -98,7 +109,8 @@ function App() {
         ></Route>
         <Route path="/status" element={<StatusOrder />}></Route>
         <Route path="/*" element={<Error />}></Route>
-        <Route path="/saler" element={<Saler/>}></Route>
+        <Route path="/my-store" element={<MyStore />}></Route>
+        <Route path="/my-order" element={<MyOrder />}></Route>
       </Routes>
     </div>
   );

@@ -11,7 +11,7 @@ function Cart({ totalOrder, getTotalOrder }) {
   const [coupon, setCoupon] = useState("");
 
   console.log(productInCart);
-
+  console.log(productInCart?.cartItems?.length);
   useEffect(() => {
     const getProductsInCart = async () => {
       try {
@@ -29,7 +29,7 @@ function Cart({ totalOrder, getTotalOrder }) {
             "Get product in cart failed. Server returned an error: " +
               response.status
           );
-          setProductInCart([]);
+          setProductInCart({});
         }
       } catch (error) {
         console.error("Error:", error);
@@ -86,7 +86,8 @@ function Cart({ totalOrder, getTotalOrder }) {
         </header>
         <div className="wrapper">
           <section className="orders">
-            {productInCart?.cartItems?.length === 0 && (
+            {(productInCart?.cartItems?.length === 0 ||
+              !productInCart?.cartItems) && (
               <p className="empty">ตะกร้าของคุณว่างอยู่</p>
             )}
             {productInCart?.cartItems?.map((item, idx) => (
@@ -105,32 +106,33 @@ function Cart({ totalOrder, getTotalOrder }) {
               coupon={productInCart?.coupon?.code}
             />
 
-            {productInCart?.cartItems?.length !== 0 && (
-              <>
-                <div className="coupon-container">
-                  <input
-                    type="text"
-                    placeholder="ใส่คูปอง"
-                    className="coupon-input"
-                    value={coupon}
-                    onChange={(e) => {
-                      setCoupon(e.target.value);
-                    }}
+            {productInCart?.cartItems?.length !== 0 &&
+              productInCart?.cartItems && (
+                <>
+                  <div className="coupon-container">
+                    <input
+                      type="text"
+                      placeholder="ใส่คูปอง"
+                      className="coupon-input"
+                      value={coupon}
+                      onChange={(e) => {
+                        setCoupon(e.target.value);
+                      }}
+                    />
+                    <button
+                      onClick={handleCoupon}
+                      className="apply-coupon-button"
+                    >
+                      ใช้คูปอง
+                    </button>
+                  </div>
+                  <Button
+                    isPrimary={true}
+                    text="ชำระเงิน"
+                    action={handlePayment}
                   />
-                  <button
-                    onClick={handleCoupon}
-                    className="apply-coupon-button"
-                  >
-                    ใช้คูปอง
-                  </button>
-                </div>
-                <Button
-                  isPrimary={true}
-                  text="ชำระเงิน"
-                  action={handlePayment}
-                />
-              </>
-            )}
+                </>
+              )}
 
             <Button
               isPrimary={false}

@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import logoImg from "./assets/images/logo.png";
 import cartIcon from "./assets/images/icon-cart.png";
 import profileIcon from "./assets/images/icon-profile.png";
-const Navbar = ({ isLoginState, isAuth, setIsAuth, totalOrder }) => {
+const Navbar = ({ isLoginState, isAuth, setIsAuth, totalOrder, role }) => {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -31,7 +31,7 @@ const Navbar = ({ isLoginState, isAuth, setIsAuth, totalOrder }) => {
               <img src={logoImg} alt="logo" />
             </Link>
           </div>
-          {!isLoginState && (
+          {!isLoginState && role === "ซื้อ" && (
             <ul className="lists flex">
               <li>
                 <Link to="/catalog/women" className="link">
@@ -55,12 +55,26 @@ const Navbar = ({ isLoginState, isAuth, setIsAuth, totalOrder }) => {
               </li>
             </ul>
           )}
+          {!isLoginState && role === "ขาย" && (
+            <ul className="lists flex">
+              <li>
+                <Link to="/my-store" className="link">
+                  สินค้าของฉัน
+                </Link>
+              </li>
+              <li>
+                <Link to="/my-order" className="link">
+                  Order ของฉัน
+                </Link>
+              </li>
+            </ul>
+          )}
         </div>
         <div className="navbar-right">
           {!isLoginState && (
             <ul className="lists flex">
               <li>
-                {isAuth && (
+                {isAuth && role === "ซื้อ" && (
                   <Link to="/cart" className="icon-link">
                     <div className="cart">
                       <p className={`show-total ${!totalOrder && "none"}`}>

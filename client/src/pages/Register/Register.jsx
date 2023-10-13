@@ -1,7 +1,69 @@
 import React from "react";
 import "./Register.css";
+import { useNavigate } from "react-router-dom";
 
-const Register = () => {
+const Register = ({ setIsAuth, setRole }) => {
+  const navigate = useNavigate();
+  const handleSubmitRegister = async (e) => {
+    e.preventDefault();
+    const username = e.target.username.value;
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+    const postalCode = e.target.postcode.value;
+    const dateOfBirth = e.target.birthDate.value;
+    const gender = e.target.gender.value;
+    const role = e.target.role.value;
+    if (!isValidEmail(email) || !isValidPostalCode(postalCode)) {
+      alert("Invalid email or postal codes");
+      return;
+    }
+    const registerData = {
+      username: username,
+      password: password,
+      email: email,
+      postalCode: postalCode,
+      dateOfBirth: dateOfBirth,
+      gender: gender,
+      role: role,
+    };
+
+    try {
+      const response = await fetch(
+        "http://localhost:3000/api/v1/auth/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(registerData),
+          credentials: "include",
+        }
+      );
+
+      if (response.ok) {
+        const { token } = await response.json();
+        console.log(
+          "Register successful. You can do authenticated operation now"
+        );
+        setRole(registerData?.role);
+        setIsAuth(token);
+        navigate("/");
+      } else {
+        alert("Register failed. Server returned an error: " + response.status);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred during login.");
+    }
+    function isValidEmail(email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    }
+    function isValidPostalCode(postalCode) {
+      const postalCodeRegex = /^\d{5}$/;
+      return postalCodeRegex.test(postalCode);
+    }
+  };
   return (
     <div className="RegisterPage">
       <h1>สร้างบัญชีผู้ใช้ใหม่</h1>
@@ -11,101 +73,106 @@ const Register = () => {
           กรุณาตรวจสอบในกล่องจดหมายของคุณ
         </p>
 
-        <div className="Email Info">
-          <div className="Info_text">
-            <h3>อีเมล *</h3>
-          </div>
-          <input
-            className="Input_Box"
-            type="text"
-            placeholder="กรอกอีเมลที่ใช้งาน"
-          />
-        </div>
-        <div className="Username Info">
-          <div className="Info_text">
-            <h3>username *</h3>
-          </div>
-          <input
-            className="Input_Box"
-            type="text"
-            placeholder="กรอก username ที่ต้องการใช้งาน"
-          />
-        </div>
-        <div className="Password Info">
-          <div className="Info_text">
-            <h3>รหัสผ่าน *</h3>
-          </div>
-          <input className="Input_Box" type="text" placeholder="" />
-        </div>
-        <div className="ShowPassword Info">
-          <div className="checkbox_">
-            <input className="check_box" type="checkbox" />
-          </div>
-          <p>แสดงรหัสผ่าน</p>
-        </div>
-        <div className="PostNo Info">
-          <div className="Info_text">
-            <h3>รหัสไปรษณีย์ *</h3>
-          </div>
-          <input
-            className="Input_Box"
-            type="text"
-            placeholder="กรอกรหัสไปรษณีย์"
-          />
-        </div>
-        <div className="BirthDate Info">
-          <div className="Info_text">
-            <h3>วันเกิด *</h3>
-          </div>
-          <input
-            className="Date_Box"
-            type="date"
-            placeholder="dd-mm-yyyy"
-          />
-        </div>
-        <div className="Sex Info">
-          <div className="Info_text">
-            <h3>เพศ *</h3>
-          </div>
-          <form className="Sex_Chooser radio_btn_group">
-            <div className="radio_btn">
-              <input type="radio" name="drone" value="ชาย" />
-              <label htmlFor="ชาย">ชาย</label>
+        <form onSubmit={handleSubmitRegister}>
+          <div className="Email Info">
+            <div className="Info_text">
+              <h3>อีเมล *</h3>
             </div>
+            <input
+              className="Input_Box"
+              type="text"
+              placeholder="กรอกอีเมลที่ใช้งาน"
+              name="email"
+            />
+          </div>
+          <div className="Username Info">
+            <div className="Info_text">
+              <h3>username *</h3>
+            </div>
+            <input
+              className="Input_Box"
+              type="text"
+              placeholder="กรอก username ที่ต้องการใช้งาน"
+              name="username"
+            />
+          </div>
+          <div className="Password Info">
+            <div className="Info_text">
+              <h3>รหัสผ่าน *</h3>
+            </div>
+            <input
+              className="Input_Box"
+              type="text"
+              placeholder=""
+              name="password"
+            />
+          </div>
+          <div className="ShowPassword Info">
+            <div className="checkbox_">
+              <input className="check_box" type="checkbox" />
+            </div>
+            <p>แสดงรหัสผ่าน</p>
+          </div>
+          <div className="PostNo Info">
+            <div className="Info_text">
+              <h3>รหัสไปรษณีย์ *</h3>
+            </div>
+            <input
+              className="Input_Box"
+              type="text"
+              placeholder="กรอกรหัสไปรษณีย์"
+              name="postcode"
+            />
+          </div>
+          <div className="BirthDate Info">
+            <div className="Info_text">
+              <h3>วันเกิด *</h3>
+            </div>
+            <input
+              className="Date_Box"
+              type="date"
+              placeholder="dd-mm-yyyy"
+              name="birthDate"
+            />
+          </div>
+          <div className="Sex Info">
+            <div className="Info_text">
+              <h3>เพศ *</h3>
+            </div>
+            <div className="Sex_Chooser radio_btn_group">
+              <div className="radio_btn">
+                <input type="radio" name="gender" value="ชาย" />
+                <label htmlFor="ชาย">ชาย</label>
+              </div>
 
-            <div className="radio_btn">
-              <input type="radio" name="drone" value="หญิง" />
-              <label htmlFor="หญิง">หญิง</label>
+              <div className="radio_btn">
+                <input type="radio" name="gender" value="หญิง" />
+                <label htmlFor="หญิง">หญิง</label>
+              </div>
             </div>
-
-            <div className="radio_btn">
-              <input type="radio" name="drone" value="เฮลิคอปเตอร์จู่โจม" />
-              <label htmlFor="เฮลิคอปเตอร์จู่โจม">เฮลิคอปเตอร์จู่โจม</label>
-            </div>
-          </form>
-        </div>
-        <div className="BuyOrSell Info">
-          <div className="Info_text">
-            <h3>คุณต้องการที่จะ *</h3>
           </div>
-          <form className="BuyOrSell_Chooser radio_btn_group">
-            <div className="radio_btn">
-              <input type="radio" name="drone" value="ซื้อ" />
-              <label htmlFor="ซื้อ">ซื้อ</label>
+          <div className="BuyOrSell Info">
+            <div className="Info_text">
+              <h3>คุณต้องการที่จะ *</h3>
             </div>
+            <div className="BuyOrSell_Chooser radio_btn_group">
+              <div className="radio_btn">
+                <input type="radio" name="role" value="ซื้อ" />
+                <label htmlFor="ซื้อ">ซื้อ</label>
+              </div>
 
-            <div className="radio_btn">
-              <input type="radio" name="drone" value="ขาย" />
-              <label htmlFor="ขาย">ขาย</label>
+              <div className="radio_btn">
+                <input type="radio" name="role" value="ขาย" />
+                <label htmlFor="ขาย">ขาย</label>
+              </div>
             </div>
-          </form>
-        </div>
-        <div className="Info">
-          <button type="button" className="Register_btn">
-            {" "}
-            สร้างบัญชี
-          </button>
-        </div>
+          </div>
+          <div className="Info">
+            <button type="submit" className="Register_btn">
+              สร้างบัญชี
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ import React from "react";
 import "./login.css";
 import { useNavigate } from "react-router-dom";
 
-const Login = ({ setIsAuth }) => {
+const Login = ({ setIsAuth, setRole }) => {
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -29,6 +29,7 @@ const Login = ({ setIsAuth }) => {
       if (response.ok) {
         const { token } = await response.json();
         console.log("Login successful. You can do authenticated operation now");
+        getUserInfo();
         setIsAuth(token);
         navigate("/");
       } else {
@@ -39,6 +40,29 @@ const Login = ({ setIsAuth }) => {
       alert("An error occurred during login.");
     }
   };
+
+  async function getUserInfo() {
+    try {
+      const response = await fetch(
+        "http://localhost:3000/api/v1/user/get-user-info",
+        {
+          credentials: "include",
+        }
+      );
+
+      if (response.ok) {
+        const { role } = await response.json();
+        console.log(
+          "Get user info successful. You can do authenticated operation now"
+        );
+        setRole(role);
+      } else {
+        alert("Login failed. Server returned an error: " + response.status);
+      }
+    } catch (error) {
+      console.error("Error get user info:", error);
+    }
+  }
 
   return (
     <div className="login">
@@ -82,7 +106,9 @@ const Login = ({ setIsAuth }) => {
               สร้างบัญชีผู้ใช้ เพื่อการใช้งานที่สะดวก
               ชำระเงินได้รวดเร็วยิ่งขึ้น!
             </p>
-            <button className="btn">สร้างบัญชีผู้ใช้ใหม่</button>
+            <button className="btn" onClick={() => navigate("/register")}>
+              สร้างบัญชีผู้ใช้ใหม่
+            </button>
           </section>
         </div>
       </div>
