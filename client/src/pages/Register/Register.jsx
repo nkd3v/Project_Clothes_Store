@@ -83,6 +83,7 @@ const Register = ({ setIsAuth, setRole }) => {
               type="text"
               placeholder="กรอกอีเมลที่ใช้งาน"
               name="email"
+              required
             />
           </div>
           <div className="Username Info">
@@ -94,6 +95,7 @@ const Register = ({ setIsAuth, setRole }) => {
               type="text"
               placeholder="กรอก username ที่ต้องการใช้งาน"
               name="username"
+              required
             />
           </div>
           <div className="Password Info">
@@ -105,6 +107,7 @@ const Register = ({ setIsAuth, setRole }) => {
               type="text"
               placeholder=""
               name="password"
+              required
             />
           </div>
           <div className="ShowPassword Info">
@@ -122,6 +125,7 @@ const Register = ({ setIsAuth, setRole }) => {
               type="text"
               placeholder="กรอกรหัสไปรษณีย์"
               name="postcode"
+              required
             />
           </div>
           <div className="BirthDate Info">
@@ -133,6 +137,7 @@ const Register = ({ setIsAuth, setRole }) => {
               type="date"
               placeholder="dd-mm-yyyy"
               name="birthDate"
+              required
             />
           </div>
           <div className="Sex Info">
@@ -141,12 +146,12 @@ const Register = ({ setIsAuth, setRole }) => {
             </div>
             <div className="Sex_Chooser radio_btn_group">
               <div className="radio_btn">
-                <input type="radio" name="gender" value="ชาย" />
+                <input type="radio" name="gender" value="ชาย" required />
                 <label htmlFor="ชาย">ชาย</label>
               </div>
 
               <div className="radio_btn">
-                <input type="radio" name="gender" value="หญิง" />
+                <input type="radio" name="gender" value="หญิง" required />
                 <label htmlFor="หญิง">หญิง</label>
               </div>
             </div>
@@ -157,12 +162,12 @@ const Register = ({ setIsAuth, setRole }) => {
             </div>
             <div className="BuyOrSell_Chooser radio_btn_group">
               <div className="radio_btn">
-                <input type="radio" name="role" value="ซื้อ" />
+                <input type="radio" name="role" value="ซื้อ" required />
                 <label htmlFor="ซื้อ">ซื้อ</label>
               </div>
 
               <div className="radio_btn">
-                <input type="radio" name="role" value="ขาย" />
+                <input type="radio" name="role" value="ขาย" required />
                 <label htmlFor="ขาย">ขาย</label>
               </div>
             </div>

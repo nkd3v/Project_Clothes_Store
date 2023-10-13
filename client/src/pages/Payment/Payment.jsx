@@ -71,6 +71,13 @@ const Payment = ({ getTotalOrder }) => {
         postalCode: e.target.postcode.value,
         phoneNumber: e.target.phone.value,
       };
+      if (
+        !isValidPostalCode(infoData?.postalCode) ||
+        !isValidPhoneNumber(infoData?.phoneNumber)
+      ) {
+        alert("Invalid post codes or phone number");
+        return;
+      }
       try {
         const response = await fetch(
           "http://localhost:3000/api/v1/user/set-address-info",
@@ -97,6 +104,16 @@ const Payment = ({ getTotalOrder }) => {
       setPaymentState(true);
     }
   };
+
+  function isValidPostalCode(postalCode) {
+    const postalCodeRegex = /^\d{5}$/;
+    return postalCodeRegex.test(postalCode);
+  }
+
+  function isValidPhoneNumber(number) {
+    const phoneNumberRegex = /^\d{10}$/;
+    return phoneNumberRegex.test(number);
+  }
 
   return (
     <div className="payment">
