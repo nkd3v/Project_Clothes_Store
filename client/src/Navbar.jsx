@@ -31,7 +31,7 @@ const Navbar = ({ isLoginState, isAuth, setIsAuth, totalOrder, role }) => {
               <img src={logoImg} alt="logo" />
             </Link>
           </div>
-          {!isLoginState && role === "ซื้อ" && (
+          {!isLoginState && (role === "ซื้อ" || role === "Customer") && (
             <ul className="lists flex">
               <li>
                 <Link to="/catalog/women" className="link">
@@ -74,7 +74,7 @@ const Navbar = ({ isLoginState, isAuth, setIsAuth, totalOrder, role }) => {
           {!isLoginState && (
             <ul className="lists flex">
               <li>
-                {isAuth && role === "ซื้อ" && (
+                {isAuth && (role === "ซื้อ" || role === "Customer") && (
                   <Link to="/cart" className="icon-link">
                     <div className="cart">
                       <p className={`show-total ${!totalOrder && "none"}`}>
