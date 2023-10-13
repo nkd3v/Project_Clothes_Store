@@ -60,7 +60,6 @@ const Register = () => {
           <input
             className="Date_Box"
             type="date"
-            value=""
             placeholder="dd-mm-yyyy"
           />
         </div>

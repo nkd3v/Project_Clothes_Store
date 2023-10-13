@@ -12,6 +12,7 @@ import Payment from "./pages/Payment/Payment";
 import Cookies from "js-cookie";
 import StatusOrder from "./pages/StatusOrder/StatusOrder";
 import Register from "./pages/Register/Register";
+import Saler from "./pages/Saler/Saler"
 
 function App() {
   const { pathname } = useLocation();
@@ -97,6 +98,7 @@ function App() {
         ></Route>
         <Route path="/status" element={<StatusOrder />}></Route>
         <Route path="/*" element={<Error />}></Route>
+        <Route path="/saler" element={<Saler/>}></Route>
       </Routes>
     </div>
   );
