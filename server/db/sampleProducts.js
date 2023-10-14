@@ -1,68 +1,39 @@
-const sequelize = require('../config/database');
-const Product = require('../models/Product');
-const ProductTag = require('../models/ProductTag');
-const ProductVariant = require('../models/ProductVariant');
-const Category = require('../models/Category');
+const db = require('../config/rawDatabase'); // Replace './dbConnection' with the correct path to the module
+const fs = require('fs');
+const path = require('path');
 
-// Function to create sample products with variants and tags
 async function createSampleProducts() {
-    try {
-  
-      // Create sample products with variants and tags
-      const product1 = await Product.create({
-        OwnerId: '1',
-        name: 'Product 1',
-        description: 'Description for Product 1',
-        gender: 'UNISEX',
-        className: 'เสื้อ',
-        category: 'เสื้อกันหนาว',
-        tags: 'abc, def',
-      });
-  
-      const product2 = await Product.create({
-        OwnerId: '2',
-        name: 'Product 2',
-        description: 'Description for Product 2',
-        gender: 'WOMEN',
-        className: 'เสื้อ',
-        category: 'เสื้อฟลีซ (Fleece)',
+  try {
+    // Get the current path and create the full path to sampleProducts.sql and sampleProductVariants.sql
+    const currentPath = __dirname;
+    const productsSqlFilePath = path.join(currentPath, 'sampleProducts.sql');
+    const variantsSqlFilePath = path.join(currentPath, 'sampleProductVariants.sql');
+
+    // Read SQL commands from the product and variant files
+    const productsSqlCommands = fs.readFileSync(productsSqlFilePath, 'utf8');
+    const variantsSqlCommands = fs.readFileSync(variantsSqlFilePath, 'utf8');
+
+    // Run the SQL commands
+    db.serialize(() => {
+      db.exec(productsSqlCommands, (err) => {
+        if (err) {
+          console.error('Error executing product SQL commands:', err);
+        } else {
+          console.log('Product SQL commands executed successfully.');
+        }
       });
 
-      const variant1 = await ProductVariant.create({
-          size: 'S',
-          // colorName: 'Red',
-          color: '#FF0000', // Hex code for Red
-          price: 19.99,
-          quantity: 10,
-          imageUrl: 'shirt.png',
-          ProductId: product1.id, // Associate the variant with Product 1
+      db.exec(variantsSqlCommands, (err) => {
+        if (err) {
+          console.error('Error executing variant SQL commands:', err);
+        } else {
+          console.log('Variant SQL commands executed successfully.');
+        }
       });
-      
-      const variant2 = await ProductVariant.create({
-          size: 'M',
-          // colorName: 'Blue',
-          color: '#0000FF', // Hex code for Blue
-          price: 24.99,
-          quantity: 15,
-          imageUrl: 'shirt.png',
-          ProductId: product1.id, // Associate the variant with Product 1
-      });
-      
-      // Create sample product variants for Product 2
-      const variant3 = await ProductVariant.create({
-          size: 'L',
-          // colorName: 'Green',
-          color: '#008000', // Hex code for Green
-          price: 29.99,
-          quantity: 8,
-          imageUrl: 'shirt.png',
-          ProductId: product2.id, // Associate the variant with Product 2
-      });
-  
-      console.log('Sample products created successfully!');
-    } catch (error) {
-      console.error('Error creating sample products:', error);
-    }
+    });
+  } catch (error) {
+    console.error('Error creating sample products:', error);
   }
+}
 
 module.exports = createSampleProducts;

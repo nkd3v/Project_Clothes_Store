@@ -125,6 +125,13 @@ exports.createOrder = async (req, res) => {
         quantity: cartItem.quantity,
       });
 
+      // Reduce the quantity of the corresponding product variant
+      const productVariant = await ProductVariant.findByPk(cartItem.ProductVariantId);
+      if (productVariant) {
+        productVariant.quantity -= cartItem.quantity;
+        await productVariant.save();
+      }
+
       return order.toJSON();
     });
     
@@ -184,6 +191,23 @@ exports.payOrder = async (req, res) => {
       }
     );
 
+    // Update the soldCount for product variants associated with the paid orders
+    const paidOrders = await Order.findAll({
+      where: { PaymentId: paymentId, status: 'Processing' },
+      include: {
+        model: OrderItem,
+        include: ProductVariant,
+      },
+    });
+
+    for (const order of paidOrders) {
+      for (const orderItem of order.OrderItems) {
+        const productVariant = orderItem.ProductVariant;
+        productVariant.soldCount += orderItem.quantity;
+        await productVariant.save();
+      }
+    }
+
     return res.json({ message: 'Order status updated to Processing' });
   } catch (error) {
     console.error('Error message:', error.message);
@@ -222,6 +246,7 @@ exports.listOrdersByMerchant = async (req, res) => {
             include: {
               model: User,
               where: { id: req.user.id },
+              attributes: ['id', 'username', 'email', 'firstName', 'lastName', 'dateOfBirth', 'gender', 'address1', 'address2', 'country', 'state', 'city', 'postalCode', 'phoneNumber', 'role']
             },
           },
         },

@@ -6,24 +6,24 @@ const authMiddleware = require('../middleware/authMiddleware');
 
 /**
  * @swagger
- * /api/v1/orders/available-statuses:
- *   get:
- *     summary: Get a list of all possible order statuses
- *     tags: [Orders]
- *     responses:
- *       200:
- *         description: List of order statuses
- *       500:
- *         description: Internal server error
+ * tags:
+ *   name: Orders For Customer
+ *   description: Order management
  */
-router.get('/available-statuses', orderController.getAllOrderStatuses);
+
+/**
+ * @swagger
+ * tags:
+ *   name: Orders For Merchant
+ *   description: Order management
+ */
 
 /**
  * @swagger
  * /api/v1/orders/upload-slip:
  *   post:
  *     summary: Upload a slip with name, date, time, slip image, and paymentId
- *     tags: [Orders]
+ *     tags: [Orders For Customer]
  *     consumes:
  *       - multipart/form-data
  *     requestBody:
@@ -71,7 +71,7 @@ router.post('/upload-slip', upload.single('slipImage'), orderController.uploadSl
  * /api/v1/orders/:id:
  *   post:
  *     summary: Set the order status by ID
- *     tags: [Orders]
+ *     tags: [Orders For Merchant]
  *     parameters:
  *       - in: path
  *         name: id
@@ -99,17 +99,10 @@ router.put('/:id', authMiddleware, orderController.setOrderStatusById);
 
 /**
  * @swagger
- * tags:
- *   name: Orders
- *   description: Order management
- */
-
-/**
- * @swagger
  * /api/v1/orders:
  *   post:
  *     summary: Create a new order
- *     tags: [Orders]
+ *     tags: [Orders For Customer]
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -129,7 +122,7 @@ router.post('/', authMiddleware, orderController.createOrder);
  * /api/v1/orders:
  *   get:
  *     summary: List orders for the authenticated user
- *     tags: [Orders]
+ *     tags: [Orders For Customer]
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -145,7 +138,7 @@ router.get('/', authMiddleware, orderController.listOrders);
  * /api/v1/orders/merchant:
  *   get:
  *     summary: List customer's orders that have merchant product
- *     tags: [Orders]
+ *     tags: [Orders For Merchant]
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -161,7 +154,7 @@ router.get('/merchant', authMiddleware, orderController.listOrdersByMerchant);
  * /api/v1/orders/qr-code:
  *   post:
  *     summary: Generate a QR code for an order
- *     tags: [Orders]
+ *     tags: [Orders For Customer]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -194,7 +187,7 @@ router.post('/qr-code', authMiddleware, orderController.generateQRCode);
  * /api/v1/orders/pay:
  *   get:
  *     summary: Set order status to "Processing" for a specific order.
- *     tags: [Orders]
+ *     tags: [Orders For Customer]
  *     security:
  *       - bearerAuth: []
  *     parameters:

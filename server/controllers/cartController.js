@@ -8,35 +8,42 @@ const Product = require('../models/Product');
 // Add a product to the user's cart
 exports.addToCart = async (req, res) => {
   try {
-    // Extract productId and quantity from the request body
     const { productVariantId, quantity } = req.body;
 
-    // Check if the product exists
+    if (!Number.isInteger(productVariantId) || productVariantId <= 0) {
+      return res.status(400).json({ error: 'Invalid productVariantId' });
+    }
+
+    if (!Number.isInteger(quantity) || quantity <= 0) {
+      return res.status(400).json({ error: 'Invalid quantity' });
+    }
+
     const productVariant = await ProductVariant.findByPk(productVariantId);
+
     if (!productVariant) {
       return res.status(404).json({ error: 'Product not found' });
     }
 
-    // Check if the user has a cart, or create one if not
+    if (productVariant.quantity < quantity) {
+      return res.status(400).json({ error: 'Not enough quantity in stock' });
+    }
+
     let cart = await Cart.findOne({
-      where: { UserId: req.user.id }, // Assuming you have the user's ID in req.user.id
+      where: { UserId: req.user.id },
     });
 
     if (!cart) {
       cart = await Cart.create({ UserId: req.user.id });
     }
 
-    // Check if the product is already in the cart
     const existingCartItem = await CartItem.findOne({
       where: { CartId: cart.id, ProductVariantId: productVariantId },
     });
 
     if (existingCartItem) {
-      // If the product is already in the cart, update the quantity
       existingCartItem.quantity += quantity;
       await existingCartItem.save();
     } else {
-      // If the product is not in the cart, create a new cart item
       await CartItem.create({
         CartId: cart.id,
         ProductVariantId: productVariantId,
@@ -64,8 +71,13 @@ exports.setProductQuantity = async (req, res) => {
     }
 
     const productVariant = await ProductVariant.findByPk(productVariantId);
+
     if (!productVariant) {
       return res.status(404).json({ error: 'Product not found' });
+    }
+
+    if (productVariant.quantity < quantity) {
+      return res.status(400).json({ error: 'Not enough quantity in stock' });
     }
 
     let cart = await Cart.findOne({
@@ -99,6 +111,7 @@ exports.setProductQuantity = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
 
 
 // List products in the user's cart

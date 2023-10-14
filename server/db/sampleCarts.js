@@ -11,7 +11,7 @@ async function createSampleCartForUser(username, password) {
       // Use the captured auth_token in the subsequent request
       const cartResponse = await axios.post('http://localhost:3000/api/v1/carts/add', {
         productVariantId: 1,
-        quantity: Math.floor(Math.random() * 101),
+        quantity: Math.floor(Math.random() * 3),
       }, {
         headers: {
           Cookie: `auth_token=${auth_token}`,

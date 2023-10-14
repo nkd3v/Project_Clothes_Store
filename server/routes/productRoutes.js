@@ -7,8 +7,15 @@ const authMiddleware = require('../middleware/authMiddleware');
 /**
  * @swagger
  * tags:
- *   name: Products
- *   description: Product operations
+ *   name: Products For Customer
+ *   description: Product for customers operations
+ */
+
+/**
+ * @swagger
+ * tags:
+ *   name: Products For Merchant
+ *   description: Product for merchants operations
  */
 
 /**
@@ -17,7 +24,7 @@ const authMiddleware = require('../middleware/authMiddleware');
  *   get:
  *     summary: List products by criteria
  *     description: Retrieve a list of products that match the specified criteria.
- *     tags: [Products]
+ *     tags: [Products For Customer]
  *     parameters:
  *       - in: query
  *         name: keywords
@@ -94,10 +101,42 @@ router.get('/', productController.listProductsByCriteria);
 
 /**
  * @swagger
+ * /api/v1/products/owned:
+ *   get:
+ *     summary: Get products owned by the authenticated user
+ *     tags: [Products For Merchant]
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: A list of products owned by the user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: Unauthorized
+ *       500:
+ *         description: Internal server error
+ */
+
+router.get('/owned', authMiddleware, productController.ownedProduct);
+
+/**
+ * @swagger
  * /api/v1/products/{productId}:
  *   get:
  *     summary: Get a product by ID
- *     tags: [Products]
+ *     tags: [Products For Customer]
  *     parameters:
  *       - in: path
  *         name: productId
@@ -121,7 +160,7 @@ router.get('/:productId', productController.getProductById);
  *   get:
  *     summary: Get variants for a product by product ID.
  *     description: Retrieve all variants associated with a specific product by its ID.
- *     tags: [Products]
+ *     tags: [Products For Customer]
  *     parameters:
  *       - in: path
  *         name: productId
@@ -145,7 +184,7 @@ router.get('/:productId/variants', productController.listVariantsByProductId);
  *   post:
  *     summary: Create a new product
  *     description: Create a new product in the clothing shop's inventory.
- *     tags: [Products]
+ *     tags: [Products For Merchant]
  *     security:
  *       - auth_token: []
  *     requestBody:
@@ -223,7 +262,7 @@ router.post('/', authMiddleware, upload.any('variants[][image]'), productControl
  * /api/v1/products/{productId}:
  *   put:
  *     summary: Update a product by ID with an image upload
- *     tags: [Products]
+ *     tags: [Products For Merchant]
  *     parameters:
  *       - in: path
  *         name: productId
@@ -277,7 +316,7 @@ router.put('/:productId', upload.single('image'), productController.updateProduc
  * /api/v1/products/{productId}:
  *   delete:
  *     summary: Delete a product by ID
- *     tags: [Products]
+ *     tags: [Products For Merchant]
  *     parameters:
  *       - in: path
  *         name: productId
@@ -294,5 +333,6 @@ router.put('/:productId', upload.single('image'), productController.updateProduc
  *         description: Internal server error
  */
 router.delete('/:productId', productController.deleteProduct);
+
 
 module.exports = router;

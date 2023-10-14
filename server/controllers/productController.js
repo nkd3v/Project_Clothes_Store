@@ -3,7 +3,7 @@ const Product = require('../models/Product');
 const ProductTag = require('../models/ProductTag');
 const ProductVariant = require('../models/ProductVariant');
 const CategoryTag = require('../models/CategoryTag');
-const { extractColors, extractSizes, extractPriceRanges } = require('../utils/keywordUtils');
+const { extractColors, extractSizes, extractGenders, extractPriceRanges } = require('../utils/keywordUtils');
 const User = require('../models/User');
 const { findMinMaxSize } = require('../utils/sizeUtils');
 const sequelize = require('../config/database');
@@ -20,10 +20,13 @@ function toArray(value) {
 
 exports.listProductsByCriteria = async (req, res) => {
   try {
-    const { category, gender, minPrice, maxPrice } = req.query;
+    const { minPrice, maxPrice } = req.query;
     let rawKeywords = req.query.keywords || '';
 
-    let brands, sizes, colors, retVal;
+    let brands, sizes, colors, gender, retVal;
+
+    let category = req.query.category?.split(',');
+    category = category ? category[category.length - 1] : undefined;
 
     brands = [];
     console.log({ rawKeywords });
@@ -38,6 +41,17 @@ exports.listProductsByCriteria = async (req, res) => {
     sizes = retVal.matchedKeywords;
     rawKeywords = retVal.extractedText.trim();
     console.log({ rawKeywords });
+
+    if (req.query.gender) {
+      gender = req.query.gender
+    } else {
+      retVal = extractGenders(rawKeywords);
+      console.log(retVal.matchedKeywords);
+      gender = retVal.matchedKeywords[0];
+      rawKeywords = retVal.extractedText.trim();
+      console.log(rawKeywords);
+    }
+    console.log({gender});
 
     retVal = extractPriceRanges(rawKeywords)
     const priceRanges = retVal.priceRanges;
@@ -64,6 +78,8 @@ exports.listProductsByCriteria = async (req, res) => {
     if (gender) {
       if (gender == 'MEN' || gender == 'WOMEN') {
         whereClause.gender = { [Op.in]: [gender, 'UNISEX'] };
+      } else if (gender == 'UNISEX') {
+        whereClause.gender = { [Op.in]: ['MEN', 'WOMEN', 'UNISEX']};
       } else {
         whereClause.gender = gender;
       }
@@ -141,8 +157,8 @@ exports.listProductsByCriteria = async (req, res) => {
       product.maxSize = maxSize;
     }
 
-    console.log(products);
-    console.log(keywordsArray);
+    // console.log(products);
+    // console.log(keywordsArray);
 
     const filteredProducts = !keywordsArray
       ? products
@@ -353,3 +369,40 @@ exports.deleteProduct = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+exports.ownedProduct = async (req, res) => {
+  const ownerId = req.user.id;
+  try {
+    const products = await Product.findAll({
+      include: {
+        model: ProductVariant,
+      },
+      where: {
+        OwnerId: ownerId,
+      }
+    });
+
+    // Calculate soldPrice for each product variant and totalSoldPrice for each product and owner
+    products.forEach(product => {
+      product.ProductVariants.forEach(variant => {
+        variant.dataValues.soldPrice = variant.soldCount * variant.price;
+      });
+
+      product.dataValues.totalSoldPrice = product.toJSON().ProductVariants.reduce(
+        (total, variant) => total + variant.soldPrice,
+        0
+      );
+    });
+
+    // Calculate totalSoldPrice for the owner
+    const totalRevenue = products.reduce(
+      (total, product) => total + product.toJSON().totalSoldPrice,
+      0
+    );
+
+    res.json({products, totalRevenue});
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}

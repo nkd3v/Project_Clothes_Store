@@ -1,8 +1,8 @@
 
 const colorMappings = [
-    { pattern: /\bดำ\b/gi, replacement: 'BLACK' },
+    { pattern: /ดำ/gi, replacement: 'BLACK' },
     { pattern: /\bblack\b/gi, replacement: 'BLACK' },
-    { pattern: /\bขาว\b/gi, replacement: 'WHITE' },
+    { pattern: /ขาว/gi, replacement: 'WHITE' },
     { pattern: /\bwhite\b/gi, replacement: 'WHITE' },
     { pattern: /\bred\b/gi, replacement: 'RED' },
     { pattern: /\bblue\b/gi, replacement: 'BLUE' },
@@ -32,17 +32,18 @@ const sizeMappings = [
 ];
 
 const genderMappings = [
+    { pattern: /ชาย/gi, replacement: 'MEN' },
     { pattern: /\bmen\b/gi, replacement: 'MEN' },
-    { pattern: /\bชาย\b/gi, replacement: 'MEN' },
+    { pattern: /หญิง/gi, replacement: 'WOMEN' },
+    { pattern: /สตรี/gi, replacement: 'WOMEN' },
     { pattern: /\bwomen\b/gi, replacement: 'WOMEN' },
-    { pattern: /\bหญิง\b/gi, replacement: 'WOMEN' },
-    { pattern: /\bสตรี\b/gi, replacement: 'WOMEN' },
     { pattern: /\bbaby\b/gi, replacement: 'BABY' },
-    { pattern: /\bทารก\b/gi, replacement: 'BABY' },
-    { pattern: /\bแบเบาะ\b/gi, replacement: 'BABY' },
-    { pattern: /\bเด็กน้อย\b/gi, replacement: 'BABY' },
+    { pattern: /ทารก/gi, replacement: 'BABY' },
+    { pattern: /แบเบาะ/gi, replacement: 'BABY' },
+    { pattern: /เด็กน้อย/gi, replacement: 'BABY' },
     { pattern: /\bkids\b/gi, replacement: 'KIDS' },
-    { pattern: /\bเด็ก\b/gi, replacement: 'KIDS' },
+    { pattern: /เด็ก/gi, replacement: 'KIDS' },
+    { pattern: /\bunisex\b/gi, replacement: 'UNISEX' },
 ]
 
 function extractKeywords(text, keywordMappings) {
@@ -70,6 +71,10 @@ function extractColors(text) {
 
 function extractSizes(text) {
     return extractKeywords(text, sizeMappings);
+}
+
+function extractGenders(text) {
+    return extractKeywords(text, genderMappings);
 }
 
 function extractPriceRanges(inputString) {
@@ -131,7 +136,7 @@ function replaceSizes(text) {
     return replaceKeywords(text, sizeMappings);
 }
 
-module.exports = { extractColors, extractSizes, extractPriceRanges, replaceColors, replaceSizes };
+module.exports = { extractColors, extractSizes, extractGenders, extractPriceRanges, replaceColors, replaceSizes };
 
 /*
 

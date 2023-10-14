@@ -28,6 +28,10 @@ const ProductVariant = sequelize.define('ProductVariant', {
         type: DataTypes.STRING,
         allowNull: false,
     },
+    soldCount: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+    },
 });
 
 // Define a function to set the colorName before creating a new product variant
