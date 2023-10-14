@@ -3,7 +3,7 @@ const Product = require('../models/Product');
 const ProductTag = require('../models/ProductTag');
 const ProductVariant = require('../models/ProductVariant');
 const CategoryTag = require('../models/CategoryTag');
-const { extractColors, extractSizes, extractGenders, extractPriceRanges } = require('../utils/keywordUtils');
+const { extractColors, extractSizes, extractGenders, extractPriceRanges, replaceColors, replaceGenders, replaceSizes, splitText, removeRedundentTokens } = require('../utils/keywordUtils');
 const User = require('../models/User');
 const { findMinMaxSize } = require('../utils/sizeUtils');
 const sequelize = require('../config/database');
@@ -20,7 +20,7 @@ function toArray(value) {
 
 exports.listProductsByCriteria = async (req, res) => {
   try {
-    const { minPrice, maxPrice } = req.query;
+    const { className, minPrice, maxPrice } = req.query;
     let rawKeywords = req.query.keywords || '';
 
     let brands, sizes, colors, gender, retVal;
@@ -29,38 +29,45 @@ exports.listProductsByCriteria = async (req, res) => {
     category = category ? category[category.length - 1] : undefined;
 
     brands = [];
-    console.log({ rawKeywords });
-    console.log({ what: extractColors(rawKeywords) });
 
-    retVal = extractColors(rawKeywords)
-    colors = retVal.matchedKeywords;
-    rawKeywords = retVal.extractedText.trim();
-    console.log({ colors, rawKeywords });
+    rawKeywords = replaceColors(rawKeywords);
+    rawKeywords = replaceGenders(rawKeywords);
+    rawKeywords = replaceSizes(rawKeywords);
+    rawKeywords = splitText(rawKeywords);
+    console.log(rawKeywords);
+    // console.log({ rawKeywords });
+    // console.log({ what: extractColors(rawKeywords) });
 
-    retVal = extractSizes(rawKeywords);
-    sizes = retVal.matchedKeywords;
-    rawKeywords = retVal.extractedText.trim();
-    console.log({ rawKeywords });
+    // retVal = extractColors(rawKeywords)
+    // colors = retVal.matchedKeywords;
+    // rawKeywords = retVal.extractedText.trim();
+    // console.log({ colors, rawKeywords });
+
+    // retVal = extractSizes(rawKeywords);
+    // sizes = retVal.matchedKeywords;
+    // rawKeywords = retVal.extractedText.trim();
+    // console.log({ rawKeywords });
 
     if (req.query.gender) {
       gender = req.query.gender
     } else {
-      retVal = extractGenders(rawKeywords);
-      console.log(retVal.matchedKeywords);
-      gender = retVal.matchedKeywords[0];
-      rawKeywords = retVal.extractedText.trim();
-      console.log(rawKeywords);
+      // retVal = extractGenders(rawKeywords);
+      // console.log(retVal.matchedKeywords);
+      // gender = retVal.matchedKeywords[0];
+      // rawKeywords = retVal.extractedText.trim();
+      // console.log(rawKeywords);
     }
-    console.log({gender});
+    // console.log({gender});
 
     retVal = extractPriceRanges(rawKeywords)
     const priceRanges = retVal.priceRanges;
     rawKeywords = retVal.extractedText.trim();
 
-    const keywordsArray = rawKeywords?.split(' ');
-    brands = [...toArray(req.query.brands), ...brands];
-    sizes = [...toArray(req.query.sizes), ...sizes];
-    colors = [...toArray(req.query.colors), ...colors];
+    const keywordsArray = removeRedundentTokens(rawKeywords?.split(/\s+/));
+    console.log(keywordsArray);
+    brands = [...toArray(req.query.brands)];
+    sizes = [...toArray(req.query.sizes)];
+    colors = [...toArray(req.query.colors)];
 
     let priceRange = {};
     if (minPrice && maxPrice) {
@@ -70,7 +77,7 @@ exports.listProductsByCriteria = async (req, res) => {
       priceRange = priceRanges[0];
     }
 
-    console.log({ sizes, colors, priceRange });
+    // console.log({ sizes, colors, priceRange });
     const tags = toArray(req.query.tags);
 
     const whereClause = {};
@@ -83,6 +90,10 @@ exports.listProductsByCriteria = async (req, res) => {
       } else {
         whereClause.gender = gender;
       }
+    }
+
+    if (className) {
+      whereClause.className = className;
     }
 
     if (category) {
@@ -163,7 +174,7 @@ exports.listProductsByCriteria = async (req, res) => {
     const filteredProducts = !keywordsArray
       ? products
       : products.filter((product) => {
-        console.log(product.categoryTags);
+        // console.log(product.categoryTags);
         return keywordsArray.every((keyword) => {
           const lowercaseKeyword = keyword.toLowerCase();
           const match = (

@@ -62,7 +62,7 @@ const Catalog = () => {
 
       try {
         const response = await fetch(
-          `http://localhost:3000/api/v1/products?keywords=${typeCatalog} ${searchWord}${paramCategory}${paramColors}${paramSize}`
+          `http://localhost:3000/api/v1/products?gender=${typeCatalog.toUpperCase()}${paramCategory}${paramColors}${paramSize}&keywords=${searchWord}`
         );
 
         if (response.ok) {

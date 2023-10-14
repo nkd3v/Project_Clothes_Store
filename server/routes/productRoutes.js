@@ -29,18 +29,14 @@ const authMiddleware = require('../middleware/authMiddleware');
  *       - in: query
  *         name: keywords
  *         schema:
- *           type: array
- *           items:
- *             type: string
+ *           type: string
  *         style: form
  *         explode: true
  *         description: A search query.
  *       - in: query
  *         name: brands
  *         schema:
- *           type: array
- *           items:
- *             type: string
+ *           type: string
  *         style: form
  *         explode: true
  *         description: An array of brands of the products to filter.
@@ -76,6 +72,11 @@ const authMiddleware = require('../middleware/authMiddleware');
  *         schema:
  *           type: string
  *         description: The gender of the products to filter.
+ *       - in: query
+ *         name: className
+ *         schema:
+ *           type: string
+ *         description: The class of the products to filter.
  *       - in: query
  *         name: category
  *         schema:
