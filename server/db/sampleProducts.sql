@@ -13,7 +13,5 @@ VALUES
     ((SELECT id FROM Users WHERE username = 'tsloy'), 'กางเกง ผ้าคอตตอน ขา 5 ส่วน ทรงหลวม', 'ผ้าคอตตอนปรับใหม่ให้หนายิ่งขึ้น ดูเนี้ยบสวมใส่ได้ทุกโอกาส', 'WOMEN', 'กางเกง', 'กางเกงขาห้าส่วน', NULL, datetime('now'), datetime('now')),
     ((SELECT id FROM Users WHERE username = 'xbit'), 'กางเกงขาสั้น ผ้าเดนิม เจอร์ซี่', 'เนื้อผ้านุ่มเบาสบาย มีกระเป๋าด้านข้างเพื่อความสะดวก', 'WOMEN', 'กางเกง', 'กางเกงขาสั้น', NULL, datetime('now'), datetime('now')),
     ((SELECT id FROM Users WHERE username = 'mannuy'), 'กางเกงเลกกิ้ง Ultra Stretch', 'ไอเทมโฉมใหม่กับเอวปกติที่ใส่สบายยิ่งขึ้น เลกกิ้งมากประโยชน์ปรับดีไซน์ใหม่ด้วยเนื้อผ้าและดีเทลที่ล้ำหน้ายิ่งขึ้น', 'WOMEN', 'กางเกง', 'กางเกงเลกกิ้ง', NULL, datetime('now'), datetime('now')),
-    ((SELECT id FROM Users WHERE username = 'picpic'), 'เสื้อสเวต แขนยาว PEANUTS Dance Time with Snoopy', 'ลายกราฟิกที่สะท้อนความเบิกบานใจในการ์ตูนแนววินเทจ Peanuts', 'WOMEN', 'เสื้อ', 'UT เสื้อยืดลายกราฟิก', NULL, datetime('now'), datetime('now')),
-    ((SELECT id FROM Users WHERE username = 'user1'), 'Product 1', 'Description for Product 1', 'MEN', 'เสื้อ', 'เสื้อกันหนาว', 'abc, def', datetime('now'), datetime('now')),
-    ((SELECT id FROM Users WHERE username = 'user2'), 'Product 2', 'Description for Product 2', 'WOMEN', 'เสื้อ', 'เสื้อฟลีซ (Fleece)', NULL, datetime('now'), datetime('now'));
+    ((SELECT id FROM Users WHERE username = 'picpic'), 'เสื้อสเวต แขนยาว PEANUTS Dance Time with Snoopy', 'ลายกราฟิกที่สะท้อนความเบิกบานใจในการ์ตูนแนววินเทจ Peanuts', 'WOMEN', 'เสื้อ', 'UT เสื้อยืดลายกราฟิก', NULL, datetime('now'), datetime('now'));
 

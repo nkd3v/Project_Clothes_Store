@@ -36,7 +36,4 @@ VALUES
     ('L', 'BLUE', '#2C477A', 590, 8, '11-blue.avif', (SELECT id FROM Products WHERE name = 'กางเกงขาสั้น ผ้าเดนิม เจอร์ซี่'), datetime('now'), datetime('now')),
     ('XS', 'WHITE', '#F1E7DC', 990, 8, '12-white.avif', (SELECT id FROM Products WHERE name = 'กางเกงเลกกิ้ง Ultra Stretch'), datetime('now'), datetime('now')),
     ('S', 'BLACK', '#211E1F', 990, 8, '12-black.avif', (SELECT id FROM Products WHERE name = 'กางเกงเลกกิ้ง Ultra Stretch'), datetime('now'), datetime('now')),
-    ('L', 'GRAY', '#8E8D7A', 990, 8, '13-gray.avif', (SELECT id FROM Products WHERE name = 'เสื้อสเวต แขนยาว PEANUTS Dance Time with Snoopy'), datetime('now'), datetime('now')),
-    ('S', 'RED', '#FF0000', 19.99, 10, 'shirt.png', (SELECT id FROM Products WHERE name = 'Product 1'), datetime('now'), datetime('now')),
-    ('M', 'BLUE', '#0000FF', 24.99, 15, 'shirt.png', (SELECT id FROM Products WHERE name = 'Product 1'), datetime('now'), datetime('now')),
-    ('L', 'GREEN', '#008000', 29.99, 8, 'shirt.png', (SELECT id FROM Products WHERE name = 'Product 2'), datetime('now'), datetime('now'));
+    ('L', 'GRAY', '#8E8D7A', 990, 8, '13-gray.avif', (SELECT id FROM Products WHERE name = 'เสื้อสเวต แขนยาว PEANUTS Dance Time with Snoopy'), datetime('now'), datetime('now'));
