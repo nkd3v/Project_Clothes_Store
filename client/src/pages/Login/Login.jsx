@@ -2,7 +2,7 @@ import React from "react";
 import "./login.css";
 import { useNavigate } from "react-router-dom";
 
-const Login = ({ setIsAuth, setRole }) => {
+const Login = ({ setIsAuth }) => {
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -55,7 +55,6 @@ const Login = ({ setIsAuth, setRole }) => {
         console.log(
           "Get user info successful. You can do authenticated operation now"
         );
-        // setRole(role);
       } else {
         alert("Login failed. Server returned an error: " + response.status);
       }

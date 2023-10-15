@@ -70,5 +70,6 @@
   border: 3px solid var(--primary-clr);
 }
 
-
-
+.dropdown .dropdown-items .item.checked {
+  font-weight: bolder;
+}

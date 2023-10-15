@@ -20,7 +20,6 @@ const Preview = ({ getTotalOrder }) => {
       product?.ProductVariants?.map((variant) => variant.color)
     );
 
-    // Convert the Set back to an array if needed
     const colorList = Array.from(colorSet);
     setListColor(colorList);
   }, [product]);

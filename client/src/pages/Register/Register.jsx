@@ -2,7 +2,7 @@ import React from "react";
 import "./Register.css";
 import { useNavigate } from "react-router-dom";
 
-const Register = ({ setIsAuth }) => {
+const Register = ({ setIsAuth, setRole }) => {
   const navigate = useNavigate();
   const handleSubmitRegister = async (e) => {
     e.preventDefault();

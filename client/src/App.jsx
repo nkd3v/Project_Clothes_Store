@@ -105,13 +105,10 @@ function App() {
       />
       <Routes>
         <Route path="/" element={<Home />}></Route>
-        <Route
-          path="/login"
-          element={<Login setIsAuth={setIsAuth} setRole={setRole} />}
-        ></Route>
+        <Route path="/login" element={<Login setIsAuth={setIsAuth} />}></Route>
         <Route
           path="/register"
-          element={<Register setIsAuth={setIsAuth} setRole={setRole} />}
+          element={<Register setIsAuth={setIsAuth} />}
         ></Route>
         <Route path="/login" element={<Login setIsAuth={setIsAuth} />}></Route>
         <Route path="/Register" element={<Register />}></Route>

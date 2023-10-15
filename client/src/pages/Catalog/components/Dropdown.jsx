@@ -3,9 +3,14 @@ import "./styles/dropdown.css";
 
 const Dropdown = ({ name, items, id, callBack, type, itemStyle }) => {
   const handleClick = (e, item) => {
+    const items = document.querySelectorAll(".item");
     const element = e.target;
     if (itemStyle === "category") {
+      items.forEach((item) => {
+        item?.classList?.remove("checked");
+      });
       callBack(element.innerHTML);
+      element?.classList?.add("checked");
       return;
     }
     if (element.classList.contains("checked")) {

@@ -19,6 +19,7 @@
     font-size: 20px;
     background-color: #072F5F;
     color: white;
+    cursor: pointer;
 }
 
 .EditP {
@@ -81,12 +82,19 @@
     height: 100%;
 }
 
+.Color_Size .row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .Color_Size {
     max-width: 2fr;
     display: flex;
     flex-direction: column;
 
 }
+
 
 .Sold_Text {
     max-width: 2fr;

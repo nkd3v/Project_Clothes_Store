@@ -3,15 +3,18 @@ import "./styles/search-bar.css";
 const SearchBar = ({ setSearchWord }) => {
   const inputRef = useRef();
   return (
-    <div className="search-bar">
+    <form
+      className="search-bar"
+      onSubmit={(e) => {
+        e.preventDefault();
+        setSearchWord(inputRef?.current?.value);
+      }}
+    >
       <input type="text" placeholder="ค้นหาสินค้า" ref={inputRef} />
-      <button className="search-btn">
-        <i
-          className="fa-solid fa-magnifying-glass"
-          onClick={() => setSearchWord(inputRef?.current?.value)}
-        ></i>
+      <button className="search-btn" type="submit">
+        <i className="fa-solid fa-magnifying-glass"></i>
       </button>
-    </div>
+    </form>
   );
 };
 
