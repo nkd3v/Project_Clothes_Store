@@ -2,7 +2,7 @@ import React from "react";
 import "./Register.css";
 import { useNavigate } from "react-router-dom";
 
-const Register = ({ setIsAuth, setRole }) => {
+const Register = ({ setIsAuth }) => {
   const navigate = useNavigate();
   const handleSubmitRegister = async (e) => {
     e.preventDefault();
@@ -45,7 +45,6 @@ const Register = ({ setIsAuth, setRole }) => {
         console.log(
           "Register successful. You can do authenticated operation now"
         );
-        // setRole(registerData?.role);
         setIsAuth(token);
         navigate("/");
       } else {

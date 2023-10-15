@@ -14,6 +14,7 @@ import StatusOrder from "./pages/StatusOrder/StatusOrder";
 import Register from "./pages/Register/Register";
 import MyOrder from "./pages/MyOrder/MyOrder";
 import MyStore from "./pages/MyStore/MyStore";
+import Additem from "./pages/Additem/Additem";
 
 function App() {
   const { pathname } = useLocation();
@@ -112,6 +113,9 @@ function App() {
           path="/register"
           element={<Register setIsAuth={setIsAuth} setRole={setRole} />}
         ></Route>
+        <Route path="/login" element={<Login setIsAuth={setIsAuth} />}></Route>
+        <Route path="/Register" element={<Register />}></Route>
+        <Route path="/additems" element={<Additem />}></Route>
         <Route path="/catalog/:typeCatalog" element={<Catalog />}></Route>
         <Route
           path="/product/preview/:id"

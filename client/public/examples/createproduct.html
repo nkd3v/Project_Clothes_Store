@@ -57,14 +57,20 @@
     
             <select id="category1" name="gender">
                 <option value="">Select a gender</option>
+                <option value="male">ชาย</option>
+                <option value="female">หญิง</option>
             </select>
     
             <select id="category2" name="className" disabled>
                 <option value="">Select a class</option>
+                <option value="male">ชาย</option>
+                <option value="female">หญิง</option>
             </select>
     
             <select id="category3" name="category" disabled>
                 <option value="">Select a category</option>
+                <option value="male">ชาย</option>
+                <option value="female">หญิง</option>
             </select><br><br>
         </fieldset>
     
@@ -72,13 +78,13 @@
             <legend>Additional Information</legend>
     
             <label for="tags">Tags (comma-separated):</label>
-            <input type="text" id="tags" name="tags" required><br><br>
+            <input type="text" id="tags" name="tags" required>
     
-            <label for="variants">Variants:</label><br>
+            <label for="variants">Variants:</label>
             <button type="button" id="addVariant">Add Variant</button>
             <div id="variantFields">
                 <!-- Variant fields will be added here -->
-            </div><br>
+            </div>
         </fieldset>
     
         <input type="submit" value="Create Product">
