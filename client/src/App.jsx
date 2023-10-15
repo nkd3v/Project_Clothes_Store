@@ -14,13 +14,12 @@ import StatusOrder from "./pages/StatusOrder/StatusOrder";
 import Register from "./pages/Register/Register";
 import MyOrder from "./pages/MyOrder/MyOrder";
 import MyStore from "./pages/MyStore/MyStore";
-// import Saler from "./pages/Saler/Saler"
 
 function App() {
   const { pathname } = useLocation();
   const [isLoginState, setIsLoginState] = useState(false);
   const [totalOrder, setTotalOrder] = useState(0);
-  const [role, setRole] = useState();
+  const [role, setRole] = useState("");
   const [isAuth, setIsAuth] = useState(Cookies.get("auth_token"));
   console.log(isAuth);
   console.log("role", role);
@@ -66,8 +65,32 @@ function App() {
       setTotalOrder(0);
       return;
     }
+    getUserInfo();
     getTotalOrder();
   }, [isAuth]);
+
+  async function getUserInfo() {
+    try {
+      const response = await fetch(
+        "http://localhost:3000/api/v1/user/get-user-info",
+        {
+          credentials: "include",
+        }
+      );
+
+      if (response.ok) {
+        const { role } = await response.json();
+        console.log(
+          "Get user info successful. You can do authenticated operation now"
+        );
+        setRole(role);
+      } else {
+        alert("Login failed. Server returned an error: " + response.status);
+      }
+    } catch (error) {
+      console.error("Error get user info:", error);
+    }
+  }
 
   return (
     <div className="app">
@@ -77,6 +100,7 @@ function App() {
         setIsAuth={setIsAuth}
         totalOrder={totalOrder}
         role={role}
+        setRole={setRole}
       />
       <Routes>
         <Route path="/" element={<Home />}></Route>

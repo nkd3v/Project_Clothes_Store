@@ -1,10 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "./styles/navbar.css";
 import { Link, useNavigate } from "react-router-dom";
 import logoImg from "./assets/images/logo.png";
 import cartIcon from "./assets/images/icon-cart.png";
 import profileIcon from "./assets/images/icon-profile.png";
-const Navbar = ({ isLoginState, isAuth, setIsAuth, totalOrder, role }) => {
+const Navbar = ({
+  isLoginState,
+  isAuth,
+  setIsAuth,
+  totalOrder,
+  role,
+  setRole,
+}) => {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -16,6 +23,7 @@ const Navbar = ({ isLoginState, isAuth, setIsAuth, totalOrder, role }) => {
       const { message } = await response.json();
       console.log(message);
       setIsAuth(null);
+      setRole(null);
       navigate("/login");
     } catch (error) {
       console.error("Error:", error);
@@ -31,30 +39,31 @@ const Navbar = ({ isLoginState, isAuth, setIsAuth, totalOrder, role }) => {
               <img src={logoImg} alt="logo" />
             </Link>
           </div>
-          {!isLoginState && (role === "ซื้อ" || role === "Customer") && (
-            <ul className="lists flex">
-              <li>
-                <Link to="/catalog/women" className="link">
-                  WOMEN
-                </Link>
-              </li>
-              <li>
-                <Link to="/catalog/men" className="link">
-                  MEN
-                </Link>
-              </li>
-              <li>
-                <Link to="/catalog/kids" className="link">
-                  KIDS
-                </Link>
-              </li>
-              <li>
-                <Link to="/catalog/baby" className="link">
-                  BABY
-                </Link>
-              </li>
-            </ul>
-          )}
+          {!isLoginState &&
+            (role === "ซื้อ" || role === "Customer" || !role) && (
+              <ul className="lists flex">
+                <li>
+                  <Link to="/catalog/women" className="link">
+                    WOMEN
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/catalog/men" className="link">
+                    MEN
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/catalog/kids" className="link">
+                    KIDS
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/catalog/baby" className="link">
+                    BABY
+                  </Link>
+                </li>
+              </ul>
+            )}
           {!isLoginState && role === "ขาย" && (
             <ul className="lists flex">
               <li>

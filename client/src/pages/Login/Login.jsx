@@ -55,7 +55,7 @@ const Login = ({ setIsAuth, setRole }) => {
         console.log(
           "Get user info successful. You can do authenticated operation now"
         );
-        setRole(role);
+        // setRole(role);
       } else {
         alert("Login failed. Server returned an error: " + response.status);
       }

@@ -4,14 +4,14 @@ import OrderItem from "./OrderItem";
 const Order = ({ order, index }) => {
   return (
     <div className="order">
-      <div className="order-header">
+      <header className="order-header">
         <p className="order-name">Order {index}</p>
         <div className="order-status">
           <p>Expected Completion</p>
           <p>Oct 12,2077</p>
         </div>
-      </div>
-      <div className="order-statusbar">
+      </header>
+      <section className="order-statusbar">
         <div className="margin-area">
           <div className="dot one">1</div>
           <div className="dot two">2</div>
@@ -25,8 +25,8 @@ const Order = ({ order, index }) => {
           <div className="message message-3">กำลังส่ง</div>
           <div className="message message-4">ได้รับสินค้า</div>
         </div>
-      </div>
-      <div className="order-bottom">
+      </section>
+      <section className="order-bottom">
         <div className="order-item-wrapper">
           {order?.OrderItems?.map((orderItem, idx) => (
             <OrderItem key={idx} orderItem={orderItem} />
@@ -52,7 +52,7 @@ const Order = ({ order, index }) => {
             <p>THB {order?.totalPrice}</p>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 };

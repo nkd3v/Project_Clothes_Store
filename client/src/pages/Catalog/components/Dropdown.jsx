@@ -4,6 +4,10 @@ import "./styles/dropdown.css";
 const Dropdown = ({ name, items, id, callBack, type, itemStyle }) => {
   const handleClick = (e, item) => {
     const element = e.target;
+    if (itemStyle === "category") {
+      callBack(element.innerHTML);
+      return;
+    }
     if (element.classList.contains("checked")) {
       const findValue = element.innerHTML;
 

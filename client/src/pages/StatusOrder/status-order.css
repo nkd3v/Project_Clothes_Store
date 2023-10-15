@@ -1,6 +1,7 @@
 .status-order .container {
     max-width: 90%;
     margin-inline: auto;
+    
 }
 
 .status-order header {
@@ -12,18 +13,22 @@
     margin-bottom: 5rem;
 }
 
-.status-order .order-header {
+.status-order .order .order-header {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     padding: 1rem 3rem;
     font-size: 2rem;
+
 }
 
-.status-order .order-header > .order-name{
+
+
+.status-order .order .order-header > .order-name{
     font-weight: bolder;
 }
 
-.status-order .order-statusbar {
+.status-order .order .order-statusbar {
     margin: auto;
     padding: auto;
     width: 844px;
@@ -130,6 +135,7 @@
 .status-order .order-bottom {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     padding: 1rem 3rem;
 }
 

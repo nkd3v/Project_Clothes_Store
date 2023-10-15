@@ -1,7 +1,7 @@
 import React from "react";
-import "./order.css";
+import "./order-cart.css";
 
-const Order = ({ item, getTotalOrder, setTotalPrice }) => {
+const OrderCart = ({ item, getTotalOrder, setTotalPrice }) => {
   const handleChangeQuantity = async (e) => {
     const value = e.target.value || 0;
     console.log("myValue", value);
@@ -36,7 +36,7 @@ const Order = ({ item, getTotalOrder, setTotalPrice }) => {
     }
   };
   return (
-    <div className="order">
+    <div className="order-cart">
       <img
         src={`http://localhost:3000/api/v1/uploads/${item?.ProductVariant?.imageUrl}`}
         alt=""
@@ -75,4 +75,4 @@ const Order = ({ item, getTotalOrder, setTotalPrice }) => {
   );
 };
 
-export default Order;
+export default OrderCart;

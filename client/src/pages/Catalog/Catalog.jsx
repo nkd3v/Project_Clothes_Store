@@ -51,6 +51,13 @@ const Catalog = () => {
   }, []);
 
   useEffect(() => {
+    setCategory("");
+    setSearchWord("");
+    setColors([]);
+    setSizes([]);
+  }, [typeCatalog]);
+
+  useEffect(() => {
     const getProducts = async () => {
       const paramCategory = category ? `&category=${category}` : "";
       const paramColors = colors
@@ -68,6 +75,7 @@ const Catalog = () => {
         if (response.ok) {
           const _res = await response.json();
           console.log(_res);
+          window.scrollTo(0, 0);
           setProducts(_res);
         } else {
           alert(
@@ -92,6 +100,7 @@ const Catalog = () => {
               key={idx}
               name={dropdown.name}
               items={dropdown.items}
+              itemStyle="category"
               id={idx}
               callBack={setCategory}
             />

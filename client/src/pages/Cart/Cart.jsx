@@ -3,7 +3,7 @@ import Button from "../../components/Button";
 import { useNavigate } from "react-router-dom";
 import Receipt from "../../components/Receipt";
 import { useEffect, useRef, useState } from "react";
-import Order from "./components/Order";
+import OrderCart from "./components/OrderCart";
 function Cart({ totalOrder, getTotalOrder }) {
   const navigate = useNavigate();
   const [productInCart, setProductInCart] = useState({});
@@ -91,7 +91,7 @@ function Cart({ totalOrder, getTotalOrder }) {
               <p className="empty">ตะกร้าของคุณว่างอยู่</p>
             )}
             {productInCart?.cartItems?.map((item, idx) => (
-              <Order
+              <OrderCart
                 key={idx}
                 item={item}
                 getTotalOrder={getTotalOrder}

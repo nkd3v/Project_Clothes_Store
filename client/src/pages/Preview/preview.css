@@ -93,6 +93,13 @@
     border: 1px solid black;
 }
 
+.preview .wrapper .right-wrapper .size-list .sizes.none {
+    display: grid;
+    place-items: center;
+    border: 1px solid black;
+    background-color: red;
+}
+
 .preview .wrapper .right-wrapper .size-list .sizes.checked {
     background-color: #072F5F;
     color: #fff;

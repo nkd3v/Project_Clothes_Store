@@ -13,6 +13,7 @@ const Preview = ({ getTotalOrder }) => {
   const [price, setPrice] = useState();
   const [product, setProduct] = useState([]);
   const [listColor, setListColor] = useState([]);
+  const [listSize, setListSize] = useState([]);
   console.log("myProduct", product);
   useEffect(() => {
     const colorSet = new Set(
@@ -54,7 +55,7 @@ const Preview = ({ getTotalOrder }) => {
             response.status
         );
         if (response.status === 401) alert("Need to login first");
-        if (response.status === 404) alert("Please select size");
+        if (response.status === 400) alert("Please select size");
         // navigate("/login");
       }
     } catch (err) {
@@ -76,6 +77,7 @@ const Preview = ({ getTotalOrder }) => {
           console.log(_res);
           setProduct(_res);
           setColor(_res?.ProductVariants[0]?.color);
+
           // setSize(_res?.ProductVariants[0]?.size);
           setMainImage(
             `http://localhost:3000/api/v1/uploads/${_res?.ProductVariants[0]?.imageUrl}`
@@ -101,6 +103,20 @@ const Preview = ({ getTotalOrder }) => {
     });
   }, [size, color]);
 
+  useEffect(() => {
+    const filteredSize = product?.ProductVariants?.filter(
+      (item) => item.color === color
+    );
+    const listSize = filteredSize?.map((item) => item.size);
+    // Define the custom order
+    const sizeOrder = ["XS", "S", "M", "L", "XL", "XXL", "3XL"];
+
+    listSize?.sort((a, b) => {
+      return sizeOrder.indexOf(a) - sizeOrder.indexOf(b);
+    });
+    setListSize(listSize);
+  }, [color]);
+
   const handleClickPreviewImg = (e) => {
     const ele = e.target;
     console.log(ele.src);
@@ -117,14 +133,13 @@ const Preview = ({ getTotalOrder }) => {
   };
 
   const handleClickColor = (e) => {
+    clearCheckedSize();
     const ele = e.target;
     const eleColor = ele.style.backgroundColor;
-    console.log("eleCOlor", eleColor);
     const hexColor = convertRGB(eleColor).toUpperCase();
-    setColor(hexColor);
     setSize("");
+    setColor(hexColor);
     setPrice(null);
-    console.log(hexColor);
     const colors = document.querySelectorAll(".colors");
     colors.forEach((clr) => {
       if (clr.style.backgroundColor === eleColor) {
@@ -147,6 +162,15 @@ const Preview = ({ getTotalOrder }) => {
       }
     });
   };
+
+  function clearCheckedSize() {
+    const sizes = document.querySelectorAll(".sizes");
+    sizes.forEach((s) => {
+      if (s.classList.contains("checked")) {
+        s.classList.remove("checked");
+      }
+    });
+  }
 
   return (
     <div className="preview">
@@ -197,19 +221,15 @@ const Preview = ({ getTotalOrder }) => {
               ))}
             </div>
             <div className="size-list">
-              {product?.ProductVariants?.map((pv, idx) => {
-                if (pv.color === color) {
-                  return (
-                    <div
-                      key={idx}
-                      className="sizes"
-                      onClick={(e) => handleClickSize(e)}
-                    >
-                      {pv?.size}
-                    </div>
-                  );
-                }
-              })}
+              {listSize?.map((size, idx) => (
+                <div
+                  key={idx}
+                  className="sizes"
+                  onClick={(e) => handleClickSize(e)}
+                >
+                  {size}
+                </div>
+              ))}
             </div>
             <Button isPrimary={false} text="ความยาวที่แนะนำเทียบกับส่วนสูง" />
             <div className="amount-field">

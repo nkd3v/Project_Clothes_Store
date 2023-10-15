@@ -45,7 +45,7 @@ const Register = ({ setIsAuth, setRole }) => {
         console.log(
           "Register successful. You can do authenticated operation now"
         );
-        setRole(registerData?.role);
+        // setRole(registerData?.role);
         setIsAuth(token);
         navigate("/");
       } else {
