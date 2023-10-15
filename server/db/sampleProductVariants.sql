@@ -87,6 +87,6 @@ VALUES
     ('S', 'PINK', '#F4D9DA', 590, 18, '34-pink.webp', (SELECT id FROM Products WHERE name = 'เสื้อยืด คอกลม แขนยาว ผ้าลายนูน (Ribbed)'), datetime('now'), datetime('now')),
     ('M', 'BLACK', '#424349', 790, 18, '35-black.webp', (SELECT id FROM Products WHERE name = 'KIDS Soft ยีนส์ Ultra Stretch ผ้าเดนิม (Zip-Fly)'), datetime('now'), datetime('now')),
     ('L', 'BLUE', '#98B2CB', 790, 18, '35-blue.webp', (SELECT id FROM Products WHERE name = 'KIDS Soft ยีนส์ Ultra Stretch ผ้าเดนิม (Zip-Fly)'), datetime('now'), datetime('now')),
-    ('3XL', 'YELLOW', '#98B2CB', 790, 18, '36-yellow.webp', (SELECT id FROM Products WHERE name = 'เสื้อยืดแขนสั้น STUDIO GHIBLI UT'), datetime('now'), datetime('now')),
+    ('3XL', 'YELLOW', '#D5AE30', 790, 18, '36-yellow.webp', (SELECT id FROM Products WHERE name = 'เสื้อยืดแขนสั้น STUDIO GHIBLI UT'), datetime('now'), datetime('now')),
     ('XL', 'GREEN', '#0A6444', 390, 18, '28-green.webp', (SELECT id FROM Products WHERE name = 'KIDS เสื้อยืด U AIRism คอตตอน คอกลม แขนสั้น'), datetime('now'), datetime('now')),
     ('3XL', 'BLUE', '#C1DFE8', 390, 18, '28-blue.webp', (SELECT id FROM Products WHERE name = 'KIDS เสื้อยืด U AIRism คอตตอน คอกลม แขนสั้น'), datetime('now'), datetime('now'));

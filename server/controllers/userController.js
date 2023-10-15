@@ -50,11 +50,9 @@ exports.getUserInfo = async (req, res) => {
     const userId = req.user.id;
 
     // Find the user by their ID
-    const user = (await User.findByPk(userId)).toJSON();
-
-    delete user.password;
-    delete user.createdAt;
-    delete user.updatedAt;
+    const user = (await User.findByPk(userId, {
+      attributes: ['username', 'email', 'firstName', 'lastName', 'dateOfBirth', 'gender', 'address1', 'address2', 'country', 'state', 'city', 'postalCode', 'phoneNumber', 'role']
+    })).toJSON();
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
