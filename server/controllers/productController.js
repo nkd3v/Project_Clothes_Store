@@ -269,7 +269,7 @@ exports.createProduct = async (req, res) => {
       color: variant.color,
       price: variant.price,
       quantity: variant.quantity,
-      imageUrl: 'default.png',
+      imageUrl: files[index].filename,
       tags,
     })));
 
