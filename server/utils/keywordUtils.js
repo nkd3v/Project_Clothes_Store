@@ -50,6 +50,12 @@ const sizeMappings = [
 ];
 
 const genderMappings = [
+    { pattern: /เด็กชาย/gi, replacement: 'BOYS' },
+    { pattern: /เด็กผู้ชาย/gi, replacement: 'BOYS' },
+    { pattern: /boys/gi, replacement: 'BOYS' },
+    { pattern: /เด็กหญิง/gi, replacement: 'GIRLS' },
+    { pattern: /เด็กผู้หญิง/gi, replacement: 'GIRLS' },
+    { pattern: /girls/gi, replacement: 'GIRLS' },
     { pattern: /หญิง/gi, replacement: 'WOMEN' },
     { pattern: /สตรี/gi, replacement: 'WOMEN' },
     { pattern: /women/gi, replacement: 'WOMEN' },
@@ -134,6 +140,10 @@ const tokens = [
     'แบบ',
     'ลักษณะ',
     'ปกกระดุม',
+    'ส่วน',
+    'ที่',
+    'ใส่',
+    'ๆ',
 ];
 
 const redundentTokens = [
@@ -152,6 +162,10 @@ const redundentTokens = [
     'แบบ',
     'ลักษณะ',
     'ชุด',
+    'ผู้',
+    'ที่',
+    'ใส่',
+    'ๆ',
 ];
 
 function splitTextWithTokens(text, tokens) {

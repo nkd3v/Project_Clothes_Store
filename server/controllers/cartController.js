@@ -24,10 +24,6 @@ exports.addToCart = async (req, res) => {
       return res.status(404).json({ error: 'Product not found' });
     }
 
-    if (productVariant.quantity < quantity) {
-      return res.status(400).json({ error: 'Not enough quantity in stock' });
-    }
-
     let cart = await Cart.findOne({
       where: { UserId: req.user.id },
     });
@@ -41,6 +37,10 @@ exports.addToCart = async (req, res) => {
     });
 
     if (existingCartItem) {
+      if (productVariant.quantity < existingCartItem.quantity + quantity) {
+        return res.status(400).json({ error: 'Not enough quantity in stock' });
+      }
+
       existingCartItem.quantity += quantity;
       await existingCartItem.save();
     } else {

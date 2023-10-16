@@ -8,6 +8,8 @@ const User = require('../models/User');
 const { findMinMaxSize } = require('../utils/sizeUtils');
 const sequelize = require('../config/database');
 const { Op } = require('sequelize');
+const sharp = require('sharp');
+const fs = require('fs/promises');
 
 function toArray(value) {
   if (Array.isArray(value)) {
@@ -86,7 +88,7 @@ exports.listProductsByCriteria = async (req, res) => {
       if (gender == 'MEN' || gender == 'WOMEN') {
         whereClause.gender = { [Op.in]: [gender, 'UNISEX'] };
       } else if (gender == 'UNISEX') {
-        whereClause.gender = { [Op.in]: ['MEN', 'WOMEN', 'UNISEX']};
+        whereClause.gender = { [Op.in]: ['MEN', 'WOMEN', 'UNISEX'] };
       } else {
         whereClause.gender = gender;
       }
@@ -125,7 +127,7 @@ exports.listProductsByCriteria = async (req, res) => {
       include: [
         {
           model: ProductVariant,
-          attributes: ['id', 'colorName', 'color', 'price', 'size', 'imageUrl'],
+          attributes: ['id', 'colorName', 'color', 'price', 'size', 'imageUrl', 'quantity'],
           where: {
             [Op.and]: [
               { price: { [Op.between]: [priceRange.minPrice || 0, priceRange.maxPrice || Number.MAX_SAFE_INTEGER], }, },
@@ -223,6 +225,28 @@ exports.createProduct = async (req, res) => {
 
   if (!req.body['variants[][price]']) {
     return res.status(400).json({ error: 'Product require to have at least 1 variant' });
+  }
+
+  for (const file of files) {
+    // Check if the file meets the criteria
+    if (file.mimetype !== 'image/jpeg' && file.mimetype !== 'image/png') {
+      return res.status(400).json({ error: 'File must be in JPEG or PNG format' });
+    }
+
+    // Check file size
+    const fileSizeInBytes = file.size;
+    const maxFileSizeInBytes = 2 * 1024 * 1024; // 2MB
+
+    if (fileSizeInBytes > maxFileSizeInBytes) {
+      return res.status(400).json({ error: 'File size must be under 2 MB' });
+    }
+
+    // Check dimensions
+    const image = sharp(await fs.readFile(file.path));
+    const metadata = await image.metadata();
+    if (metadata.width < 400 || metadata.height < 400) {
+      return res.status(400).json({ error: 'Image dimensions must be greater than or equal to 400x400 pixels' });
+    }
   }
 
   const variants = (() => {
@@ -415,7 +439,7 @@ exports.ownedProduct = async (req, res) => {
       0
     );
 
-    res.json({products, totalRevenue});
+    res.json({ products, totalRevenue });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });

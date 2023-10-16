@@ -11,6 +11,8 @@ const { Readable } = require('stream'); // To create a readable stream
 const { Sequelize, DataTypes } = require('sequelize');
 const { v4: uuidv4 } = require('uuid');
 const Payment = require('../models/Payment');
+const sharp = require('sharp');
+const fs = require('fs/promises');
 
 exports.getAllOrderStatuses = async (req, res) => {
   try {
@@ -25,13 +27,52 @@ exports.getAllOrderStatuses = async (req, res) => {
 exports.uploadSlip = async (req, res) => {
   try {
     const { name, date, time, paymentId } = req.body;
-    const slipImage = req.file;
+    const file = req.file;
 
-    if (!name || !date || !time || !paymentId || !slipImage) {
+    if (!name || !date || !time || !paymentId || !file) {
       return res.status(400).json({ error: 'Missing values' });
     }
 
-    res.status(201).json({ message: 'Slip uploaded successfully' });
+    // Check if the file meets the criteria
+    if (file.mimetype !== 'image/jpeg' && file.mimetype !== 'image/png') {
+      return res.status(400).json({ error: 'File must be in JPEG or PNG format' });
+    }
+
+    // Check file size
+    const fileSizeInBytes = file.size;
+    const maxFileSizeInBytes = 1 * 1024 * 1024; // 1MB
+
+    if (fileSizeInBytes > maxFileSizeInBytes) {
+      return res.status(400).json({ error: 'File size must be under 1 MB' });
+    }
+
+    // Check dimensions
+    const image = sharp(await fs.readFile(file.path));
+    const metadata = await image.metadata();
+    if (metadata.width < 480 || metadata.height < 800) {
+      return res.status(400).json({ error: 'Image dimensions must be greater than or equal to 480x800 pixels' });
+    }
+
+    // Update the existing Payment record with the corresponding paymentId
+    const updatedPayment = await Payment.update(
+      {
+        payer: name,
+        payTime: time,
+        payDate: date,
+        slipUrl: file.filename,
+      },
+      {
+        where: {
+          id: paymentId, // Specify the condition to find the Payment record by paymentId
+        },
+      }
+    );
+
+    if (updatedPayment[0] === 1) {
+      return res.status(200).json({ message: 'Payment record updated successfully' });
+    } else {
+      return res.status(404).json({ error: 'Payment record not found' });
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });
@@ -135,7 +176,7 @@ exports.createOrder = async (req, res) => {
 
       return order.toJSON();
     });
-    
+
 
     // Wait for all order items to be created
     const orders = await Promise.all(orderItemsPromises);

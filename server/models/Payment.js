@@ -6,9 +6,9 @@ const Order = require('./Order');
 // Define the Payment model
 const Payment = db.define('Payment', {
   id: {
-    type: DataTypes.UUID,         // Use UUID data type
+    type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
-    primaryKey: true,             // Set it as the primary key
+    primaryKey: true,
   },
   totalPrice: {
     type: DataTypes.DECIMAL(10, 2),
@@ -21,6 +21,22 @@ const Payment = db.define('Payment', {
   couponDiscount: {
     type: DataTypes.DECIMAL(10, 2),
     allowNull: false,
+  },
+  payer: {
+    type: DataTypes.STRING, // Assuming payer's name is a string
+    allowNull: true,
+  },
+  payTime: {
+    type: DataTypes.TIME, // Assuming paytime is a time field
+    allowNull: true,
+  },
+  payDate: {
+    type: DataTypes.DATE, // Assuming paydate is a date field
+    allowNull: true,
+  },
+  slipUrl: {
+    type: DataTypes.STRING, // Assuming slipUrl is a string (URL)
+    allowNull: true,
   },
 });
 
