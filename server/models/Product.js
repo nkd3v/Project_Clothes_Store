@@ -69,6 +69,12 @@ Product.belongsTo(Category, {
     as: 'categoryName',
 });
 
+Product.belongsToMany(Category, {
+    through: 'Product_Category', // This should match the name of the junction table model
+    foreignKey: 'productId',
+    otherKey: 'categoryId',
+});
+
 Product.afterCreate(async (product) => {
     if (product.gender === 'UNISEX') {
         if (!product.gender?.trim()) {
@@ -77,7 +83,7 @@ Product.afterCreate(async (product) => {
             product.tags += ", MEN, WOMEN";
         }
     }
-    
+
     const category = categoryTags.find(category => category.name === product.category);
 
     if (category) {

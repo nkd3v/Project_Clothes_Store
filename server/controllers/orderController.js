@@ -40,22 +40,23 @@ exports.uploadSlip = async (req, res) => {
 
 exports.setOrderStatusById = async (req, res) => {
   try {
-    const orderId = req.params.id;
-    const { orderStatusId } = req.body;
+    const { id, orderStatusId } = req.body;
 
-    const order = await Order.findByPk(orderId);
+    const order = await Order.findByPk(id);
 
     if (!order) {
       return res.status(404).json({ error: 'Order not found' });
     }
 
-    // Check if the provided orderStatusId is valid
-    const validOrderStatuses = await Order.rawAttributes.status.values;
-    if (!validOrderStatuses.includes(orderStatusId)) {
+    // Map the orderStatusId to the corresponding status string from the ENUM
+    const orderStatusEnum = ['Waiting for payment', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
+    const status = orderStatusEnum[orderStatusId];
+
+    if (status === undefined) {
       return res.status(400).json({ error: 'Invalid orderStatusId' });
     }
 
-    order.status = orderStatusId;
+    order.status = status;
     await order.save();
 
     res.status(200).json({ message: 'Order status updated successfully' });

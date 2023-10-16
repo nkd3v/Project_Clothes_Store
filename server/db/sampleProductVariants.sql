@@ -89,4 +89,16 @@ VALUES
     ('L', 'BLUE', '#98B2CB', 790, 18, '35-blue.webp', (SELECT id FROM Products WHERE name = 'KIDS Soft ยีนส์ Ultra Stretch ผ้าเดนิม (Zip-Fly)'), datetime('now'), datetime('now')),
     ('3XL', 'YELLOW', '#D5AE30', 790, 18, '36-yellow.webp', (SELECT id FROM Products WHERE name = 'เสื้อยืดแขนสั้น STUDIO GHIBLI UT'), datetime('now'), datetime('now')),
     ('XL', 'GREEN', '#0A6444', 390, 18, '28-green.webp', (SELECT id FROM Products WHERE name = 'KIDS เสื้อยืด U AIRism คอตตอน คอกลม แขนสั้น'), datetime('now'), datetime('now')),
-    ('3XL', 'BLUE', '#C1DFE8', 390, 18, '28-blue.webp', (SELECT id FROM Products WHERE name = 'KIDS เสื้อยืด U AIRism คอตตอน คอกลม แขนสั้น'), datetime('now'), datetime('now'));
+    ('3XL', 'BLUE', '#C1DFE8', 390, 18, '28-blue.webp', (SELECT id FROM Products WHERE name = 'KIDS เสื้อยืด U AIRism คอตตอน คอกลม แขนสั้น'), datetime('now'), datetime('now')),
+    ('XXL', 'PINK', '#DFBCBC', 390, 12, '37-pink.webp', (SELECT id FROM Products WHERE name = 'เสื้อคาร์ดิแกน ผ้าฟลีซ บุขนนุ่มด้านใน คอกลม แขนยาว'), datetime('now'), datetime('now')),
+    ('S', 'BLACK', '#1B1A1D', 990, 12, '38-black.webp', (SELECT id FROM Products WHERE name = 'เสื้อสเวต แขนยาว KAWS'), datetime('now'), datetime('now')),
+    ('XS', 'BROWN', '#805940', 1490, 12, '39-brown.webp', (SELECT id FROM Products WHERE name = 'เสื้อสเวตเตอร์ 3D Knit แขนยาว'), datetime('now'), datetime('now')),
+    ('M', 'BEIGE', '#D3C8C2', 1490, 12, '39-beige.webp', (SELECT id FROM Products WHERE name = 'เสื้อสเวตเตอร์ 3D Knit แขนยาว'), datetime('now'), datetime('now')),
+    ('M', 'BLUE', '#383C3F', 1990, 11, '40-blue.webp', (SELECT id FROM Products WHERE name = 'เสื้อฮู้ด ผ้าบรัชเจอร์ซี่ แขนยาว แบบสวมหัว'), datetime('now'), datetime('now')),
+    ('M', 'BROWN', '#7F6D52', 1990, 10, '40-brown.webp', (SELECT id FROM Products WHERE name = 'เสื้อฮู้ด ผ้าบรัชเจอร์ซี่ แขนยาว แบบสวมหัว'), datetime('now'), datetime('now')),
+    ('3XL', 'GRAY', '#35414D', 1990, 13, '40-gray.webp', (SELECT id FROM Products WHERE name = 'เสื้อฮู้ด ผ้าบรัชเจอร์ซี่ แขนยาว แบบสวมหัว'), datetime('now'), datetime('now')),
+    ('3XL', 'RED', '#3B2637', 990, 3, '41-red.webp', (SELECT id FROM Products WHERE name = 'เสื้อเชิ้ต Extra Fine Cotton Broadcloth แขนยาว ปกกระดุม ลายตาราง'), datetime('now'), datetime('now')),
+    ('XS', 'WHITE', '#F0F2F4', 990, 20, '42-white.webp', (SELECT id FROM Products WHERE name = 'เสื้อเชิ้ต Extra Fine Cotton Broadcloth แขนยาว ปกธรรมดา ลายทาง'), datetime('now'), datetime('now')),
+    ('M', 'BLACK', '#282828', 1490, 20, '43-black.webp', (SELECT id FROM Products WHERE name = 'กางเกง จับจีบ ทรงกว้าง (ความยาวพิเศษ 85 cm)*'), datetime('now'), datetime('now')),
+    ('L', 'BEIGE', '#BCAB93', 1490, 20, '43-beige.webp', (SELECT id FROM Products WHERE name = 'กางเกง จับจีบ ทรงกว้าง (ความยาวพิเศษ 85 cm)*'), datetime('now'), datetime('now')),
+    ('3XL', 'BEIGE', '#BBA28C', 390, 12, '37-beige.webp', (SELECT id FROM Products WHERE name = 'เสื้อคาร์ดิแกน ผ้าฟลีซ บุขนนุ่มด้านใน คอกลม แขนยาว'), datetime('now'), datetime('now'));

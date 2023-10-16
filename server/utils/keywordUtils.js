@@ -133,6 +133,7 @@ const tokens = [
     'ให้',
     'แบบ',
     'ลักษณะ',
+    'ปกกระดุม',
 ];
 
 const redundentTokens = [
@@ -150,6 +151,7 @@ const redundentTokens = [
     'ให้',
     'แบบ',
     'ลักษณะ',
+    'ชุด',
 ];
 
 function splitTextWithTokens(text, tokens) {

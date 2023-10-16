@@ -68,23 +68,24 @@ router.post('/upload-slip', upload.single('slipImage'), orderController.uploadSl
 
 /**
  * @swagger
- * /api/v1/orders/:id:
+ * /api/v1/orders/update-status:
  *   post:
  *     summary: Set the order status by ID
- *     tags: [Orders For Merchant]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: Order ID
- *         schema:
- *           type: integer
- *       - in: body
- *         name: orderStatusId
- *         required: true
- *         description: New order status ID to set
- *         schema:
- *           type: string
+ *     tags: 
+ *       - Orders For Merchant
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: integer
+ *               orderStatusId:
+ *                 type: integer
+ *           required:
+ *             - id
+ *             - orderStatusId
  *     responses:
  *       200:
  *         description: Order status updated successfully
@@ -95,7 +96,7 @@ router.post('/upload-slip', upload.single('slipImage'), orderController.uploadSl
  *       500:
  *         description: Internal server error
  */
-router.put('/:id', authMiddleware, orderController.setOrderStatusById);
+router.post('/update-status', authMiddleware, orderController.setOrderStatusById);
 
 /**
  * @swagger
