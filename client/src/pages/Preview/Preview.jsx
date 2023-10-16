@@ -3,6 +3,7 @@ import "./preview.css";
 import { useNavigate, useParams } from "react-router-dom";
 import Button from "../../components/Button";
 import { convertRGB } from "./utils/convertRGB";
+import Loading from "../../components/Loading";
 const Preview = ({ getTotalOrder }) => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ const Preview = ({ getTotalOrder }) => {
   const [product, setProduct] = useState([]);
   const [listColor, setListColor] = useState([]);
   const [listSize, setListSize] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     const colorSet = new Set(
       product?.ProductVariants?.map((variant) => variant.color)
@@ -59,6 +61,7 @@ const Preview = ({ getTotalOrder }) => {
   };
   useEffect(() => {
     const getProduct = async () => {
+      setIsLoading(true);
       try {
         const response = await fetch(
           `http://localhost:3000/api/v1/products/${id}`
@@ -83,6 +86,7 @@ const Preview = ({ getTotalOrder }) => {
       } catch (err) {
         console.error("error: ", err);
       }
+      setIsLoading(false);
     };
     getProduct();
   }, []);
@@ -162,6 +166,13 @@ const Preview = ({ getTotalOrder }) => {
       }
     });
   }
+
+  if (isLoading)
+    return (
+      <div className="preview loading">
+        <Loading />
+      </div>
+    );
 
   return (
     <div className="preview">

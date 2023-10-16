@@ -2,6 +2,11 @@
     padding-top: 2rem;
 }
 
+.preview .loading {
+    display: grid;
+    place-items: center;
+}
+
 .preview .checked {
     outline: 1px solid black;
     border: 3px solid white;
