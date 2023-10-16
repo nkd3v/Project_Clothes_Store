@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import Button from "../../../components/Button";
 import "./order.css";
 
 const Order = ({ order, getMyOrders }) => {
+  const [isShipped, setIsShipped] = useState(
+    order?.status === "Shipped" ? true : false
+  );
   const handleShip = async () => {
     const statusData = {
       id: order?.id,
@@ -24,6 +27,7 @@ const Order = ({ order, getMyOrders }) => {
       if (response.ok) {
         const { message } = await response.json();
         getMyOrders();
+        setIsShipped(true);
         console.log(message);
       } else {
         alert(
@@ -53,7 +57,7 @@ const Order = ({ order, getMyOrders }) => {
                 รหัสสินค้า: {order?.OrderItems[0]?.ProductVariant?.id}
               </p>
               <p className="color">
-                สี: {order?.OrderItems[0]?.ProductVariant?.ColorName}
+                สี: {order?.OrderItems[0]?.ProductVariant?.colorName}
               </p>
               <p className="size">
                 ขนาด : {order?.OrderItems[0]?.ProductVariant?.Product?.gender}{" "}
@@ -92,10 +96,11 @@ const Order = ({ order, getMyOrders }) => {
       </div>
       <div className="btn-wrapper">
         <Button
-          text="จัดส่ง"
+          text={isShipped ? "จัดส่งแล้ว" : "จัดส่ง"}
           isPrimary={true}
           type="button"
           action={handleShip}
+          disabled={isShipped}
         />
       </div>
     </div>

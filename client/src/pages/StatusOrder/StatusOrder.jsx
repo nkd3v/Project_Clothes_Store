@@ -3,6 +3,7 @@ import "./status-order.css";
 import Order from "./components/Order";
 const StatusOrder = () => {
   const [orders, setOrders] = useState([]);
+  console.log(orders);
   useEffect(() => {
     const getAllOrders = async () => {
       try {

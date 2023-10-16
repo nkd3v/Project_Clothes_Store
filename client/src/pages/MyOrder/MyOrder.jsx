@@ -36,6 +36,7 @@ const MyOrder = () => {
           <h1>ORDERS</h1>
         </header>
         <section className="wrapper">
+          {orders?.length === 0 && <p>ยังไม่มี Order ตอนนี้</p>}
           {orders?.map((order, idx) => (
             <Order order={order} key={idx} getMyOrders={getMyOrders} />
           ))}

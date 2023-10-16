@@ -46,13 +46,16 @@ const MyStore = () => {
           </button>
         </div>
       </header>
-
-      <Merchandise
-        products={products}
-        length={products?.length}
-        page={page}
-        setPage={setPage}
-      />
+      {products?.length === 0 ? (
+        <h1 className="no-product">ยังไม่มีสินค้าตอนนี้</h1>
+      ) : (
+        <Merchandise
+          products={products}
+          length={products?.length}
+          page={page}
+          setPage={setPage}
+        />
+      )}
     </div>
   );
 };

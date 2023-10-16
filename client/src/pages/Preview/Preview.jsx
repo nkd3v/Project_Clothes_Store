@@ -101,13 +101,11 @@ const Preview = ({ getTotalOrder }) => {
 
   useEffect(() => {
     const filteredSize = product?.ProductVariants?.filter(
-      (item) => item.color.toUpperCase() === color
+      (item) => item.color.toUpperCase() === color.toUpperCase()
     );
-    console.log("HI", filteredSize);
     const _listSize = filteredSize?.map((item) => item.size);
     // Define the custom order
     const sizeOrder = ["XS", "S", "M", "L", "XL", "XXL", "3XL"];
-
     _listSize?.sort((a, b) => {
       return sizeOrder.indexOf(a) - sizeOrder.indexOf(b);
     });

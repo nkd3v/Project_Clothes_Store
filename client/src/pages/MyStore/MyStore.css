@@ -3,6 +3,12 @@
     margin-inline: auto;
 }
 
+.SalerPage .no-product {
+    margin-top: 2rem;
+    text-align: center;
+    color: var(--primary-clr);
+}
+
 .PdCount_AndBTN {
     padding-top: 2rem;
     display: flex;
