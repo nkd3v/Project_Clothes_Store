@@ -1,0 +1,36 @@
+.loading {
+    font-size: 2rem;
+    font-weight: bolder;
+    color: #072F5F;
+}
+
+.loading .dot {
+    opacity: 0;
+}
+
+.loading .dot.one {
+    font-size: 4rem;
+    animation: blink 1s alternate 0s infinite;
+}
+
+.loading .dot.two {
+    font-size: 4rem;
+    animation: blink 1s alternate 0.2s infinite;
+}
+
+.loading .dot.three {
+    font-size: 4rem;
+    animation: blink 1s alternate 0.3s infinite;
+}
+
+@keyframes blink {
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}

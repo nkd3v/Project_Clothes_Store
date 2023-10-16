@@ -4,6 +4,8 @@ import Dropdown from "./components/Dropdown";
 import "./catalog.css";
 import ProductCard from "./components/ProductCard";
 import SearchBar from "./components/SearchBar";
+import Button from "../../components/Button";
+import Loading from "../../components/Loading";
 
 const Catalog = () => {
   const [hierarchyCustomer, setHierarchyCustomer] = useState([]);
@@ -13,6 +15,9 @@ const Catalog = () => {
   const [colors, setColors] = useState([]);
   const [sizes, setSizes] = useState([]);
   const [searchWord, setSearchWord] = useState("");
+  const [minPrice, setMinPrice] = useState();
+  const [maxPrice, setMaxPrice] = useState();
+  const [isLoading, setIsLoading] = useState(false);
 
   const mapTypeCatalogToIndex = {
     men: 0,
@@ -32,6 +37,7 @@ const Catalog = () => {
         if (response.ok) {
           const _res = await response.json();
           console.log(_res);
+
           setHierarchyCustomer(_res);
         } else {
           alert(
@@ -49,6 +55,7 @@ const Catalog = () => {
   useEffect(() => {
     setCategory("");
     setSearchWord("");
+
     setColors([]);
     setSizes([]);
   }, [typeCatalog]);
@@ -62,10 +69,12 @@ const Catalog = () => {
       const paramSize = sizes
         ? sizes.map((size) => `&sizes=${size}`).join("")
         : "";
-
+      const paramMinPrice = minPrice ? `&minPrice=${minPrice}` : "";
+      const paramMaxPrice = maxPrice ? `&maxPrice=${maxPrice}` : "";
+      setIsLoading(true);
       try {
         const response = await fetch(
-          `http://localhost:3000/api/v1/products?gender=${typeCatalog.toUpperCase()}${paramCategory}${paramColors}${paramSize}&keywords=${searchWord}`
+          `http://localhost:3000/api/v1/products?gender=${typeCatalog.toUpperCase()}${paramCategory}${paramColors}${paramSize}${paramMinPrice}${paramMaxPrice}&keywords=${searchWord}`
         );
 
         if (response.ok) {
@@ -82,9 +91,25 @@ const Catalog = () => {
       } catch (err) {
         console.error("error: ", err);
       }
+      setIsLoading(false);
     };
     getProducts();
-  }, [category, colors, sizes, typeCatalog, searchWord]);
+  }, [category, colors, sizes, typeCatalog, searchWord, minPrice, maxPrice]);
+
+  const handlePrice = () => {
+    const minPrice = document.getElementById("min-price").value;
+    const maxPrice = document.getElementById("max-price").value;
+    if (!/^(\d*)$/.test(minPrice) || !/^(\d*)$/.test(maxPrice)) {
+      alert("Invalid filter price");
+      return;
+    }
+    if (minPrice > maxPrice) {
+      alert("min must less than max price");
+      return;
+    }
+    setMinPrice(minPrice);
+    setMaxPrice(maxPrice);
+  };
 
   return (
     <div className="catalog">
@@ -131,14 +156,34 @@ const Catalog = () => {
             id="color"
             callBack={setColors}
           />
+          <label className="price" htmlFor="min-price">
+            ช่วงราคา
+          </label>
+          <div className="input-field">
+            <input type="number" id="min-price" placeholder="MIN" min="0" />
+            <hr className="between" />
+            <input type="number" id="max-price" placeholder="MAX" min="0" />
+          </div>
+          <div className="btn-price-wrapper">
+            <Button
+              text="APPLY"
+              isPrimary={true}
+              type="button"
+              action={handlePrice}
+            />
+          </div>
         </aside>
         <div className="wrapper">
           <SearchBar setSearchWord={setSearchWord} />
 
           <section className="list-products">
-            {products?.map((product) => (
-              <ProductCard key={product.id} productObj={product} />
-            ))}
+            {isLoading ? (
+              <Loading />
+            ) : (
+              products?.map((product) => (
+                <ProductCard key={product.id} productObj={product} />
+              ))
+            )}
           </section>
         </div>
       </div>

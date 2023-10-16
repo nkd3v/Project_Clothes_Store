@@ -1,3 +1,13 @@
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number]{
+    -moz-appearance: textfield;
+}
+
 .catalog {
     padding-bottom: 10rem;
 }
@@ -27,6 +37,35 @@
     margin-block: 1rem;
 }
 
+.catalog .aside-bar .price {
+    font-size: 1.5rem;
+}
+
+.catalog .aside-bar .input-field {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1em;
+}
+
+.catalog .aside-bar .input-field input {
+    padding: .5em;
+    font-size: 1rem;
+    width: 100%;
+}
+
+.catalog .aside-bar .input-field .between {
+    display: block;
+    width: 100px;
+    margin-inline: .5rem;
+}
+
+.catalog .aside-bar .btn-price-wrapper {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+
 .catalog .wrapper {
     margin-left: 22rem;
 }
@@ -34,6 +73,7 @@
 .catalog .list-products {
     margin-top: 1rem;
     display: flex;
+    justify-content: center;
     gap: 2rem;
     flex-wrap: wrap;
 }
