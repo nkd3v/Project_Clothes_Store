@@ -139,6 +139,10 @@ exports.listProductsByCriteria = async (req, res) => {
           attributes: [],
           where: productWhereClause,
         },
+        {
+          model: Category,
+          through: { attributes: [] },
+        }
       ],
       attributes: [
         'id',
