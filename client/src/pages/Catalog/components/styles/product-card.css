@@ -1,11 +1,22 @@
 .product-card {
     max-width: 300px;
     cursor: pointer;
+    display: flex;
+    flex-direction: column;
 }
 
-.product-card article > * {
-    margin-top: .5em;
+.product-card article {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: .5em;
+    flex-basis: 100%;
 }
+
+/* .product-card article > * {
+    margin-top: .5em;
+} */
 
 .product-card article > .name {
     font-size: 1.5rem;

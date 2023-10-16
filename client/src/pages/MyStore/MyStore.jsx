@@ -6,7 +6,6 @@ const MyStore = () => {
   const [products, setProducts] = useState([]);
   const [page, setPage] = useState(0);
   const navigate = useNavigate();
-  console.log(products);
   useEffect(() => {
     const getOwnProducts = async () => {
       try {

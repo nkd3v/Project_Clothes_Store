@@ -13,9 +13,6 @@ const Catalog = () => {
   const [colors, setColors] = useState([]);
   const [sizes, setSizes] = useState([]);
   const [searchWord, setSearchWord] = useState("");
-  console.log(typeCatalog);
-  console.log("color", colors);
-  console.log("size", sizes);
 
   const mapTypeCatalogToIndex = {
     men: 0,
@@ -36,7 +33,6 @@ const Catalog = () => {
           const _res = await response.json();
           console.log(_res);
           setHierarchyCustomer(_res);
-          console.log("hie", hierarchyCustomer);
         } else {
           alert(
             "Fetch hierarchy customer failed. Server returned an error: " +

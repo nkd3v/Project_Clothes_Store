@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Register.css";
 import { useNavigate } from "react-router-dom";
 
-const Register = ({ setIsAuth, setRole }) => {
+const Register = ({ setIsAuth }) => {
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const handleSubmitRegister = async (e) => {
     e.preventDefault();
@@ -13,10 +14,22 @@ const Register = ({ setIsAuth, setRole }) => {
     const dateOfBirth = e.target.birthDate.value;
     const gender = e.target.gender.value;
     const role = e.target.role.value;
-    if (!isValidEmail(email) || !isValidPostalCode(postalCode)) {
-      alert("Invalid email or postal codes");
+    const currentDate = new Date();
+    const inputDate = new Date(dateOfBirth);
+    if (!isValidEmail(email)) {
+      alert("Invalid email");
       return;
     }
+    if (!isValidPostalCode(postalCode)) {
+      alert("Invalid postal codes");
+      return;
+    }
+
+    if (inputDate > currentDate) {
+      alert("Invalid Date");
+      return;
+    }
+
     const registerData = {
       username: username,
       password: password,
@@ -48,6 +61,10 @@ const Register = ({ setIsAuth, setRole }) => {
         setIsAuth(token);
         navigate("/");
       } else {
+        if (response.status === 409) {
+          alert("The username already exists.");
+          return;
+        }
         alert("Register failed. Server returned an error: " + response.status);
       }
     } catch (error) {
@@ -103,15 +120,19 @@ const Register = ({ setIsAuth, setRole }) => {
             </div>
             <input
               className="Input_Box"
-              type="text"
-              placeholder=""
+              type={showPassword ? "text" : "password"}
+              placeholder="กรอกรหัสผ่าน"
               name="password"
               required
             />
           </div>
           <div className="ShowPassword Info">
             <div className="checkbox_">
-              <input className="check_box" type="checkbox" />
+              <input
+                className="check_box"
+                type="checkbox"
+                onChange={() => setShowPassword((prev) => !prev)}
+              />
             </div>
             <p>แสดงรหัสผ่าน</p>
           </div>
@@ -136,6 +157,7 @@ const Register = ({ setIsAuth, setRole }) => {
               type="date"
               placeholder="dd-mm-yyyy"
               name="birthDate"
+              onChange={(e) => console.log(e.target.value)}
               required
             />
           </div>

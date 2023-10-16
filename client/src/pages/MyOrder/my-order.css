@@ -1,0 +1,19 @@
+.my-order {
+    padding-bottom: 10rem;
+}
+
+.my-order .container {
+    margin-inline: auto;
+    max-width: 90%;
+}
+
+.my-order header {
+    margin-bottom: 1rem;
+}
+
+.my-order .container .wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+    
+}

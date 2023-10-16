@@ -9,7 +9,6 @@ const Login = ({ setIsAuth }) => {
     e.preventDefault();
     const username = e.target.username.value;
     const password = e.target.password.value;
-    console.log("username", username, "\npassword", password);
 
     const loginData = {
       username: username,

@@ -10,8 +10,6 @@ function Cart({ totalOrder, getTotalOrder }) {
   const [totalPrice, setTotalPrice] = useState();
   const [coupon, setCoupon] = useState("");
 
-  console.log(productInCart);
-  console.log(productInCart?.cartItems?.length);
   useEffect(() => {
     const getProductsInCart = async () => {
       try {
@@ -62,7 +60,6 @@ function Cart({ totalOrder, getTotalOrder }) {
         );
         if (response.ok) {
           const _res = await response.json();
-
           setCoupon("");
           console.log(_res.message);
         } else {

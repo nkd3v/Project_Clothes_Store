@@ -18,28 +18,34 @@ const Merchandise = ({ products, length, page, setPage }) => {
               src={`http://localhost:3000/api/v1/uploads/${products[page]?.ProductVariants[0]?.imageUrl}`}
               alt="product"
             ></img>
-            <h3>{products?.name}</h3>
+            <h3>{products[page]?.name}</h3>
           </div>
           <div className="Color_Size">
-            {products[page]?.ProductVariants?.map((pv) => (
-              <h4 className="Text">
+            {products[page]?.ProductVariants?.map((pv, idx) => (
+              <h4 className="Text" key={idx}>
                 {pv?.colorName} {pv?.size}
               </h4>
             ))}
           </div>
           <div className="Price_Text">
-            {products[page]?.ProductVariants?.map((pv) => (
-              <h4 className="Text">{pv?.price} THB</h4>
+            {products[page]?.ProductVariants?.map((pv, idx) => (
+              <h4 className="Text" key={idx}>
+                {pv?.price} THB
+              </h4>
             ))}
           </div>
           <div className="Stock_Text">
-            {products[page]?.ProductVariants?.map((pv) => (
-              <h4 className="Text">{pv?.quantity}</h4>
+            {products[page]?.ProductVariants?.map((pv, idx) => (
+              <h4 className="Text" key={idx}>
+                {pv?.quantity}
+              </h4>
             ))}
           </div>
           <div className="Sold_Text">
-            {products[page]?.ProductVariants?.map((pv) => (
-              <h4 className="Text">{pv?.soldCount}</h4>
+            {products[page]?.ProductVariants?.map((pv, idx) => (
+              <h4 className="Text" key={idx}>
+                {pv?.soldCount}
+              </h4>
             ))}
           </div>
         </section>

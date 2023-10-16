@@ -14,7 +14,6 @@ const Preview = ({ getTotalOrder }) => {
   const [product, setProduct] = useState([]);
   const [listColor, setListColor] = useState([]);
   const [listSize, setListSize] = useState([]);
-  console.log("myProduct", product);
   useEffect(() => {
     const colorSet = new Set(
       product?.ProductVariants?.map((variant) => variant.color)
@@ -28,13 +27,11 @@ const Preview = ({ getTotalOrder }) => {
     const [validVariant] = product.ProductVariants?.filter(
       (pv) => pv.size === size && pv.color === color
     );
-    console.log(validVariant);
 
     const productData = {
       productVariantId: validVariant?.id,
       quantity: parseInt(amount),
     };
-    console.log("pd", productData);
     try {
       const response = await fetch(`http://localhost:3000/api/v1/carts/add`, {
         method: "POST",
@@ -46,7 +43,6 @@ const Preview = ({ getTotalOrder }) => {
       });
       if (response.ok) {
         const _res = await response.json();
-        console.log(_res);
         getTotalOrder();
       } else {
         console.error(
@@ -61,9 +57,6 @@ const Preview = ({ getTotalOrder }) => {
       console.error("error: ", err);
     }
   };
-  console.log("amount", amount);
-  console.log(id);
-  // console.log("color", color);
   useEffect(() => {
     const getProduct = async () => {
       try {
@@ -104,24 +97,23 @@ const Preview = ({ getTotalOrder }) => {
 
   useEffect(() => {
     const filteredSize = product?.ProductVariants?.filter(
-      (item) => item.color === color
+      (item) => item.color.toUpperCase() === color
     );
-    const listSize = filteredSize?.map((item) => item.size);
+    console.log("HI", filteredSize);
+    const _listSize = filteredSize?.map((item) => item.size);
     // Define the custom order
     const sizeOrder = ["XS", "S", "M", "L", "XL", "XXL", "3XL"];
 
-    listSize?.sort((a, b) => {
+    _listSize?.sort((a, b) => {
       return sizeOrder.indexOf(a) - sizeOrder.indexOf(b);
     });
-    setListSize(listSize);
+    setListSize(_listSize);
   }, [color]);
 
   const handleClickPreviewImg = (e) => {
     const ele = e.target;
-    console.log(ele.src);
     setMainImage(ele.src);
     const images = document.querySelectorAll(".images");
-    console.log(images);
     images.forEach((img) => {
       if (img.src === ele.src) {
         img.classList.add("checked");

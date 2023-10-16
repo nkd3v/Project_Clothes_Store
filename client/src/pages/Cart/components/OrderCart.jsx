@@ -4,12 +4,10 @@ import "./order-cart.css";
 const OrderCart = ({ item, getTotalOrder, setTotalPrice }) => {
   const handleChangeQuantity = async (e) => {
     const value = e.target.value || 0;
-    console.log("myValue", value);
     const productData = {
       productVariantId: item?.ProductVariant?.id,
       quantity: parseInt(value),
     };
-    console.log("pd", productData);
     try {
       const response = await fetch(`http://localhost:3000/api/v1/carts/set`, {
         method: "POST",

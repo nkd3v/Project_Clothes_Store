@@ -61,14 +61,18 @@
 
     &.two {
         left: 280px;
-        /* background: #0C84D9; */
-        background: #bbb;
+        background: #0C84D9;
+        /* background: #bbb; */
     }
 
     &.three {
         left: 490px;
         background: #bbb;
         
+    }
+
+    &.three.passed {
+        background: #0C84D9;
     }
 
     &.four {
@@ -87,11 +91,15 @@
     background: #bbb;
 
     &.first {
-        /* background: #0C84D9; */
+        background: #0C84D9;
     }
 
     &.second {
         left: 37%;
+    }
+
+    &.second.passed {
+        background: #0C84D9;
     }
 
     &.third {

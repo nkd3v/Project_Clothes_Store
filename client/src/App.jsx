@@ -25,7 +25,6 @@ function App() {
   console.log(isAuth);
   console.log("role", role);
   let isMount = true;
-  console.log("totalOrder", totalOrder);
 
   const getTotalOrder = async () => {
     try {

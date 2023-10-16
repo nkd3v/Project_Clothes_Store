@@ -76,7 +76,6 @@
     margin: 0 5px 5px 0;
 }
 
-
 .additem .container {
     margin-inline: auto;
     width: min(90%, 70rem);
@@ -185,4 +184,25 @@
     border: thin solid grey;
     background-color: rgb(220, 220, 220);
     border-radius: 3px;
+}
+
+.additem-form .variant {
+    margin-top: 2rem;
+    box-shadow: 0px 0px 10px 2px gainsboro;
+    padding: 1rem 2rem;
+}
+
+.additem-form .variant .input-field {
+    flex-direction: row;
+    align-items: center;
+    padding: .5em .25em;
+}
+
+.additem-form .variant .input-field input{
+    padding: .5em .25em;
+}
+
+.additem-form .variant .removeVariant{
+    margin-top: 1em;
+    padding: .5em 1em;
 }

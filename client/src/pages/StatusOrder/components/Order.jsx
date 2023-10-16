@@ -15,10 +15,20 @@ const Order = ({ order, index }) => {
         <div className="margin-area">
           <div className="dot one">1</div>
           <div className="dot two">2</div>
-          <div className="dot three">3</div>
+          <div
+            className={`dot three ${
+              order?.status === "Shipped" ? "passed" : ""
+            }`}
+          >
+            3
+          </div>
           <div className="dot four">4</div>
           <div className="progress-bar first"></div>
-          <div className="progress-bar second"></div>
+          <div
+            className={`progress-bar second ${
+              order?.status === "Shipped" ? "passed" : ""
+            }`}
+          ></div>
           <div className="progress-bar third"></div>
           <div className="message message-1">ชำระเงินสำเร็จ</div>
           <div className="message message-2">เตรียมสินค้า</div>
@@ -39,7 +49,6 @@ const Order = ({ order, index }) => {
           <div className="order-result-detail">
             <p>รวมมูลค่าสินค้า</p>
             <div>
-              <p>THB {order?.totalPrice}</p>
               <p>THB {order?.totalPrice}</p>
             </div>
           </div>
