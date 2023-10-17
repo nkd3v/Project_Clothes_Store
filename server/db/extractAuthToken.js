@@ -1,11 +1,11 @@
 const axios = require('axios');
 
 // Function to extract the auth_token from the login response
-async function extractAuthToken(username, password) {
+async function extractAuthToken(email, password) {
     try {
       // Make a POST request to login
       const loginResponse = await axios.post('http://localhost:3000/api/v1/auth/login', {
-        username,
+        email,
         password,
       });
   
@@ -15,7 +15,7 @@ async function extractAuthToken(username, password) {
         const authMatch = /auth_token=(.*?)(;|$)/.exec(authCookie);
         return authMatch ? authMatch[1] : null;
       } else {
-        console.error(`Error logging in as ${username}:`, loginResponse.statusText);
+        console.error(`Error logging in as ${email}:`, loginResponse.statusText);
         return null;
       }
     } catch (error) {

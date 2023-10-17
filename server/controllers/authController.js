@@ -4,14 +4,59 @@ const User = require('../models/User');
 
 const SECRET_KEY = process.env.SECRET_KEY || '0';
 
+const passwordStrengthRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+const allowedGenders = ["ชาย", "หญิง"];
+const allowedRoles = ["ซื้อ", "ขาย"];
+const minimumAge = 13; // Minimum age requirement
+
 exports.register = async (req, res) => {
   try {
     const { username, password, email, postalCode, dateOfBirth, gender, role } = req.body;
 
-    // Check if the user already exists
+    // Check if any of the required parameters is null or empty
+    if (!username || !password || !email || !postalCode || !dateOfBirth || !gender || !role) {
+      return res.status(400).json({ error: 'All registration fields are required' });
+    }
+
+    // Calculate the user's age based on the provided date of birth
+    const currentDate = new Date();
+    const birthDate = new Date(dateOfBirth);
+    const age = currentDate.getFullYear() - birthDate.getFullYear();
+
+    if (currentDate.getMonth() < birthDate.getMonth() || (currentDate.getMonth() === birthDate.getMonth() && currentDate.getDate() < birthDate.getDate())) {
+      age--; // Adjust age if the birthday hasn't occurred yet this year
+    }
+
+    // Check if the user's age meets the minimum age requirement
+    if (age < minimumAge) {
+      return res.status(400).json({ error: `You must be at least ${minimumAge} years old to register` });
+    }
+
+    // Check if the user already exists with the given username
     const existingUser = await User.findOne({ where: { username } });
     if (existingUser) {
       return res.status(409).json({ error: 'Username already exists' });
+    }
+
+    // Check if the user already exists with the given email
+    const existingEmailUser = await User.findOne({ where: { email } });
+    if (existingEmailUser) {
+      return res.status(409).json({ error: 'Email address already exists' });
+    }
+
+    // Check if the password meets the strength criteria
+    if (!passwordStrengthRegex.test(password)) {
+      return res.status(400).json({ error: 'Password must be at least 8 characters long, contain at least one digit, one lowercase letter, and one uppercase letter.' });
+    }
+
+    // Check if the gender is one of the allowed values
+    if (!allowedGenders.includes(gender)) {
+      return res.status(400).json({ error: 'Invalid gender value' });
+    }
+
+    // Check if the role is one of the allowed values
+    if (!allowedRoles.includes(role)) {
+      return res.status(400).json({ error: 'Invalid role value' });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -42,11 +87,10 @@ exports.register = async (req, res) => {
   }
 };
 
-
 exports.login = async (req, res) => {
   try {
-    const { username, password } = req.body;
-    const user = await User.findOne({ where: { username } });
+    const { email, password } = req.body;
+    const user = await User.findOne({ where: { email } });
 
     if (!user) {
       // Delay the response to make it harder to guess whether the username exists

@@ -11,7 +11,7 @@ const Login = ({ setIsAuth }) => {
     const password = e.target.password.value;
 
     const loginData = {
-      username: username,
+      email: username,
       password: password,
     };
 
@@ -24,7 +24,7 @@ const Login = ({ setIsAuth }) => {
         body: JSON.stringify(loginData),
         credentials: "include",
       });
-
+    
       if (response.ok) {
         const { token } = await response.json();
         console.log("Login successful. You can do authenticated operation now");
@@ -32,7 +32,10 @@ const Login = ({ setIsAuth }) => {
         setIsAuth(token);
         navigate("/");
       } else {
-        alert("Login failed. Server returned an error: " + response.status);
+        const errorResponse = await response.json();
+        if (errorResponse && errorResponse.error) {
+          alert(errorResponse.error);
+        }
       }
     } catch (error) {
       console.error("Error:", error);

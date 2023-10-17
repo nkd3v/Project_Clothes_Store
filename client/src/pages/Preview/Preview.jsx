@@ -43,21 +43,22 @@ const Preview = ({ getTotalOrder }) => {
         body: JSON.stringify(productData),
         credentials: "include",
       });
+      
       if (response.ok) {
         const _res = await response.json();
         getTotalOrder();
       } else {
+        const errorValue = await response.text();
         console.error(
           "Add product customer failed. Server returned an error: " +
             response.status
         );
-        if (response.status === 401) alert("Need to login first");
-        if (response.status === 400) alert("Please select size");
-        // navigate("/login");
+        alert(errorValue);
       }
     } catch (err) {
       console.error("error: ", err);
     }
+    
   };
   useEffect(() => {
     const getProduct = async () => {

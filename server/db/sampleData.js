@@ -10,7 +10,7 @@ async function createSampleData() {
     await createSampleCategories();
     await createSampleUsers();
     await createSampleProducts();
-    await createSampleCarts('user1', 'user1');
+    await createSampleCarts('user1@example.com', 'user1');
     await createSampleCoupons();
 
     console.log('Sample data created successfully!');

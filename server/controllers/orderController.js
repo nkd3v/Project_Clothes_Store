@@ -194,6 +194,111 @@ exports.createOrder = async (req, res) => {
   }
 };
 
+exports.createOrderFixed = async (req, res) => {
+  try {
+    const cart = await Cart.findOne({
+      where: { UserId: req.user.id },
+      include: [
+        {
+          model: Coupon,
+        },
+        {
+          model: CartItem,
+          include: ProductVariant,
+        },
+      ],
+    });
+
+    if (!cart || cart.CartItems.length === 0) {
+      return res.status(400).json({ error: 'Cart is empty' });
+    }
+
+    const coupon = cart.Coupon;
+
+    // Calculate the total price with the applied coupon discount
+    let totalPrice = cart.CartItems.reduce(
+      (total, cartItem) =>
+        total + cartItem.ProductVariant.price * cartItem.quantity,
+      0
+    );
+    let totalPriceBeforeDiscount = totalPrice;
+    let couponDiscount = 0;
+
+    if (coupon) {
+      couponDiscount = (coupon.discountPercentage / 100) * totalPrice;
+      totalPrice -= couponDiscount;
+    }
+
+    // Check if the user hasn't used this coupon before
+    const user = await User.findByPk(req.user.id);
+
+    const hasUsedCoupon = await user.hasCoupon(coupon);
+
+    if (!hasUsedCoupon) {
+      // Associate the coupon with the user
+      await user.addCoupon(coupon);
+    } else {
+      return res.json({ message: 'You have already used this coupon.' });
+    }
+
+    const payment = await Payment.create({ totalPrice, totalPriceBeforeDiscount, couponDiscount });
+
+    // Move cart items to order items
+    const orderItemsPromises = {};
+
+    // Loop through cart items
+    for (const cartItem of cart.CartItems) {
+      const productVariant = await ProductVariant.findByPk(cartItem.ProductVariantId, {
+        include: Product
+      });
+    
+      if (!productVariant) {
+        // Handle the case where the product variant doesn't exist
+        continue;
+      }
+    
+      const ownerId = productVariant.Product.OwnerId;
+      console.log({ownerId, productVariant});
+    
+      if (!orderItemsPromises[ownerId]) {
+        // If there's no order for this owner, create a new order
+        const order = await Order.create({
+          UserId: req.user.id,
+          CouponId: coupon?.id,
+          PaymentId: payment.id,
+        });
+        orderItemsPromises[ownerId] = order;
+      }
+    
+      const order = orderItemsPromises[ownerId];
+    
+      // Create an order item for the existing order
+      await OrderItem.create({
+        OrderId: order.id,
+        ProductVariantId: cartItem.ProductVariantId,
+        quantity: cartItem.quantity,
+      });
+    
+      // Reduce the quantity of the corresponding product variant
+      productVariant.quantity -= cartItem.quantity;
+      await productVariant.save();
+    }
+    
+    // Convert the orders into an array of JSON
+    const orders = Object.values(orderItemsPromises).map(order => order.toJSON());
+    console.log(orders);
+
+    // Clear the user's cart
+    await CartItem.destroy({ where: { CartId: cart.id } });
+    await Cart.destroy({ where: { id: cart.id } });
+
+    return res.status(201).json({ message: 'Order created successfully', paymentId: orders[0].PaymentId });
+  } catch (error) {
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+};
 
 exports.generateQRCode = async (req, res) => {
   try {

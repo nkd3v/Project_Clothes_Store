@@ -23,7 +23,7 @@ const User = sequelize.define('User', {
     type: DataTypes.DATE,
   },
   gender: {
-    type: DataTypes.ENUM('Male', 'Female', 'Other'),
+    type: DataTypes.ENUM('ชาย', 'หญิง'),
   },
   address1: {
     type: DataTypes.STRING(255),
@@ -47,7 +47,7 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING(20),
   },
   role: {
-    type: DataTypes.ENUM('Customer', 'Merchant', 'Admin', 'Moderator'),
+    type: DataTypes.ENUM('ซื้อ', 'ขาย'),
   },
 });
 

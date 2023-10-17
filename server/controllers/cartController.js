@@ -11,7 +11,7 @@ exports.addToCart = async (req, res) => {
     const { productVariantId, quantity } = req.body;
 
     if (!Number.isInteger(productVariantId) || productVariantId <= 0) {
-      return res.status(400).json({ error: 'Invalid productVariantId' });
+      return res.status(400).json({ error: 'Please select color and size' });
     }
 
     if (!Number.isInteger(quantity) || quantity <= 0) {

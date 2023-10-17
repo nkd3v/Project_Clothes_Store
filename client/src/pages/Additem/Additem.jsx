@@ -282,7 +282,7 @@ const Additem = () => {
               <label htmlFor="tags">
                 <h3>Tags (comma-separated)</h3>
               </label>
-              <input type="text" id="tags" name="tags" required></input>
+              <input type="text" id="tags" name="tags"></input>
             </div>
             <br></br>
 

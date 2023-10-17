@@ -61,11 +61,10 @@ const Register = ({ setIsAuth }) => {
         setIsAuth(token);
         navigate("/");
       } else {
-        if (response.status === 409) {
-          alert("The username already exists.");
-          return;
+        const errorResponse = await response.json(); // Parse the error response
+        if (errorResponse && errorResponse.error) {
+          alert("Error: " + errorResponse.error); // Display the error message
         }
-        alert("Register failed. Server returned an error: " + response.status);
       }
     } catch (error) {
       console.error("Error:", error);

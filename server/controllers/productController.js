@@ -269,8 +269,29 @@ exports.createProduct = async (req, res) => {
 
   for (const variant of variants) {
     const { price, size, color, quantity } = variant;
-    if (!price || !size || !color || !quantity) {
-      return res.status(400).json({ error: 'Invalid variant data' });
+  
+    if (!price || isNaN(price) || price < 1 || price > 99999) {
+      return res.status(400).json({
+        error: 'Invalid price. Price should be a number between 1 and 99999.',
+      });
+    }
+  
+    if (!size || !['XS', 'S', 'M', 'L', 'XL', '3XL'].includes(size)) {
+      return res.status(400).json({
+        error: 'Invalid size. Size should be one of the following: XS, S, M, L, XL, 3XL.',
+      });
+    }
+  
+    if (!color || !/^#[0-9A-Fa-f]{6}$/.test(color)) {
+      return res.status(400).json({
+        error: 'Invalid color. Color should be in hex format like #xxxxxx.',
+      });
+    }
+  
+    if (!quantity || isNaN(quantity) || quantity < 1 || quantity > 99999) {
+      return res.status(400).json({
+        error: 'Invalid quantity. Quantity should be a number between 1 and 99999.',
+      });
     }
   }
 
@@ -294,12 +315,12 @@ exports.createProduct = async (req, res) => {
     const productVariants = await ProductVariant.bulkCreate(variants.map((variant, index) => ({
       ProductId: product.id,
       size: variant.size,
-      color: variant.color,
+      color: variant.color.toUpperCase(), // Convert color to uppercase
       price: variant.price,
       quantity: variant.quantity,
       imageUrl: files[index].filename,
       tags,
-    })));
+    })));    
 
     res.status(201).json({ message: 'Product created successfully' });
   } catch (error) {
