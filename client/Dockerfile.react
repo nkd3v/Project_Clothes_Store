@@ -10,6 +10,8 @@ COPY package*.json ./
 # Install project dependencies
 RUN npm i
 
+ENV VITE_API_URL=
+
 EXPOSE 5173
 
 # Start the Vite development server

@@ -22,7 +22,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use(morgan("dev"));
+if (process.env.NODE_ENV !== 'production') {
+  app.use(morgan("dev")); // Only enable morgan logger in non-production environments
+}
+
 
 // Define a custom CORS configuration function
 const corsOptions = (req, callback) => {
@@ -86,8 +89,9 @@ sequelize.sync({ force: true }).then(() => {
   });
 });
 
-// Serve Swagger documentation
-app.use("/api/v1", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+if (process.env.NODE_ENV !== 'production') {
+  app.use("/api/v1", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+}
 
 app.get("/health", (req, res) => {
   res.status(200).send("Healthy");

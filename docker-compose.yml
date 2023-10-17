@@ -4,31 +4,9 @@ services:
     build:
       context: server
       dockerfile: Dockerfile.node
-    volumes:
-      - ./server/config:/app/config
-      - ./server/controllers:/app/controllers
-      - ./server/middleware:/app/middleware
-      - ./server/models:/app/models
-      - ./server/routes:/app/routes
-      - ./server/uploads:/app/uploads
-      - ./server/app.js:/app/app.js
-      - ./server/utils:/app/utils
-      - ./server/db:/app/db
-      - ./server/data:/app/data
-
-  react-app:
-    build:
-      context: client
-      dockerfile: Dockerfile.react
-    volumes:
-      - ./client/public:/app/public
-      - ./client/src:/app/src
-      - ./client/index.html:/app/index.html
-      - ./client/vite.config.js:/app/vite.config.js
 
   nginx:
     build:
-      context: nginx
       dockerfile: Dockerfile.nginx
     ports:
       - "80:80"

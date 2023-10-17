@@ -1,20 +1,21 @@
-# Use the official Node.js LTS image from Docker Hub
+# Use the official Node.js LTS (Long Term Support) image from Docker Hub
 FROM node:18
 
 # Create a working directory for the app
 WORKDIR /app
 
-# Copy package.json and yarn.lock to the container
+# Copy package.json and package-lock.json to the container
 COPY package*.json ./
 
-# Install app dependencies using Yarn
-RUN npm i
+# Install app dependencies
+RUN npm install --only=production
 
-# Expose the port your app will run on
-EXPOSE 3000
+# Copy your application code into the container
+COPY . .
 
-# Set the SECRET_KEY environment variable
+# Set environment variables (adjust as needed)
+ENV NODE_ENV=production
 ENV SECRET_KEY=KFvsYfL3w3WDkDbySj6SAyHneN47ss5a
 
-# Command to start the application using nodemon for hot reloading
-CMD [ "npx", "nodemon", "app.js" ]
+# Command to start the application
+CMD [ "node", "app.js" ]
