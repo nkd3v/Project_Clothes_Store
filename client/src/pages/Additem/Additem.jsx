@@ -63,14 +63,14 @@ const Additem = () => {
         body: formData,
         credentials: "include",
       });
+      
+      const data = await response.json(); // Assuming the error data is in JSON format
     
       if (!response.ok) {
         // Check if the response status is outside the 200-299 range
-        const errorData = await response.json(); // Assuming the error data is in JSON format
-        const errorValue = errorData.error; // Extract the error value
-        alert(`Error: ${errorValue}`);
+        alert(data.error);
       } else {
-        // Handle a successful response here
+        alert(data.message);
       }
     } catch (error) {
       // Handle network errors here

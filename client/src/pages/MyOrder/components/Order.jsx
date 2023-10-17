@@ -53,7 +53,7 @@ const Order = ({ order, getMyOrders }) => {
             สถานะ : <span className="status-value">{order?.status}</span>
           </h2>
           <div className="block">
-            <p>สรุปคำสั่งซื้อ | {order?.OrderItems[0]?.quantity} รายการ</p>
+            <p>สรุปคำสั่งซื้อ | {order?.OrderItems?.length} รายการ</p>
             <div className="row">
               <p>รวมมูลค่าสินค้า</p>
               <p>THB {order?.totalPrice}</p>

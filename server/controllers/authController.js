@@ -18,6 +18,18 @@ exports.register = async (req, res) => {
       return res.status(400).json({ error: 'All registration fields are required' });
     }
 
+    if (username.length > 255) {
+      return res.status(400).json({ error: 'Username is too long'});
+    }
+
+    if (email.length > 255) {
+      return res.status(400).json({ error: 'Email is too long'});
+    }
+
+    if (password.length > 255) {
+      return res.status(400).json({ error: 'Password is too long'});
+    }
+
     // Calculate the user's age based on the provided date of birth
     const currentDate = new Date();
     const birthDate = new Date(dateOfBirth);

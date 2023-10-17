@@ -206,29 +206,29 @@ exports.listProductsByCriteria = async (req, res) => {
     const filteredProducts = !keywordsArray
       ? products
       : products.filter((product) => {
-          // console.log(product.categoryTags);
-          return keywordsArray.every((keyword) => {
-            const lowercaseKeyword = keyword.toLowerCase();
-            const match =
-              product.name.toLowerCase().includes(lowercaseKeyword) ||
-              product.description.toLowerCase().includes(lowercaseKeyword) ||
-              product.brand.toLowerCase().includes(lowercaseKeyword) ||
-              product.gender.toLowerCase().includes(lowercaseKeyword) ||
-              product.className.toLowerCase().includes(lowercaseKeyword) ||
-              product.category.toLowerCase().includes(lowercaseKeyword) ||
-              product.tags?.toLowerCase().includes(lowercaseKeyword) ||
-              product.categoryTags?.toLowerCase().includes(lowercaseKeyword) ||
-              product.ProductVariants.some((variant) =>
-                variant.colorName.toLowerCase().includes(lowercaseKeyword)
-              ) ||
-              product.ProductVariants.some((variant) =>
-                variant.size.toLowerCase().includes(lowercaseKeyword)
-              );
-            delete product.tags;
-            delete product.categoryTags;
-            return match;
-          });
+        // console.log(product.categoryTags);
+        return keywordsArray.every((keyword) => {
+          const lowercaseKeyword = keyword.toLowerCase();
+          const match =
+            product.name.toLowerCase().includes(lowercaseKeyword) ||
+            product.description.toLowerCase().includes(lowercaseKeyword) ||
+            product.brand.toLowerCase().includes(lowercaseKeyword) ||
+            product.gender.toLowerCase().includes(lowercaseKeyword) ||
+            product.className.toLowerCase().includes(lowercaseKeyword) ||
+            product.category.toLowerCase().includes(lowercaseKeyword) ||
+            product.tags?.toLowerCase().includes(lowercaseKeyword) ||
+            product.categoryTags?.toLowerCase().includes(lowercaseKeyword) ||
+            product.ProductVariants.some((variant) =>
+              variant.colorName.toLowerCase().includes(lowercaseKeyword)
+            ) ||
+            product.ProductVariants.some((variant) =>
+              variant.size.toLowerCase().includes(lowercaseKeyword)
+            );
+          delete product.tags;
+          delete product.categoryTags;
+          return match;
         });
+      });
 
     res.json(filteredProducts);
   } catch (error) {
@@ -243,31 +243,48 @@ exports.createProduct = async (req, res) => {
   const ownerId = req.user.id;
   const files = req.files;
 
-  if (
-    !name ||
-    !description ||
-    !req.body["variants[][price]"] ||
-    !files ||
-    !ownerId ||
-    !gender ||
-    !className ||
-    !category
-  ) {
-    console.log([
-      ,
-      !name,
-      !description,
-      !req.body["variants[][price]"],
-      !typeof files,
-      !ownerId,
-    ]);
-    return res.status(400).json({ error: "Invalid product data" });
+  const nameMaxLength = 255; // Set the maximum length for the name
+  const descriptionMaxLength = 1000; // Set the maximum length for the description
+  const tagsMaxLength = 100; // Set the maximum length for tags
+
+  if (!name) {
+    return res.status(400).json({ error: "Name is required." });
+  } else if (name.length > nameMaxLength) {
+    return res.status(400).json({ error: "Name is too long." });
+  }
+
+  if (!description) {
+    return res.status(400).json({ error: "Description is required." });
+  } else if (description.length > descriptionMaxLength) {
+    return res.status(400).json({ error: "Description is too long." });
   }
 
   if (!req.body["variants[][price]"]) {
-    return res
-      .status(400)
-      .json({ error: "Product require to have at least 1 variant" });
+    return res.status(400).json({ error: "Product requires at least 1 variant." });
+  }
+
+  if (!files) {
+    return res.status(400).json({ error: "File(s) are required." });
+  }
+
+  if (!ownerId) {
+    return res.status(400).json({ error: "Owner ID is required." });
+  }
+
+  if (!gender) {
+    return res.status(400).json({ error: "Gender is required." });
+  }
+
+  if (!className) {
+    return res.status(400).json({ error: "Class name is required." });
+  }
+
+  if (!category) {
+    return res.status(400).json({ error: "Category is required." });
+  }
+
+  if (tags && tags.length > tagsMaxLength) {
+    return res.status(400).json({ error: "Tags are too long." });
   }
 
   for (const file of files) {
