@@ -1,15 +1,25 @@
-const Category = require('../models/Category');
-const Product = require('../models/Product');
-const ProductTag = require('../models/ProductTag');
-const ProductVariant = require('../models/ProductVariant');
-const CategoryTag = require('../models/CategoryTag');
-const { extractColors, extractSizes, extractGenders, extractPriceRanges, replaceColors, replaceGenders, replaceSizes, splitText, removeRedundentTokens } = require('../utils/keywordUtils');
-const User = require('../models/User');
-const { findMinMaxSize } = require('../utils/sizeUtils');
-const sequelize = require('../config/database');
-const { Op } = require('sequelize');
-const sharp = require('sharp');
-const fs = require('fs/promises');
+const Category = require("../models/Category");
+const Product = require("../models/Product");
+const ProductTag = require("../models/ProductTag");
+const ProductVariant = require("../models/ProductVariant");
+const CategoryTag = require("../models/CategoryTag");
+const {
+  extractColors,
+  extractSizes,
+  extractGenders,
+  extractPriceRanges,
+  replaceColors,
+  replaceGenders,
+  replaceSizes,
+  splitText,
+  removeRedundentTokens,
+} = require("../utils/keywordUtils");
+const User = require("../models/User");
+const { findMinMaxSize } = require("../utils/sizeUtils");
+const sequelize = require("../config/database");
+const { Op } = require("sequelize");
+const sharp = require("sharp");
+const fs = require("fs/promises");
 
 function toArray(value) {
   if (Array.isArray(value)) {
@@ -23,11 +33,11 @@ function toArray(value) {
 exports.listProductsByCriteria = async (req, res) => {
   try {
     const { className, minPrice, maxPrice } = req.query;
-    let rawKeywords = req.query.keywords || '';
+    let rawKeywords = req.query.keywords || "";
 
     let brands, sizes, colors, gender, retVal;
 
-    let category = req.query.category?.split(',');
+    let category = req.query.category?.split(",");
     category = category ? category[category.length - 1] : undefined;
 
     brands = [];
@@ -51,7 +61,7 @@ exports.listProductsByCriteria = async (req, res) => {
     // console.log({ rawKeywords });
 
     if (req.query.gender) {
-      gender = req.query.gender
+      gender = req.query.gender;
     } else {
       // retVal = extractGenders(rawKeywords);
       // console.log(retVal.matchedKeywords);
@@ -61,7 +71,7 @@ exports.listProductsByCriteria = async (req, res) => {
     }
     // console.log({gender});
 
-    retVal = extractPriceRanges(rawKeywords)
+    retVal = extractPriceRanges(rawKeywords);
     const priceRanges = retVal.priceRanges;
     rawKeywords = retVal.extractedText.trim();
 
@@ -73,9 +83,8 @@ exports.listProductsByCriteria = async (req, res) => {
 
     let priceRange = {};
     if (minPrice && maxPrice) {
-      priceRange = { minPrice, maxPrice }
-    }
-    else if (priceRanges.length > 0) {
+      priceRange = { minPrice, maxPrice };
+    } else if (priceRanges.length > 0) {
       priceRange = priceRanges[0];
     }
 
@@ -85,10 +94,10 @@ exports.listProductsByCriteria = async (req, res) => {
     const whereClause = {};
 
     if (gender) {
-      if (gender == 'MEN' || gender == 'WOMEN') {
-        whereClause.gender = { [Op.in]: [gender, 'UNISEX'] };
-      } else if (gender == 'UNISEX') {
-        whereClause.gender = { [Op.in]: ['MEN', 'WOMEN', 'UNISEX'] };
+      if (gender == "MEN" || gender == "WOMEN") {
+        whereClause.gender = { [Op.in]: [gender, "UNISEX"] };
+      } else if (gender == "UNISEX") {
+        whereClause.gender = { [Op.in]: ["MEN", "WOMEN", "UNISEX"] };
       } else {
         whereClause.gender = gender;
       }
@@ -99,8 +108,8 @@ exports.listProductsByCriteria = async (req, res) => {
     }
 
     if (category) {
-      if (category.includes('ทั้งหมด')) {
-        whereClause.className = category.replace(/ทั้งหมด/g, '')
+      if (category.includes("ทั้งหมด")) {
+        whereClause.className = category.replace(/ทั้งหมด/g, "");
       } else {
         whereClause.category = category;
       }
@@ -109,7 +118,7 @@ exports.listProductsByCriteria = async (req, res) => {
     const productWhereClause = {};
 
     if (brands.length > 0) {
-      productWhereClause['$User.username$'] = {
+      productWhereClause["$User.username$"] = {
         [Op.in]: brands,
       };
     }
@@ -118,46 +127,63 @@ exports.listProductsByCriteria = async (req, res) => {
     if (tags.length > 0) {
       productTagWhereClause.name = {
         [Op.in]: tags,
-        // 
+        //
       };
     }
 
-    const products = (await Product.findAll({
-      where: whereClause,
-      include: [
-        {
-          model: ProductVariant,
-          attributes: ['id', 'colorName', 'color', 'price', 'size', 'imageUrl', 'quantity'],
-          where: {
-            [Op.and]: [
-              { price: { [Op.between]: [priceRange.minPrice || 0, priceRange.maxPrice || Number.MAX_SAFE_INTEGER], }, },
-              sizes.length > 0 ? { size: { [Op.in]: sizes, }, } : {},
-              colors.length > 0 ? { colorName: { [Op.in]: colors, }, } : {},
+    const products = (
+      await Product.findAll({
+        where: whereClause,
+        include: [
+          {
+            model: ProductVariant,
+            attributes: [
+              "id",
+              "colorName",
+              "color",
+              "price",
+              "size",
+              "imageUrl",
+              "quantity",
             ],
+            where: {
+              [Op.and]: [
+                {
+                  price: {
+                    [Op.between]: [
+                      priceRange.minPrice || 0,
+                      priceRange.maxPrice || Number.MAX_SAFE_INTEGER,
+                    ],
+                  },
+                },
+                sizes.length > 0 ? { size: { [Op.in]: sizes } } : {},
+                colors.length > 0 ? { colorName: { [Op.in]: colors } } : {},
+              ],
+            },
           },
-        },
-        {
-          model: User,
-          attributes: [],
-          where: productWhereClause,
-        },
-        {
-          model: Category,
-          through: { attributes: [] },
-        }
-      ],
-      attributes: [
-        'id',
-        'name',
-        'description',
-        [sequelize.col('User.username'), 'brand'],
-        'gender',
-        'className',
-        'category',
-        'tags',
-        'categoryTags',
-      ],
-    })).map((product) => product.get({ plain: true }));
+          {
+            model: User,
+            attributes: [],
+            where: productWhereClause,
+          },
+          {
+            model: Category,
+            through: { attributes: [] },
+          },
+        ],
+        attributes: [
+          "id",
+          "name",
+          "description",
+          [sequelize.col("User.username"), "brand"],
+          "gender",
+          "className",
+          "category",
+          "tags",
+          "categoryTags",
+        ],
+      })
+    ).map((product) => product.get({ plain: true }));
 
     for (const product of products) {
       product.minPrice = Math.min(
@@ -180,35 +206,34 @@ exports.listProductsByCriteria = async (req, res) => {
     const filteredProducts = !keywordsArray
       ? products
       : products.filter((product) => {
-        // console.log(product.categoryTags);
-        return keywordsArray.every((keyword) => {
-          const lowercaseKeyword = keyword.toLowerCase();
-          const match = (
-            product.name.toLowerCase().includes(lowercaseKeyword) ||
-            product.description.toLowerCase().includes(lowercaseKeyword) ||
-            product.brand.toLowerCase().includes(lowercaseKeyword) ||
-            product.gender.toLowerCase().includes(lowercaseKeyword) ||
-            product.className.toLowerCase().includes(lowercaseKeyword) ||
-            product.category.toLowerCase().includes(lowercaseKeyword) ||
-            product.tags?.toLowerCase().includes(lowercaseKeyword) ||
-            product.categoryTags?.toLowerCase().includes(lowercaseKeyword) ||
-            product.ProductVariants.some((variant) =>
-              variant.colorName.toLowerCase().includes(lowercaseKeyword)
-            ) ||
-            product.ProductVariants.some((variant) =>
-              variant.size.toLowerCase().includes(lowercaseKeyword)
-            )
-          );
-          delete product.tags;
-          delete product.categoryTags;
-          return match
+          // console.log(product.categoryTags);
+          return keywordsArray.every((keyword) => {
+            const lowercaseKeyword = keyword.toLowerCase();
+            const match =
+              product.name.toLowerCase().includes(lowercaseKeyword) ||
+              product.description.toLowerCase().includes(lowercaseKeyword) ||
+              product.brand.toLowerCase().includes(lowercaseKeyword) ||
+              product.gender.toLowerCase().includes(lowercaseKeyword) ||
+              product.className.toLowerCase().includes(lowercaseKeyword) ||
+              product.category.toLowerCase().includes(lowercaseKeyword) ||
+              product.tags?.toLowerCase().includes(lowercaseKeyword) ||
+              product.categoryTags?.toLowerCase().includes(lowercaseKeyword) ||
+              product.ProductVariants.some((variant) =>
+                variant.colorName.toLowerCase().includes(lowercaseKeyword)
+              ) ||
+              product.ProductVariants.some((variant) =>
+                variant.size.toLowerCase().includes(lowercaseKeyword)
+              );
+            delete product.tags;
+            delete product.categoryTags;
+            return match;
+          });
         });
-      });
 
     res.json(filteredProducts);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -218,19 +243,39 @@ exports.createProduct = async (req, res) => {
   const ownerId = req.user.id;
   const files = req.files;
 
-  if (!name || !description || !req.body['variants[][price]'] || !files || !ownerId || !gender || !className || !category) {
-    console.log([, !name, !description, !req.body['variants[][price]'], !typeof (files), !ownerId]);
-    return res.status(400).json({ error: 'Invalid product data' });
+  if (
+    !name ||
+    !description ||
+    !req.body["variants[][price]"] ||
+    !files ||
+    !ownerId ||
+    !gender ||
+    !className ||
+    !category
+  ) {
+    console.log([
+      ,
+      !name,
+      !description,
+      !req.body["variants[][price]"],
+      !typeof files,
+      !ownerId,
+    ]);
+    return res.status(400).json({ error: "Invalid product data" });
   }
 
-  if (!req.body['variants[][price]']) {
-    return res.status(400).json({ error: 'Product require to have at least 1 variant' });
+  if (!req.body["variants[][price]"]) {
+    return res
+      .status(400)
+      .json({ error: "Product require to have at least 1 variant" });
   }
 
   for (const file of files) {
     // Check if the file meets the criteria
-    if (file.mimetype !== 'image/jpeg' && file.mimetype !== 'image/png') {
-      return res.status(400).json({ error: 'File must be in JPEG or PNG format' });
+    if (file.mimetype !== "image/jpeg" && file.mimetype !== "image/png") {
+      return res
+        .status(400)
+        .json({ error: "File must be in JPEG or PNG format" });
     }
 
     // Check file size
@@ -238,59 +283,66 @@ exports.createProduct = async (req, res) => {
     const maxFileSizeInBytes = 2 * 1024 * 1024; // 2MB
 
     if (fileSizeInBytes > maxFileSizeInBytes) {
-      return res.status(400).json({ error: 'File size must be under 2 MB' });
+      return res.status(400).json({ error: "File size must be under 2 MB" });
     }
 
     // Check dimensions
     const image = sharp(await fs.readFile(file.path));
     const metadata = await image.metadata();
     if (metadata.width < 400 || metadata.height < 400) {
-      return res.status(400).json({ error: 'Image dimensions must be greater than or equal to 400x400 pixels' });
+      return res.status(400).json({
+        error:
+          "Image dimensions must be greater than or equal to 400x400 pixels",
+      });
     }
   }
 
   const variants = (() => {
-    if (typeof (req.body['variants[][price]']) === 'string') {
-      return [{
-        price: req.body['variants[][price]'],
-        size: req.body['variants[][size]'],
-        color: req.body['variants[][color]'],
-        quantity: req.body['variants[][quantity]']
-      }];
+    if (typeof req.body["variants[][price]"] === "string") {
+      return [
+        {
+          price: req.body["variants[][price]"],
+          size: req.body["variants[][size]"],
+          color: req.body["variants[][color]"],
+          quantity: req.body["variants[][quantity]"],
+        },
+      ];
     } else {
-      return req.body['variants[][price]'].map((price, index) => ({
+      return req.body["variants[][price]"].map((price, index) => ({
         price,
-        size: req.body['variants[][size]'][index],
-        color: req.body['variants[][color]'][index],
-        quantity: req.body['variants[][quantity]'][index]
+        size: req.body["variants[][size]"][index],
+        color: req.body["variants[][color]"][index],
+        quantity: req.body["variants[][quantity]"][index],
       }));
     }
   })();
 
   for (const variant of variants) {
     const { price, size, color, quantity } = variant;
-  
+
     if (!price || isNaN(price) || price < 1 || price > 99999) {
       return res.status(400).json({
-        error: 'Invalid price. Price should be a number between 1 and 99999.',
+        error: "Invalid price. Price should be a number between 1 and 99999.",
       });
     }
-  
-    if (!size || !['XS', 'S', 'M', 'L', 'XL', '3XL'].includes(size)) {
+
+    if (!size || !["XS", "S", "M", "L", "XL", "XXL", "3XL"].includes(size)) {
       return res.status(400).json({
-        error: 'Invalid size. Size should be one of the following: XS, S, M, L, XL, 3XL.',
+        error:
+          "Invalid size. Size should be one of the following: XS, S, M, L, XL, XXL, 3XL.",
       });
     }
-  
+
     if (!color || !/^#[0-9A-Fa-f]{6}$/.test(color)) {
       return res.status(400).json({
-        error: 'Invalid color. Color should be in hex format like #xxxxxx.',
+        error: "Invalid color. Color should be in hex format like #xxxxxx.",
       });
     }
-  
+
     if (!quantity || isNaN(quantity) || quantity < 1 || quantity > 99999) {
       return res.status(400).json({
-        error: 'Invalid quantity. Quantity should be a number between 1 and 99999.',
+        error:
+          "Invalid quantity. Quantity should be a number between 1 and 99999.",
       });
     }
   }
@@ -298,7 +350,9 @@ exports.createProduct = async (req, res) => {
   try {
     const existingProduct = await Product.findOne({ where: { name } });
     if (existingProduct) {
-      return res.status(400).json({ error: 'A product with the same name already exists' });
+      return res
+        .status(400)
+        .json({ error: "A product with the same name already exists" });
     }
 
     // Create the Product instance
@@ -312,20 +366,22 @@ exports.createProduct = async (req, res) => {
     });
 
     // Create the ProductVariant instances
-    const productVariants = await ProductVariant.bulkCreate(variants.map((variant, index) => ({
-      ProductId: product.id,
-      size: variant.size,
-      color: variant.color.toUpperCase(), // Convert color to uppercase
-      price: variant.price,
-      quantity: variant.quantity,
-      imageUrl: files[index].filename,
-      tags,
-    })));    
+    const productVariants = await ProductVariant.bulkCreate(
+      variants.map((variant, index) => ({
+        ProductId: product.id,
+        size: variant.size,
+        color: variant.color.toUpperCase(), // Convert color to uppercase
+        price: variant.price,
+        quantity: variant.quantity,
+        imageUrl: files[index].filename,
+        tags,
+      }))
+    );
 
-    res.status(201).json({ message: 'Product created successfully' });
+    res.status(201).json({ message: "Product created successfully" });
   } catch (error) {
-    console.error('Error creating product:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error("Error creating product:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -341,7 +397,7 @@ exports.listProducts = async (req, res) => {
     res.json(products);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -356,12 +412,12 @@ exports.getProductById = async (req, res) => {
       ],
     });
     if (!product) {
-      return res.status(404).json({ error: 'Product not found' });
+      return res.status(404).json({ error: "Product not found" });
     }
     res.json(product);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -373,7 +429,7 @@ exports.listVariantsByProductId = async (req, res) => {
 
     // Check if the product exists
     if (!product) {
-      return res.status(404).json({ error: 'Product not found' });
+      return res.status(404).json({ error: "Product not found" });
     }
 
     // Find all variants associated with the product
@@ -385,7 +441,7 @@ exports.listVariantsByProductId = async (req, res) => {
     res.json(variants);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -393,12 +449,14 @@ exports.listVariantsByProductId = async (req, res) => {
 exports.updateProduct = async (req, res) => {
   const { productId } = req.params;
   const { name, description, price, category, brand } = req.body;
-  const imageUrl = req.file ? `${req.protocol}://${req.get('host')}/api/v1/uploads/${req.file.filename}` : 'default.png';
+  const imageUrl = req.file
+    ? `${req.protocol}://${req.get("host")}/api/v1/uploads/${req.file.filename}`
+    : "default.png";
 
   try {
     const product = await Product.findByPk(productId);
     if (!product) {
-      return res.status(404).json({ error: 'Product not found' });
+      return res.status(404).json({ error: "Product not found" });
     }
     product.name = name;
     product.description = description;
@@ -410,7 +468,7 @@ exports.updateProduct = async (req, res) => {
     res.json(product);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -420,13 +478,13 @@ exports.deleteProduct = async (req, res) => {
   try {
     const product = await Product.findByPk(productId);
     if (!product) {
-      return res.status(404).json({ error: 'Product not found' });
+      return res.status(404).json({ error: "Product not found" });
     }
     await product.destroy();
-    res.json({ message: 'Product deleted successfully' });
+    res.json({ message: "Product deleted successfully" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -439,19 +497,21 @@ exports.ownedProduct = async (req, res) => {
       },
       where: {
         OwnerId: ownerId,
-      }
+      },
     });
 
     // Calculate soldPrice for each product variant and totalSoldPrice for each product and owner
-    products.forEach(product => {
-      product.ProductVariants.forEach(variant => {
+    products.forEach((product) => {
+      product.ProductVariants.forEach((variant) => {
         variant.dataValues.soldPrice = variant.soldCount * variant.price;
       });
 
-      product.dataValues.totalSoldPrice = product.toJSON().ProductVariants.reduce(
-        (total, variant) => total + variant.soldPrice,
-        0
-      );
+      product.dataValues.totalSoldPrice = product
+        .toJSON()
+        .ProductVariants.reduce(
+          (total, variant) => total + variant.soldPrice,
+          0
+        );
     });
 
     // Calculate totalSoldPrice for the owner
@@ -463,6 +523,6 @@ exports.ownedProduct = async (req, res) => {
     res.json({ products, totalRevenue });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: "Internal server error" });
   }
-}
+};
