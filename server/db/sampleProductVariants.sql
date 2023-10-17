@@ -101,4 +101,5 @@ VALUES
     ('XS', 'WHITE', '#F0F2F4', 990, 20, '42-white.webp', (SELECT id FROM Products WHERE name = 'เสื้อเชิ้ต Extra Fine Cotton Broadcloth แขนยาว ปกธรรมดา ลายทาง'), datetime('now'), datetime('now')),
     ('M', 'BLACK', '#282828', 1490, 20, '43-black.webp', (SELECT id FROM Products WHERE name = 'กางเกง จับจีบ ทรงกว้าง (ความยาวพิเศษ 85 cm)*'), datetime('now'), datetime('now')),
     ('L', 'BEIGE', '#BCAB93', 1490, 20, '43-beige.webp', (SELECT id FROM Products WHERE name = 'กางเกง จับจีบ ทรงกว้าง (ความยาวพิเศษ 85 cm)*'), datetime('now'), datetime('now')),
+    ('L', 'ORANGE', '#F6C1A1', 990, 20, '44-orange.webp', (SELECT id FROM Products WHERE name = 'ชุดนอน ผ้าลินินผสม แขนสั้น ลายทาง'), datetime('now'), datetime('now')),
     ('3XL', 'BEIGE', '#BBA28C', 390, 12, '37-beige.webp', (SELECT id FROM Products WHERE name = 'เสื้อคาร์ดิแกน ผ้าฟลีซ บุขนนุ่มด้านใน คอกลม แขนยาว'), datetime('now'), datetime('now'));

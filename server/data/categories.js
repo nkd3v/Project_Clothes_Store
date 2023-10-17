@@ -33,6 +33,8 @@ const categories = [
   'เสื้อยืด',
   'เสื้อยืด (แขนยาว)',
   'เสื้อยืด (แขนสั้น)',
+  'ชุดลำลอง',
+  'ชุดนอน และ ชุดลำลอง',
 ];
 
 const categoriesForCustomer = [
@@ -98,6 +100,12 @@ const categoriesForCustomer = [
         name: 'กระโปรง',
         items: [
           'กระโปรง',
+        ]
+      },
+      {
+        name: 'ชุดลำลอง',
+        items: [
+          'ชุดนอน และ ชุดลำลอง',
         ]
       },
     ]
@@ -207,6 +215,12 @@ const categoriesForMerchant = [
         name: 'กระโปรง',
         items: [
           'กระโปรง',
+        ]
+      },
+      {
+        name: 'ชุดลำลอง',
+        items: [
+          'ชุดนอน และ ชุดลำลอง',
         ]
       },
     ]
