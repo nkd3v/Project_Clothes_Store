@@ -35,7 +35,7 @@ const MyStore = () => {
     <div className="SalerPage">
       <h1>สินค้าของฉัน</h1>
       <header className="PdCount_AndBTN">
-        <h1 id="ProductCount">69 Products</h1>
+        <h1 id="ProductCount">{products?.length} Products</h1>
         <div className="BTN_Group">
           <button
             type="button"
