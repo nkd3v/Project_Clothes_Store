@@ -9,7 +9,7 @@ const OrderCart = ({ item, getTotalOrder, setTotalPrice }) => {
       quantity: parseInt(value),
     };
     try {
-      const response = await fetch(`http://localhost:3000/api/v1/carts/set`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/carts/set`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -36,7 +36,7 @@ const OrderCart = ({ item, getTotalOrder, setTotalPrice }) => {
   return (
     <div className="order-cart">
       <img
-        src={`http://localhost:3000/api/v1/uploads/${item?.ProductVariant?.imageUrl}`}
+        src={`${import.meta.env.VITE_API_URL}/api/v1/uploads/${item?.ProductVariant?.imageUrl}`}
         alt=""
       />
       <div className="info">

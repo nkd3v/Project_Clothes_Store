@@ -10,7 +10,7 @@ const MyStore = () => {
     const getOwnProducts = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3000/api/v1/products/owned",
+          `${import.meta.env.VITE_API_URL}/api/v1/products/owned`,
           {
             credentials: "include",
           }

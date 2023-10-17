@@ -18,7 +18,7 @@ const Payment = ({ getTotalOrder }) => {
     const getProductsInCart = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3000/api/v1/carts/products",
+          `${import.meta.env.VITE_API_URL}/api/v1/carts/products`,
           { credentials: "include" }
         );
         if (response.ok) {
@@ -42,7 +42,7 @@ const Payment = ({ getTotalOrder }) => {
     e.preventDefault();
     if (paymentState) {
       try {
-        const response = await fetch("http://localhost:3000/api/v1/orders", {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/orders`, {
           method: "POST",
           credentials: "include",
         });
@@ -80,7 +80,7 @@ const Payment = ({ getTotalOrder }) => {
       }
       try {
         const response = await fetch(
-          "http://localhost:3000/api/v1/user/set-address-info",
+          `${import.meta.env.VITE_API_URL}/api/v1/user/set-address-info`,
           {
             method: "POST",
             headers: {
@@ -207,7 +207,7 @@ const Payment = ({ getTotalOrder }) => {
                 {productInCart?.cartItems?.map((item, idx) => (
                   <React.Fragment key={idx}>
                     <img
-                      src={`http://localhost:3000/api/v1/uploads/${item?.ProductVariant?.imageUrl}`}
+                      src={`${import.meta.env.VITE_API_URL}/api/v1/uploads/${item?.ProductVariant?.imageUrl}`}
                       alt="product"
                     />
                     <p>x{item?.quantity}</p>

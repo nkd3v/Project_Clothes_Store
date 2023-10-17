@@ -58,7 +58,7 @@ const Additem = () => {
     e.preventDefault();
     const formData = new FormData(form);
     try {
-      const response = await fetch("http://localhost:3000/api/v1/products", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/products`, {
         method: "POST",
         body: formData,
         credentials: "include",
@@ -72,7 +72,7 @@ const Additem = () => {
   useEffect(() => {
     if (isMount) return;
     // Fetch the category hierarchy from the URL
-    fetch("http://localhost:3000/api/v1/categories/hierarchy-for-merchant")
+    fetch(`${import.meta.env.VITE_API_URL}/api/v1/categories/hierarchy-for-merchant`)
       .then((response) => response.json())
       .then((data) => {
         const firstLevel = document.getElementById("category1");

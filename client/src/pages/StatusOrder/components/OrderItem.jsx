@@ -4,7 +4,7 @@ const OrderItem = ({ orderItem }) => {
   return (
     <div className="order-item">
       <img
-        src={`http://localhost:3000/api/v1/uploads/${orderItem?.ProductVariant?.imageUrl}`}
+        src={`${import.meta.env.VITE_API_URL}/api/v1/uploads/${orderItem?.ProductVariant?.imageUrl}`}
         alt="product"
         width="250px"
         height="250px"

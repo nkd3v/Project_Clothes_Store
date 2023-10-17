@@ -14,7 +14,7 @@ function Cart({ totalOrder, getTotalOrder }) {
     const getProductsInCart = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3000/api/v1/carts/products",
+          `${import.meta.env.VITE_API_URL}/api/v1/carts/products`,
           { credentials: "include" }
         );
         if (response.ok) {
@@ -48,7 +48,7 @@ function Cart({ totalOrder, getTotalOrder }) {
       };
       try {
         const response = await fetch(
-          "http://localhost:3000/api/v1/carts/apply-coupon",
+          `${import.meta.env.VITE_API_URL}/api/v1/carts/apply-coupon`,
           {
             method: "POST",
             headers: {

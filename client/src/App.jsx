@@ -29,7 +29,7 @@ function App() {
   const getTotalOrder = async () => {
     try {
       const response = await fetch(
-        "http://localhost:3000/api/v1/carts/products",
+        `${import.meta.env.VITE_API_URL}/api/v1/carts/products`,
         { credentials: "include" }
       );
       if (response.ok) {
@@ -72,7 +72,7 @@ function App() {
   async function getUserInfo() {
     try {
       const response = await fetch(
-        "http://localhost:3000/api/v1/user/get-user-info",
+        `${import.meta.env.VITE_API_URL}/api/v1/user/get-user-info`,
         {
           credentials: "include",
         }

@@ -31,7 +31,7 @@ const Catalog = () => {
     const fetchKindOfProduct = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3000/api/v1/categories/hierarchy-for-customer"
+          `${import.meta.env.VITE_API_URL}/api/v1/categories/hierarchy-for-customer`
         );
 
         if (response.ok) {
@@ -74,7 +74,7 @@ const Catalog = () => {
       setIsLoading(true);
       try {
         const response = await fetch(
-          `http://localhost:3000/api/v1/products?gender=${typeCatalog.toUpperCase()}${paramCategory}${paramColors}${paramSize}${paramMinPrice}${paramMaxPrice}&keywords=${searchWord}`
+          `${import.meta.env.VITE_API_URL}/api/v1/products?gender=${typeCatalog.toUpperCase()}${paramCategory}${paramColors}${paramSize}${paramMinPrice}${paramMaxPrice}&keywords=${searchWord}`
         );
 
         if (response.ok) {

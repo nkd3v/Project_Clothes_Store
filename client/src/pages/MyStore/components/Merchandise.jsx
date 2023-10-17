@@ -15,7 +15,7 @@ const Merchandise = ({ products, length, page, setPage }) => {
           <div className="Product_withPic">
             <img
               className="Product_Pic"
-              src={`http://localhost:3000/api/v1/uploads/${products[page]?.ProductVariants[0]?.imageUrl}`}
+              src={`${import.meta.env.VITE_API_URL}/api/v1/uploads/${products[page]?.ProductVariants[0]?.imageUrl}`}
               alt="product"
             ></img>
             <h3>{products[page]?.name}</h3>

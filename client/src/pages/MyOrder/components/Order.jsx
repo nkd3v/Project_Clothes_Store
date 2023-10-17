@@ -13,7 +13,7 @@ const Order = ({ order, getMyOrders }) => {
     };
     try {
       const response = await fetch(
-        "http://localhost:3000/api/v1/orders/update-status",
+        `${import.meta.env.VITE_API_URL}/api/v1/orders/update-status`,
         {
           method: "POST",
           headers: {
@@ -45,7 +45,7 @@ const Order = ({ order, getMyOrders }) => {
           <h2 className="order-id">Order Number: {order?.id}</h2>
           <div className="product">
             <img
-              src={`http://localhost:3000/api/v1/uploads/${order?.OrderItems[0]?.ProductVariant?.imageUrl}`}
+              src={`${import.meta.env.VITE_API_URL}/api/v1/uploads/${order?.OrderItems[0]?.ProductVariant?.imageUrl}`}
               alt="product"
               className="product-img"
             />

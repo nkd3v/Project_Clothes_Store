@@ -35,7 +35,7 @@ const Preview = ({ getTotalOrder }) => {
       quantity: parseInt(amount),
     };
     try {
-      const response = await fetch(`http://localhost:3000/api/v1/carts/add`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/carts/add`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -65,7 +65,7 @@ const Preview = ({ getTotalOrder }) => {
       setIsLoading(true);
       try {
         const response = await fetch(
-          `http://localhost:3000/api/v1/products/${id}`
+          `${import.meta.env.VITE_API_URL}/api/v1/products/${id}`
         );
 
         if (response.ok) {
@@ -76,7 +76,7 @@ const Preview = ({ getTotalOrder }) => {
 
           // setSize(_res?.ProductVariants[0]?.size);
           setMainImage(
-            `http://localhost:3000/api/v1/uploads/${_res?.ProductVariants[0]?.imageUrl}`
+            `${import.meta.env.VITE_API_URL}/api/v1/uploads/${_res?.ProductVariants[0]?.imageUrl}`
           );
         } else {
           alert(
@@ -183,7 +183,7 @@ const Preview = ({ getTotalOrder }) => {
                 {product?.ProductVariants?.map((pv, idx) => (
                   <img
                     key={idx}
-                    src={`http://localhost:3000/api/v1/uploads/${pv.imageUrl}`}
+                    src={`${import.meta.env.VITE_API_URL}/api/v1/uploads/${pv.imageUrl}`}
                     className={`images ${idx === 0 && "checked"}`}
                     alt="others"
                     onClick={(e) => handleClickPreviewImg(e)}

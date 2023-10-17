@@ -6,7 +6,7 @@ const MyOrder = () => {
   const getMyOrders = async () => {
     try {
       const response = await fetch(
-        "http://localhost:3000/api/v1/orders/merchant",
+        `${import.meta.env.VITE_API_URL}/api/v1/orders/merchant`,
         {
           credentials: "include",
         }

@@ -108,7 +108,7 @@ exports.setOrderStatusById = async (req, res) => {
 };
 
 // Create an order from the user's cart
-exports.createOrder = async (req, res) => {
+exports.createOrderOld = async (req, res) => {
   try {
     const cart = await Cart.findOne({
       where: { UserId: req.user.id },
@@ -194,7 +194,7 @@ exports.createOrder = async (req, res) => {
   }
 };
 
-exports.createOrderFixed = async (req, res) => {
+exports.createOrder = async (req, res) => {
   try {
     const cart = await Cart.findOne({
       where: { UserId: req.user.id },

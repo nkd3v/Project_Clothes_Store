@@ -21,7 +21,7 @@ const ProductCard = ({ productObj }) => {
   return (
     <div className="product-card" onClick={handleClickProduct}>
       <img
-        src={`http://localhost:3000/api/v1/uploads/${productObj.ProductVariants[0].imageUrl}`}
+        src={`${import.meta.env.VITE_API_URL}/api/v1/uploads/${productObj.ProductVariants[0].imageUrl}`}
         alt="product"
       />
       <article>
