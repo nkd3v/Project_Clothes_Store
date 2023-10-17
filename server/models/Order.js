@@ -14,30 +14,30 @@ const Order = db.define('Orders', {
     type: DataTypes.DECIMAL(10, 2),
     defaultValue: 0.0,
     get() {
-      if (this.OrderItems) {
-        return this.OrderItems[0].totalPrice;
+      if (this.OrderItems && this.OrderItems.length > 0) {
+        return this.OrderItems.reduce((sum, orderItem) => sum + orderItem.totalPrice, 0);
       }
-      return 0.0; // Return a default value if there is no associated OrderItems
+      return 0.0; // Return a default value if there are no associated OrderItems
     },
   },
   totalPriceBeforeDiscount: {
     type: DataTypes.DECIMAL(10, 2),
     defaultValue: 0.0,
     get() {
-      if (this.OrderItems) {
-        return this.OrderItems[0].totalPriceBeforeDiscount;
+      if (this.OrderItems && this.OrderItems.length > 0) {
+        return this.OrderItems.reduce((sum, orderItem) => sum + orderItem.totalPriceBeforeDiscount, 0);
       }
-      return 0.0; // Return a default value if there is no associated OrderItems
+      return 0.0; // Return a default value if there are no associated OrderItems
     },
   },
   couponDiscount: {
     type: DataTypes.DECIMAL(10, 2),
     defaultValue: 0.0,
     get() {
-      if (this.OrderItems) {
-        return this.OrderItems[0].couponDiscount;
+      if (this.OrderItems && this.OrderItems.length > 0) {
+        return this.OrderItems.reduce((sum, orderItem) => sum + orderItem.couponDiscount, 0);
       }
-      return 0.0; // Return a default value if there is no associated OrderItems
+      return 0.0; // Return a default value if there are no associated OrderItems
     },
   },
 });
