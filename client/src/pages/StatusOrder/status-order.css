@@ -56,12 +56,12 @@
 
     &.one {
         left: 65px;
-        background: #0C84D9;
+        background: var(--primary-clr);
     }
 
     &.two {
         left: 280px;
-        background: #0C84D9;
+        background: var(--primary-clr);
         /* background: #bbb; */
     }
 
@@ -72,7 +72,7 @@
     }
 
     &.three.passed {
-        background: #0C84D9;
+        background: var(--primary-clr);
     }
 
     &.four {
@@ -91,7 +91,7 @@
     background: #bbb;
 
     &.first {
-        background: #0C84D9;
+        background: var(--primary-clr);
     }
 
     &.second {
@@ -99,7 +99,7 @@
     }
 
     &.second.passed {
-        background: #0C84D9;
+        background: var(--primary-clr);
     }
 
     &.third {
@@ -143,7 +143,7 @@
 .status-order .order-bottom {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     padding: 1rem 3rem;
 }
 

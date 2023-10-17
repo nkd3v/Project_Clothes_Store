@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Button from "../../../components/Button";
 import "./order.css";
+import OrederItem from "./OrederItem";
 
 const Order = ({ order, getMyOrders }) => {
   const [isShipped, setIsShipped] = useState(
@@ -43,34 +44,9 @@ const Order = ({ order, getMyOrders }) => {
       <div className="panel">
         <div className="left-wrapper">
           <h2 className="order-id">Order Number: {order?.id}</h2>
-          <div className="product">
-            <img
-              src={`${import.meta.env.VITE_API_URL}/api/v1/uploads/${order?.OrderItems[0]?.ProductVariant?.imageUrl}`}
-              alt="product"
-              className="product-img"
-            />
-            <div className="detail">
-              <h4 className="name">
-                {order?.OrderItems[0]?.ProductVariant?.Product?.name}
-              </h4>
-              <p className="code">
-                รหัสสินค้า: {order?.OrderItems[0]?.ProductVariant?.id}
-              </p>
-              <p className="color">
-                สี: {order?.OrderItems[0]?.ProductVariant?.colorName}
-              </p>
-              <p className="size">
-                ขนาด : {order?.OrderItems[0]?.ProductVariant?.Product?.gender}{" "}
-                {order?.OrderItems[0]?.ProductVariant?.size}
-              </p>
-              <p className="price">
-                THB {order?.OrderItems[0]?.ProductVariant?.price}
-              </p>
-              <p className="quantity">
-                จำนวน {order?.OrderItems[0]?.quantity} ชิ้น
-              </p>
-            </div>
-          </div>
+          {order?.OrderItems?.map((orderItem) => (
+            <OrederItem item={orderItem} />
+          ))}
         </div>
         <div className="right-wrapper">
           <h2 className="status">
