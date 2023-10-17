@@ -54,7 +54,7 @@ const Additem = () => {
   }
   async function handleForm(e) {
     const form = document.getElementById("productForm");
-
+  
     e.preventDefault();
     const formData = new FormData(form);
     try {
@@ -63,12 +63,21 @@ const Additem = () => {
         body: formData,
         credentials: "include",
       });
-      const responseData = await response.json();
-      alert(JSON.stringify(responseData));
+    
+      if (!response.ok) {
+        // Check if the response status is outside the 200-299 range
+        const errorData = await response.json(); // Assuming the error data is in JSON format
+        const errorValue = errorData.error; // Extract the error value
+        alert(`Error: ${errorValue}`);
+      } else {
+        // Handle a successful response here
+      }
     } catch (error) {
-      console.error("Error:", error);
+      // Handle network errors here
+      alert(`Network Error: ${error.message}`);
     }
   }
+  
   useEffect(() => {
     if (isMount) return;
     // Fetch the category hierarchy from the URL

@@ -26,7 +26,6 @@ if (process.env.NODE_ENV !== 'production') {
   app.use(morgan("dev")); // Only enable morgan logger in non-production environments
 }
 
-
 // Define a custom CORS configuration function
 const corsOptions = (req, callback) => {
   const origin = req.get('origin');
@@ -72,7 +71,10 @@ const swaggerOptions = {
 
 let swaggerSpec = swaggerJsdoc(swaggerOptions);
 
-app.use("/api/v1/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/api/v1/uploads", (req, res, next) => {
+  res.setHeader('Cache-Control', 'public, max-age=900'); // 15 minutes in seconds (900 seconds)
+  express.static(path.join(__dirname, "uploads"))(req, res, next);
+});
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/products", productRoutes);
 app.use("/api/v1/user", userRoutes);
