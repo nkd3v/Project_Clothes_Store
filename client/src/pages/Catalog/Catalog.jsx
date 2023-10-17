@@ -179,6 +179,8 @@ const Catalog = () => {
           <section className="list-products">
             {isLoading ? (
               <Loading />
+            ) : products.length === 0 ? (
+              <p>ไม่พบรายการสินค้า</p>
             ) : (
               products?.map((product) => (
                 <ProductCard key={product.id} productObj={product} />

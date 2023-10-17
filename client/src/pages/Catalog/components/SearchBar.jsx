@@ -7,6 +7,10 @@ const SearchBar = ({ setSearchWord }) => {
       className="search-bar"
       onSubmit={(e) => {
         e.preventDefault();
+        if (inputRef?.current?.value === "") {
+          alert("ใส่ตัวอักษรในช่อง search");
+          return;
+        }
         setSearchWord(inputRef?.current?.value);
       }}
     >
