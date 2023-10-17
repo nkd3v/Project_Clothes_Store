@@ -23,10 +23,6 @@ exports.register = async (req, res) => {
     const birthDate = new Date(dateOfBirth);
     const age = currentDate.getFullYear() - birthDate.getFullYear();
 
-    if (currentDate.getMonth() < birthDate.getMonth() || (currentDate.getMonth() === birthDate.getMonth() && currentDate.getDate() < birthDate.getDate())) {
-      age--; // Adjust age if the birthday hasn't occurred yet this year
-    }
-
     // Check if the user's age meets the minimum age requirement
     if (age < minimumAge) {
       return res.status(400).json({ error: `You must be at least ${minimumAge} years old to register` });
