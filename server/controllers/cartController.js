@@ -36,9 +36,13 @@ exports.addToCart = async (req, res) => {
       where: { CartId: cart.id, ProductVariantId: productVariantId },
     });
 
+    if (productVariant.quantity < quantity) {
+      return res.status(400).json({ error: 'Not enough products in stock' });
+    }
+
     if (existingCartItem) {
       if (productVariant.quantity < existingCartItem.quantity + quantity) {
-        return res.status(400).json({ error: 'Not enough quantity in stock' });
+        return res.status(400).json({ error: 'Not enough products in stock' });
       }
 
       existingCartItem.quantity += quantity;

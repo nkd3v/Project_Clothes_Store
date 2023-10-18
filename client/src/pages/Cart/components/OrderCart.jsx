@@ -17,8 +17,8 @@ const OrderCart = ({ item, getTotalOrder, setTotalPrice }) => {
         body: JSON.stringify(productData),
         credentials: "include",
       });
+      const _res = await response.json();
       if (response.ok) {
-        const _res = await response.json();
         // window.location.reload(false);
         console.log(_res);
         getTotalOrder();
@@ -28,6 +28,7 @@ const OrderCart = ({ item, getTotalOrder, setTotalPrice }) => {
           "Set product customer failed. Server returned an error: " +
             response.status
         );
+        alert(_res.error);
       }
     } catch (err) {
       console.error("error: ", err);
